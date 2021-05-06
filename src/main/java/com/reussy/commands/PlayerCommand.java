@@ -6,26 +6,29 @@ import com.reussy.menus.MainGUI;
 import com.reussy.utils.ParticleDisplay;
 import com.reussy.utils.XParticle;
 import com.reussy.utils.XSound;
-import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import sql.SQLData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerCommand implements CommandExecutor {
+public class PlayerCommand implements CommandExecutor, TabCompleter {
 
     private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
     FileManager FManager = new FileManager();
     MainGUI getGUI = new MainGUI();
-    SQLData getSQLData = new SQLData();
+    SQLData sqlData = new SQLData();
+    List<String> subcommands = new ArrayList<>();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
         if (!(sender instanceof Player)) {
 
@@ -35,7 +38,7 @@ public class PlayerCommand implements CommandExecutor {
             return false;
         }
 
-        if (!sender.hasPermission("homes.command.homes")) {
+        if (!sender.hasPermission("homes.command.player")) {
 
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Insufficient-Permission")
                     .replace("%prefix%", FManager.PX)));
@@ -44,7 +47,7 @@ public class PlayerCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        boolean hasHome = getSQLData.hasHomes(plugin.getSQL(), player.getUniqueId());
+        boolean hasHome = sqlData.hasHomes(plugin.getSQL(), player.getUniqueId());
 
         if (cmd.getName().equalsIgnoreCase("home")) {
 
@@ -56,7 +59,7 @@ public class PlayerCommand implements CommandExecutor {
             }
         }
 
-        List<String> getHomes = (getSQLData.getHomes(plugin.getSQL(), player.getUniqueId()));
+        List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
         String world = player.getWorld().getName();
         double x = player.getLocation().getX();
         double y = player.getLocation().getY();
@@ -78,7 +81,7 @@ public class PlayerCommand implements CommandExecutor {
                         return false;
                     }
 
-                    getSQLData.createHomes(plugin.getSQL(), player.getUniqueId(), player, world, args[1], x, y, z, pitch, yaw);
+                    sqlData.createHomes(plugin.getSQL(), player.getUniqueId(), player, world, args[1], x, y, z, pitch, yaw);
                 }
 
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Home-Created")
@@ -96,14 +99,14 @@ public class PlayerCommand implements CommandExecutor {
                     if (!getHomes.contains(args[1])) {
 
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("No-Home")
-                                .replace("%prefix%", FManager.PX)));
+                                .replace("%prefix%", FManager.PX).replace("%player_home%", args[1])));
 
                         return false;
                     }
 
                     if (getHomes.contains(args[1])) {
 
-                        getSQLData.deleteHomes(plugin.getSQL(), player.getUniqueId());
+                        sqlData.deleteHomes(plugin.getSQL(), player.getUniqueId(), args[1]);
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Home-Deleted")
                                 .replace("%prefix%", FManager.PX).replace("%player_home%", args[1])));
                         player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")).parseSound(), 1, 1);
@@ -125,13 +128,13 @@ public class PlayerCommand implements CommandExecutor {
                         return false;
                     }
 
-                    String getWorld = getSQLData.getWorld(plugin.getSQL(), player.getUniqueId());
+                    String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId());
                     World World = Bukkit.getWorld(getWorld);
-                    double getX = getSQLData.getX(plugin.getSQL(), player.getUniqueId());
-                    double getY = getSQLData.getY(plugin.getSQL(), player.getUniqueId());
-                    double getZ = getSQLData.getZ(plugin.getSQL(), player.getUniqueId());
-                    float getPitch = getSQLData.getPitch(plugin.getSQL(), player.getUniqueId());
-                    float getYaw = getSQLData.getYaw(plugin.getSQL(), player.getUniqueId());
+                    double getX = sqlData.getX(plugin.getSQL(), player.getUniqueId());
+                    double getY = sqlData.getY(plugin.getSQL(), player.getUniqueId());
+                    double getZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId());
+                    float getPitch = sqlData.getPitch(plugin.getSQL(), player.getUniqueId());
+                    float getYaw = sqlData.getYaw(plugin.getSQL(), player.getUniqueId());
                     Location Home = new Location(World, getX, getY, getZ, getYaw, getPitch);
 
                     if (getHomes.contains(args[1])) {
@@ -149,13 +152,14 @@ public class PlayerCommand implements CommandExecutor {
             case "list":
 
                 if (getHomes.isEmpty()){
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("No-Home")
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Homes-Empty")
                             .replace("%prefix%", FManager.PX)));
                 }
 
                 for (String homes : getHomes){
 
-                    player.sendMessage(homes);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Homes-Format")
+                            .replace("%prefix%", FManager.PX).replace("%player_homes%", homes)));
                 }
 
                 break;
@@ -168,5 +172,29 @@ public class PlayerCommand implements CommandExecutor {
         }
 
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+
+        Player player = (Player) sender;
+        List<String> getHomes = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
+
+        if (command.getName().equalsIgnoreCase("home")){
+            if (args.length == 1){
+                if (player.hasPermission("homes.command.player")){
+
+                    subcommands.add("set");
+                    subcommands.add("delete");
+                    subcommands.add("go");
+                    subcommands.add("list");
+                }
+            }
+
+            return subcommands;
+        }
+
+        return null;
     }
 }

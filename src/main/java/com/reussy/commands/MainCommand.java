@@ -6,21 +6,24 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class MainCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
 
+public class MainCommand implements CommandExecutor, TabCompleter {
+
+    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
     FileManager FManager = new FileManager();
-    private ExodusHomes plugin;
-
-    public MainCommand(ExodusHomes plugin) {
-        this.plugin = plugin;
-    }
+    List<String> subcommands = new ArrayList<>();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-        if (!sender.hasPermission("homes.command.main")) {
+        if (!sender.hasPermission("homes.command.admin")) {
 
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Insufficient-Permission")
                     .replace("%prefix%", FManager.PX)));
@@ -28,7 +31,7 @@ public class MainCommand implements CommandExecutor {
             return false;
         }
 
-        if (cmd.getName().equalsIgnoreCase("homes-admin")) {
+        if (cmd.getName().equalsIgnoreCase("home-admin")) {
 
             if (args.length == 0) {
 
@@ -75,5 +78,25 @@ public class MainCommand implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+
+        Player player = (Player) sender;
+
+        if (command.getName().equalsIgnoreCase("homes-admin")) {
+            if (args.length == 1) {
+                if (player.hasPermission("homes.command.admin")) {
+
+                    subcommands.add("help");
+                    subcommands.add("reload");
+                    subcommands.add("manage");
+                }
+            }
+            return subcommands;
+        }
+        return null;
     }
 }

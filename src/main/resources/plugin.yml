@@ -8,7 +8,7 @@ softdepend:
   - EssentialsX
 
 commands:
-  homes-admin:
+  home-admin:
     description: Main Command for ExodusHomes.
   home:
     description: Main Command for Players.

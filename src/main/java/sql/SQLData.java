@@ -2,10 +2,10 @@ package sql;
 
 import com.reussy.ExodusHomes;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -204,15 +204,16 @@ public class SQLData {
         return 0;
     }
 
-    public void deleteHomes(Connection connection, UUID uuid){
+    public void deleteHomes(Connection connection, UUID uuid, String home){
 
         try{
 
             if (hasHomes(connection, uuid)){
 
-                String Home = "DELETE FROM homes WHERE (UUID=?)";
+                String Home = "DELETE FROM homes WHERE UUID=? AND HOME=?";
                 PreparedStatement statement = connection.prepareStatement(Home);
                 statement.setString(1, uuid.toString());
+                statement.setString(2, home);
                 statement.executeUpdate();
                 statement.close();
 

@@ -67,8 +67,10 @@ public final class ExodusHomes extends JavaPlugin {
 
     public void Commands() {
 
-        this.getCommand("homes-admin").setExecutor(new MainCommand(this));
+        this.getCommand("home-admin").setExecutor(new MainCommand());
         this.getCommand("home").setExecutor(new PlayerCommand());
+        this.getCommand("home-admin").setTabCompleter(new MainCommand());
+        this.getCommand("home").setTabCompleter(new PlayerCommand());
 
     }
 

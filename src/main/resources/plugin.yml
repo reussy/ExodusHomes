@@ -1,0 +1,17 @@
+name: ExodusHomes
+version: ${project.version}
+main: com.reussy.ExodusHomes
+api-version: 1.13
+authors: [ reussy ]
+description: Set your homes easily!
+softdepend:
+  - EssentialsX
+
+commands:
+  homes-admin:
+    description: Main Command for ExodusHomes.
+  home:
+    description: Main Command for Players.
+    aliases:
+      - homes
+      - homegui

@@ -1,0 +1,35 @@
+#############################################################################################
+#                                                                                           #
+#                                    EXODUS PROJECT                                         #
+#                                                                                           #
+#                                     EXODUS HOMES                                          #
+#                                  CONFIGURATION FILE                                       #
+#                                                                                           #
+#                                                                                           #
+#############################################################################################
+
+#Avaible Types: YAML or MySQL
+#Recommended MySQL!
+Database-Type: MySQL
+MySQL:
+  host: localhost
+  port: 3306
+  database: exodus_homes
+  username: root
+  password:
+
+#Use sounds that are in the
+#version of your server!
+#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+Sounds:
+  Create-Home: ENTITY_PLAYER_LEVELUP
+  Delete-Home: ENTITY_VILLAGER_YES
+  Teleport-Home: ENTITY_ENDERMAN_TELEPORT
+  Open-GUI: BLOCK_CHEST_OPEN
+
+#Use particles that are in the
+#version of your server!
+#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+Particles:
+  Create-Home: VILLAGER_HAPPY
+  Teleport-Home: SPELL_WITCH

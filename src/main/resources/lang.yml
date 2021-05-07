@@ -1,3 +1,13 @@
+#############################################################################################
+#                                                                                           #
+#                                    EXODUS PROJECT                                         #
+#                                                                                           #
+#                                     EXODUS HOMES                                          #
+#                                    LANGUAGE FILE                                          #
+#                                                                                           #
+#                                                                                           #
+#############################################################################################
+
 Plugin-Prefix: '&b&lHOMES &8»'
 Insufficient-Permission: '%prefix% &cYou do not have permissions for this command!'
 No-Console: '%prefix% &4You must be a player for execute this command!'

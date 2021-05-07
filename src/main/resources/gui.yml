@@ -1,0 +1,32 @@
+#############################################################################################
+#                                                                                           #
+#                                    EXODUS PROJECT                                         #
+#                                                                                           #
+#                                     EXODUS HOMES                                          #
+#                                      GUI FILE                                             #
+#                                                                                           #
+#                                                                                           #
+#############################################################################################
+
+MainGUI:
+  Title: '&8Main GUI'
+  Size: 54
+  Items:
+    Homes:
+      Icon: BOOKSHELF
+      Amount: 1
+      Name: '&6&lYOUR HOMES'
+      Lore:
+        - ''
+
+HomesGUI:
+  Title: '&8You Homes'
+  Size: 54
+  Items:
+    Homes:
+      Icon: BOOK
+      Amount: 1
+      Name: '&a%player_home%'
+      Lore:
+        - ''
+

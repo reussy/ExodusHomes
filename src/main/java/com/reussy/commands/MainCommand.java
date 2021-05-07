@@ -17,7 +17,7 @@ import java.util.List;
 public class MainCommand implements CommandExecutor, TabCompleter {
 
     private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-    FileManager FManager = new FileManager();
+    FileManager fileManager = new FileManager();
     List<String> subcommands = new ArrayList<>();
 
     @Override
@@ -25,8 +25,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
         if (!sender.hasPermission("homes.command.admin")) {
 
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Insufficient-Permission")
-                    .replace("%prefix%", FManager.PX)));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Insufficient-Permission")
+                    .replace("%prefix%", fileManager.PX)));
 
             return false;
         }
@@ -46,7 +46,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
                 case "help":
 
-                    for (String Help : FManager.getLanguage().getStringList("Help-Administrator")) {
+                    for (String Help : fileManager.getLang().getStringList("Help-Administrator")) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Help));
                     }
 
@@ -55,12 +55,12 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 case "reload":
 
                     plugin.reloadConfig();
-                    FManager.reloadLanguage();
-                    FManager.reloadMenus();
-                    FManager.reloadStorage();
+                    fileManager.reloadLang();
+                    fileManager.reloadGui();
+                    fileManager.reloadStorage();
 
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("Reload-Message")
-                            .replace("%prefix%", FManager.PX)));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Reload-Message")
+                            .replace("%prefix%", fileManager.PX)));
 
                     return false;
 
@@ -68,8 +68,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
                     if (!(sender instanceof Player)) {
 
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', FManager.getLanguage().getString("No-Console")
-                                .replace("%prefix%", FManager.PX)));
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("No-Console")
+                                .replace("%prefix%", fileManager.PX)));
                     }
 
                     return false;
@@ -86,7 +86,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
 
-        if (command.getName().equalsIgnoreCase("homes-admin")) {
+        if (command.getName().equalsIgnoreCase("home-admin")) {
             if (args.length == 1) {
                 if (player.hasPermission("homes.command.admin")) {
 

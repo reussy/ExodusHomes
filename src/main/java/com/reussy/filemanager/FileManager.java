@@ -14,129 +14,120 @@ import java.nio.charset.StandardCharsets;
 public class FileManager {
 
     private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-    public String PX = ChatColor.translateAlternateColorCodes('&', this.getLanguage().getString("Plugin-Prefix"));
-    public final File Config = new File(plugin.getDataFolder(), "config.yml");
-    private File LanguageFile = new File(plugin.getDataFolder(), "language.yml");
-    public FileConfiguration Language = YamlConfiguration.loadConfiguration(LanguageFile);
-    private File MenusFile = new File(plugin.getDataFolder(), "menus.yml");
-    public FileConfiguration Menus = YamlConfiguration.loadConfiguration(MenusFile);
+    public String PX = ChatColor.translateAlternateColorCodes('&', this.getLang().getString("Plugin-Prefix"));
+    public File configFile = new File(plugin.getDataFolder(), "config.yml");
+    private File langFile = new File(plugin.getDataFolder(), "lang.yml");
+    public FileConfiguration langYaml = YamlConfiguration.loadConfiguration(langFile);
+    private File guiFile = new File(plugin.getDataFolder(), "gui.yml");
+    public FileConfiguration guiYaml = YamlConfiguration.loadConfiguration(guiFile);
     private File StorageFile = new File(plugin.getDataFolder(), "storage.yml");
     public FileConfiguration Storage = YamlConfiguration.loadConfiguration(StorageFile);
 
-    public void createConfig() throws IOException {
+    public void generateConfig() {
 
-        if (!Config.exists()) plugin.saveResource("config.yml", false);
-    }
+        if (!configFile.exists()) {
 
-    public void createMenus() {
-
-        if (!MenusFile.exists()) {
-
-            plugin.saveResource("menus.yml", false);
+            plugin.saveResource("config.yml", false);
         }
     }
 
-    public FileConfiguration getMenus() {
+    public void generateLang() {
 
-        if (Menus == null) reloadMenus();
+        if (!langFile.exists()) {
 
-        return Menus;
-
+            plugin.saveResource("lang.yml", false);
+        }
     }
 
-    public void reloadMenus() {
+    public FileConfiguration getLang() {
 
-        if (Menus == null) MenusFile = new File(plugin.getDataFolder(), "menus.yml");
-
-        Menus = YamlConfiguration.loadConfiguration(MenusFile);
-
-        Reader defConfigStream = new InputStreamReader(plugin.getResource("menus.yml"), StandardCharsets.UTF_8);
-
-        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-        Menus.setDefaults(defConfig);
+        if (langYaml == null)
+            reloadLang();
+        return langYaml;
     }
 
-    public void registerMenus() {
+    public void reloadLang() {
 
-        MenusFile = new File(plugin.getDataFolder(), "menus.yml");
+        if (langYaml == null) {
 
-        if (!MenusFile.exists()) {
+            langFile = new File(plugin.getDataFolder(), "lang.yml");
+            langYaml = YamlConfiguration.loadConfiguration(langFile);
+            Reader stream = new InputStreamReader(plugin.getResource("lang.yml"), StandardCharsets.UTF_8);
+            YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
+            langYaml.setDefaults(defStream);
+        }
+    }
 
-            getMenus().options().copyDefaults(true);
+    public void registerLang() {
+
+        langFile = new File(plugin.getDataFolder(), "lang.yml");
+        if (!langFile.exists()) {
+
+            getLang().options().copyDefaults(true);
             plugin.saveDefaultConfig();
-            saveMenus();
+            saveLang();
         }
     }
 
-    public void saveMenus() {
+    public void saveLang() {
 
         try {
+            langYaml.save(langFile);
+            plugin.saveDefaultConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-            Menus.save(MenusFile);
+    public void generateGui() {
+
+        if (!guiFile.exists()) {
+
+            plugin.saveResource("gui.yml", false);
+        }
+    }
+
+    public FileConfiguration getGui() {
+        if (guiYaml == null)
+            reloadGui();
+        return guiYaml;
+    }
+
+    public void reloadGui() {
+
+        if (guiYaml == null) {
+
+            guiFile = new File(plugin.getDataFolder(), "gui.yml");
+            guiYaml = YamlConfiguration.loadConfiguration(guiFile);
+            Reader stream = new InputStreamReader(plugin.getResource("gui.yml"), StandardCharsets.UTF_8);
+            YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
+            guiYaml.setDefaults(defStream);
+        }
+    }
+
+    public void registerGui() {
+
+        guiFile = new File(plugin.getDataFolder(), "gui.yml");
+        if (!guiFile.exists()) {
+
+            getGui().options().copyDefaults(true);
+            plugin.saveDefaultConfig();
+            saveGui();
+        }
+    }
+
+    public void saveGui() {
+
+        try {
+            guiYaml.save(guiFile);
             plugin.saveDefaultConfig();
 
         } catch (IOException e) {
-
             e.printStackTrace();
-
         }
     }
 
-    public void createLanguage() {
-
-        if (!LanguageFile.exists()) {
-
-            plugin.saveResource("language.yml", false);
-        }
-    }
-
-    public FileConfiguration getLanguage() {
-
-        if (Language == null) reloadLanguage();
-
-        return Language;
-
-    }
-
-    public void reloadLanguage() {
-
-        if (Language == null) LanguageFile = new File(plugin.getDataFolder(), "language.yml");
-
-        Language = YamlConfiguration.loadConfiguration(LanguageFile);
-
-        Reader defConfigStream = new InputStreamReader(plugin.getResource("language.yml"), StandardCharsets.UTF_8);
-
-        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-        Language.setDefaults(defConfig);
-    }
-
-    public void registerLanguage() {
-
-        LanguageFile = new File(plugin.getDataFolder(), "language.yml");
-
-        if (!LanguageFile.exists()) {
-
-            getLanguage().options().copyDefaults(true);
-            plugin.saveDefaultConfig();
-            saveLanguage();
-        }
-    }
-
-    public void saveLanguage() {
-
-        try {
-
-            Language.save(LanguageFile);
-            plugin.saveDefaultConfig();
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        }
-    }
-
-    public void createStorage() {
+    public void generateStorage() {
 
         if (!StorageFile.exists()) {
 

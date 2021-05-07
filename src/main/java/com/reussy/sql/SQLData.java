@@ -87,15 +87,16 @@ public class SQLData {
         return homes;
     }
 
-    public String getWorld(Connection connection, UUID uuid){
+    public String getWorld(Connection connection, UUID uuid, String home){
 
         try {
 
             if (hasHomes(connection, uuid)){
 
-                String World = "SELECT World FROM homes WHERE (UUID=?)";
+                String World = "SELECT World FROM homes WHERE UUID=? AND HOME=?";
                 PreparedStatement statement = connection.prepareStatement(World);
                 statement.setString(1, uuid.toString());
+                statement.setString(2, home);
                 ResultSet set = statement.executeQuery();
                 if (set.next()) return set.getString("World");
                 set.close();
@@ -107,15 +108,16 @@ public class SQLData {
         return null;
     }
 
-    public double getX(Connection connection, UUID uuid){
+    public double getX(Connection connection, UUID uuid, String home){
 
         try {
 
             if (hasHomes(connection, uuid)){
 
-                String X = "SELECT X FROM homes WHERE (UUID=?)";
+                String X = "SELECT X FROM homes WHERE UUID=? AND HOME=?";
                 PreparedStatement statement = connection.prepareStatement(X);
                 statement.setString(1, uuid.toString());
+                statement.setString(2, home);
                 ResultSet set = statement.executeQuery();
                 if (set.next()) return set.getDouble("X");
                 set.close();
@@ -128,15 +130,16 @@ public class SQLData {
         return 0;
     }
 
-    public double getY(Connection connection, UUID uuid){
+    public double getY(Connection connection, UUID uuid, String home){
 
         try {
 
             if (hasHomes(connection, uuid)){
 
-                String Y = "SELECT Y FROM homes WHERE (UUID=?)";
+                String Y = "SELECT Y FROM homes WHERE UUID=? AND HOME=?";
                 PreparedStatement statement = connection.prepareStatement(Y);
                 statement.setString(1, uuid.toString());
+                statement.setString(2, home);
                 ResultSet set = statement.executeQuery();
                 if (set.next()) return set.getDouble("Y");
                 set.close();
@@ -149,15 +152,16 @@ public class SQLData {
         return 0;
     }
 
-    public double getZ(Connection connection, UUID uuid){
+    public double getZ(Connection connection, UUID uuid, String home){
 
         try {
 
             if (hasHomes(connection, uuid)){
 
-                String Z = "SELECT Z FROM homes WHERE (UUID=?)";
+                String Z = "SELECT Z FROM homes WHERE UUID=? AND HOME=?";
                 PreparedStatement statement = connection.prepareStatement(Z);
                 statement.setString(1, uuid.toString());
+                statement.setString(2, home);
                 ResultSet set = statement.executeQuery();
                 if (set.next()) return set.getDouble("Z");
                 set.close();
@@ -170,12 +174,13 @@ public class SQLData {
         return 0;
     }
 
-    public float getPitch(Connection connection, UUID uuid){
+    public float getPitch(Connection connection, UUID uuid, String home){
 
         try {
-            String Pitch = "SELECT Pitch FROM homes WHERE (UUID=?)";
+            String Pitch = "SELECT Pitch FROM homes WHERE UUID=? AND HOME=?";
             PreparedStatement statement = connection.prepareStatement(Pitch);
             statement.setString(1, uuid.toString());
+            statement.setString(2, home);
             ResultSet set = statement.executeQuery();
             if (set.next()) return set.getFloat("Pitch");
 
@@ -187,12 +192,13 @@ public class SQLData {
         return 0;
     }
 
-    public float getYaw(Connection connection, UUID uuid){
+    public float getYaw(Connection connection, UUID uuid, String home){
 
         try {
-            String Yaw = "SELECT Yaw FROM homes WHERE (UUID=?)";
+            String Yaw = "SELECT Yaw FROM homes WHERE UUID=? AND HOME=?";
             PreparedStatement statement = connection.prepareStatement(Yaw);
             statement.setString(1, uuid.toString());
+            statement.setString(2, home);
             ResultSet set = statement.executeQuery();
             if (set.next()) return set.getFloat("Yaw");
 

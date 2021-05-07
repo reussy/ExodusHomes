@@ -1,4 +1,4 @@
-package sql;
+package com.reussy.sql;
 
 import com.reussy.ExodusHomes;
 import org.bukkit.Bukkit;

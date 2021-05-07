@@ -6,7 +6,7 @@ import com.reussy.filemanager.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
-import sql.SQLMain;
+import com.reussy.sql.SQLMain;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -81,10 +81,10 @@ public final class ExodusHomes extends JavaPlugin {
 
         FileManager FManager = new FileManager();
 
-        FManager.createConfig();
-        FManager.createLanguage();
-        FManager.createMenus();
-        FManager.createStorage();
+        FManager.generateConfig();
+        FManager.generateLang();
+        FManager.generateGui();
+        FManager.generateStorage();
     }
 
     public Connection getSQL() {

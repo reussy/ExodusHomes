@@ -32,7 +32,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
         if (!(sender instanceof Player)) {
 
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("No-Console")
+            sender.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Console")
                     .replace("%prefix%", fileManager.PX)));
 
             return false;
@@ -40,7 +40,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
         if (!sender.hasPermission("homes.command.player")) {
 
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Insufficient-Permission")
+            sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
                     .replace("%prefix%", fileManager.PX)));
 
             return false;
@@ -60,12 +60,29 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
         }
 
         List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
+        String home = args[1];
         String world = player.getWorld().getName();
-        double x = player.getLocation().getX();
-        double y = player.getLocation().getY();
-        double z = player.getLocation().getZ();
+        double x = player.getLocation().getBlockX();
+        double y = player.getLocation().getBlockY();
+        double z = player.getLocation().getBlockZ();
         float pitch = player.getLocation().getPitch();
         float yaw = player.getLocation().getYaw();
+
+        if (!hasHome) {
+
+            player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
+                    .replace("%prefix%", fileManager.PX)));
+
+            return false;
+        }
+
+        if (!getHomes.contains(home)) {
+
+            player.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Home")
+                    .replace("%prefix%", fileManager.PX).replace("%player_home%", home)));
+
+            return false;
+        }
 
         switch (args[0]) {
 
@@ -73,19 +90,19 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
                 if (plugin.getConfig().getString("Database-Type").equalsIgnoreCase("MySQL")) {
 
-                    if (getHomes.contains(args[1])) {
+                    if (getHomes.contains(home)) {
 
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Has-Home")
+                        player.sendMessage(plugin.setColor(fileManager.getLang().getString("Has-Home")
                                 .replace("%prefix%", fileManager.PX)));
 
                         return false;
                     }
 
-                    sqlData.createHomes(plugin.getSQL(), player.getUniqueId(), player, world, args[1], x, y, z, pitch, yaw);
+                    sqlData.createHomes(plugin.getSQL(), player.getUniqueId(), player, world, home, x, y, z, pitch, yaw);
                 }
 
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Home-Created")
-                        .replace("%prefix%", fileManager.PX).replace("%player_home%", args[1])));
+                player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Created")
+                        .replace("%prefix%", fileManager.PX).replace("%player_home%", home)));
                 player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), 1, 1);
                 XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Create-Home"))));
 
@@ -96,19 +113,11 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
                 if (plugin.getConfig().getString("Database-Type").equalsIgnoreCase("MySQL")) {
 
-                    if (!getHomes.contains(args[1])) {
+                    if (getHomes.contains(home)) {
 
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("No-Home")
-                                .replace("%prefix%", fileManager.PX).replace("%player_home%", args[1])));
-
-                        return false;
-                    }
-
-                    if (getHomes.contains(args[1])) {
-
-                        sqlData.deleteHomes(plugin.getSQL(), player.getUniqueId(), args[1]);
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Home-Deleted")
-                                .replace("%prefix%", fileManager.PX).replace("%player_home%", args[1])));
+                        sqlData.deleteHomes(plugin.getSQL(), player.getUniqueId(), home);
+                        player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Deleted")
+                                .replace("%prefix%", fileManager.PX).replace("%player_home%", home)));
                         player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")).parseSound(), 1, 1);
 
                     }
@@ -118,48 +127,32 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
             case "go":
 
-                if (hasHome) {
+                String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), home);
+                World World = Bukkit.getWorld(getWorld);
+                double getX = sqlData.getX(plugin.getSQL(), player.getUniqueId(), home);
+                double getY = sqlData.getY(plugin.getSQL(), player.getUniqueId(), home);
+                double getZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId(), home);
+                float getPitch = sqlData.getPitch(plugin.getSQL(), player.getUniqueId(), home);
+                float getYaw = sqlData.getYaw(plugin.getSQL(), player.getUniqueId(), home);
+                Location Home = new Location(World, getX, getY, getZ, getYaw, getPitch);
 
-                    if (!getHomes.contains(args[1])) {
-
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("No-Home")
-                                .replace("%prefix%", fileManager.PX).replace("%player_homes%", args[1])));
-
-                        return false;
-                    }
-
-                    String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId());
-                    World World = Bukkit.getWorld(getWorld);
-                    double getX = sqlData.getX(plugin.getSQL(), player.getUniqueId());
-                    double getY = sqlData.getY(plugin.getSQL(), player.getUniqueId());
-                    double getZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId());
-                    float getPitch = sqlData.getPitch(plugin.getSQL(), player.getUniqueId());
-                    float getYaw = sqlData.getYaw(plugin.getSQL(), player.getUniqueId());
-                    Location Home = new Location(World, getX, getY, getZ, getYaw, getPitch);
-
-                    if (getHomes.contains(args[1])) {
+                    if (getHomes.contains(home)) {
 
                         player.teleport(Home);
                         assert World != null;
-                        player.sendMessage(ChatColor.AQUA + "Teleported successfully to " + ChatColor.GRAY + World.getName() + ", " + getX + ", " + getY + ", " + getZ + ", " + getYaw + ", " + getPitch);
+                        player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Teleport").replace("%player_home%", home)));
                         player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), 1, 1);
                         XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
-                    }
                 }
 
                 break;
 
             case "list":
 
-                if (getHomes.isEmpty()) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Homes-Empty")
-                            .replace("%prefix%", fileManager.PX)));
-                }
-
                 for (String homes : getHomes) {
 
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', fileManager.getLang().getString("Homes-Format")
-                            .replace("%prefix%", fileManager.PX).replace("%player_homes%", homes)));
+                    player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Format")
+                            .replace("%prefix%", fileManager.PX).replace("%player_home%", homes)));
                 }
 
                 break;
@@ -167,7 +160,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
             case "help":
 
                 for (String Help : fileManager.getLang().getStringList("Help-Player")) {
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Help));
+                    sender.sendMessage(plugin.setColor(Help));
                 }
         }
 
@@ -179,7 +172,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 
         Player player = (Player) sender;
-        List<String> homes = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
+        List<String> getHomes = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
 
         if (command.getName().equalsIgnoreCase("home")) {
             if (args.length == 1) {
@@ -189,13 +182,13 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                     subcommands.add("delete");
                     subcommands.add("go");
                     subcommands.add("list");
+                    return subcommands;
                 }
-                return subcommands;
-            } else if (args.length == 2){
-                if (args[1].equalsIgnoreCase("set")) {
-                    return null;
+
+                if (!args[1].equalsIgnoreCase("set")) {
+                    return getHomes;
                 }
-            } return homes;
+            }
         }
         return null;
     }

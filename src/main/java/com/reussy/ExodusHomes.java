@@ -2,6 +2,7 @@ package com.reussy;
 
 import com.reussy.commands.MainCommand;
 import com.reussy.commands.PlayerCommand;
+import com.reussy.events.InventoryClickListener;
 import com.reussy.filemanager.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -75,6 +76,8 @@ public final class ExodusHomes extends JavaPlugin {
     }
 
     public void Events() {
+
+        Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), this);
     }
 
     public void Files() throws IOException {
@@ -90,5 +93,10 @@ public final class ExodusHomes extends JavaPlugin {
     public Connection getSQL() {
 
         return this.connect.getConnection();
+    }
+
+    public String setColor(String text){
+
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

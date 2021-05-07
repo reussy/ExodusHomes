@@ -9,23 +9,24 @@ import java.util.List;
 
 public class ItemBuilder {
 
-    public ItemStack createItem(Player player, XMaterial setItem, int setAmount, String setDisplayName, List<String> setLore) {
+    public ItemStack createItem(Player player, XMaterial material, int amount, String name, List<String> lore) {
 
-        ItemStack Item = setItem.parseItem();
-        assert Item != null;
-        Item.setAmount(setAmount);
-        ItemMeta Meta = Item.getItemMeta();
-        Meta.setDisplayName(setDisplayName);
-        Meta.setLore(setLore);
-        Item.setItemMeta(Meta);
+        ItemStack item = material.parseItem();
+        assert item != null;
+        item.setAmount(amount);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(name);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
 
-        if (Item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()){
+        if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()){
 
-            SkullMeta texture = (SkullMeta) Item.getItemMeta();
+            SkullMeta texture = (SkullMeta) item.getItemMeta();
             texture.setOwningPlayer(player);
-            Item.setItemMeta(texture);
+            item.setItemMeta(texture);
         }
 
-        return Item;
+        return item;
     }
 }

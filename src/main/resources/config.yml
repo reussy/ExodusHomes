@@ -18,6 +18,11 @@ MySQL:
   username: root
   password:
 
+Background:
+  Fill: true
+  Icon: BLACK_STAINED_GLASS_PANE
+  Name: ''
+
 #Use sounds that are in the
 #version of your server!
 #https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html

@@ -15,6 +15,7 @@ MainGUI:
     Homes:
       Icon: BOOKSHELF
       Amount: 1
+      Slot: 22
       Name: '&6&lYOUR HOMES'
       Lore:
         - ''
@@ -26,7 +27,8 @@ HomesGUI:
     Homes:
       Icon: BOOK
       Amount: 1
-      Name: '&a%player_home%'
+      Name: '&a%home_name%'
       Lore:
-        - ''
+        - '&8X: &b%home_x% &8Y: &b%home_y% &8Z: &b%home_z%'
+        - '&8World: &b%home_world%'
 

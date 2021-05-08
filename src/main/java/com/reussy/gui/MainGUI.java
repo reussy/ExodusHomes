@@ -18,8 +18,18 @@ public class MainGUI {
 	public void GUI(Player player) {
 
 		int size = fileManager.getGui().getInt("MainGUI.Size");
+		int background = 0;
 		String title = plugin.setColor(fileManager.getGui().getString("MainGUI.Title"));
 		Inventory gui = Bukkit.createInventory(null, size, title);
+
+		ItemStack itemFill = itemBuilder.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
+				, plugin.setColor(plugin.getConfig().getString("Background.Name")), null);
+
+		if(plugin.setFill) while(background < fileManager.getGui().getInt("MainGUI.Size")) {
+
+			gui.setItem(background, itemFill);
+			background++;
+		}
 
 		ItemStack Homes = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Homes.Icon")), fileManager.getGui().getInt("MainGUI.Items.Homes.Amount")
 				, plugin.setColor(fileManager.getGui().getString("MainGUI.Items.Homes.Name")), null);

@@ -25,6 +25,7 @@ public class HomesGUI {
 	public void GUI(Player player) {
 
 		int slot = 0;
+		;
 		int size = fileManager.getGui().getInt("HomesGUI.Size");
 		String title = plugin.setColor(fileManager.getGui().getString("HomesGUI.Title"));
 		List<String> getHomes = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());

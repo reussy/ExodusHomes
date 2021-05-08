@@ -34,12 +34,14 @@ public class ItemBuilder {
 		return item;
 	}
 
-	public ItemStack setBackground(Inventory inventory, XMaterial material, int amount, String name, int size, int slot) {
+	public void setBackground(Inventory inventory, XMaterial material, int amount, String name, int size, int slot) {
 
 		boolean setFill = plugin.getConfig().getBoolean("Background.Fill");
 		ItemStack item = material.parseItem();
+		assert item != null;
 		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();
+		assert meta != null;
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
 
@@ -49,7 +51,5 @@ public class ItemBuilder {
 				inventory.setItem(slot, item);
 				slot++;
 			}
-
-		return item;
 	}
 }

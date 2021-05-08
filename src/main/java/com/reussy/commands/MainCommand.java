@@ -2,7 +2,6 @@ package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,87 +15,87 @@ import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabCompleter {
 
-    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-    FileManager fileManager = new FileManager();
-    List<String> subcommands = new ArrayList<>();
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	FileManager fileManager = new FileManager();
+	List<String> subcommands = new ArrayList<>();
 
-    @Override
-    public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+	@Override
+	public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-        if (!sender.hasPermission("homes.command.admin")) {
+		if(!sender.hasPermission("homes.command.admin")) {
 
-            sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
-                    .replace("%prefix%", fileManager.PX)));
+			sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
+					.replace("%prefix%", fileManager.PX)));
 
-            return false;
-        }
+			return false;
+		}
 
-        if (cmd.getName().equalsIgnoreCase("home-admin")) {
+		if(cmd.getName().equalsIgnoreCase("home-admin")) {
 
-            if (args.length == 0) {
+			if(args.length == 0) {
 
-                sender.sendMessage(plugin.setColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
-                sender.sendMessage(plugin.setColor("&eCreated by &breussy"));
-                sender.sendMessage(plugin.setColor("&eUse &6/homes-admin help &efor commands!"));
+				sender.sendMessage(plugin.setColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
+				sender.sendMessage(plugin.setColor("&eCreated by &breussy"));
+				sender.sendMessage(plugin.setColor("&eUse &6/homes-admin help &efor commands!"));
 
-                return false;
-            }
+				return false;
+			}
 
-            switch (args[0]) {
+			switch(args[0]) {
 
-                case "help":
+				case "help":
 
-                    for (String Help : fileManager.getLang().getStringList("Help-Administrator")) {
-                        sender.sendMessage(plugin.setColor(Help));
-                    }
+					for(String Help : fileManager.getLang().getStringList("Help-Administrator")) {
+						sender.sendMessage(plugin.setColor(Help));
+					}
 
-                    return false;
+					return false;
 
-                case "reload":
+				case "reload":
 
-                    plugin.reloadConfig();
-                    fileManager.reloadLang();
-                    fileManager.reloadGui();
-                    fileManager.reloadStorage();
+					plugin.reloadConfig();
+					fileManager.reloadLang();
+					fileManager.reloadGui();
+					fileManager.reloadStorage();
 
-                    sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Reload-Message")
-                            .replace("%prefix%", fileManager.PX)));
+					sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Reload-Message")
+							.replace("%prefix%", fileManager.PX)));
 
-                    return false;
+					return false;
 
-                case "manage":
+				case "manage":
 
-                    if (!(sender instanceof Player)) {
+					if(!(sender instanceof Player)) {
 
-                        sender.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Console")
-                                .replace("%prefix%", fileManager.PX)));
-                    }
+						sender.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Console")
+								.replace("%prefix%", fileManager.PX)));
+					}
 
-                    return false;
+					return false;
 
-                default:
-            }
-        }
-        return false;
-    }
+				default:
+			}
+		}
+		return false;
+	}
 
-    @Nullable
-    @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+	@Nullable
+	@Override
+	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 
-        Player player = (Player) sender;
+		Player player = (Player) sender;
 
-        if (command.getName().equalsIgnoreCase("home-admin")) {
-            if (args.length == 1) {
-                if (player.hasPermission("homes.command.admin")) {
+		if(command.getName().equalsIgnoreCase("home-admin")) {
+			if(args.length == 1) {
+				if(player.hasPermission("homes.command.admin")) {
 
-                    subcommands.add("help");
-                    subcommands.add("reload");
-                    subcommands.add("manage");
-                }
-            }
-            return subcommands;
-        }
-        return null;
-    }
+					subcommands.add("help");
+					subcommands.add("reload");
+					subcommands.add("manage");
+				}
+			}
+			return subcommands;
+		}
+		return null;
+	}
 }

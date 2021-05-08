@@ -8,13 +8,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinPlayerEvent implements Listener {
 
-    private ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	private ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e) {
 
-        Player P = e.getPlayer();
+		Player P = e.getPlayer();
 
 
-    }
+	}
 }

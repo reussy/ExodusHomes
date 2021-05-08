@@ -60,6 +60,20 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Open-GUI")).parseSound(), 1, 1);
 				return false;
 			}
+
+			if (args.length == 1){
+
+				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Few-Arguments")
+						.replace("%prefix%", fileManager.PX)));
+				return false;
+			}
+
+			if (args.length > 2){
+
+				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Many-Arguments")
+						.replace("%prefix%", fileManager.PX)));
+				return false;
+			}
 		}
 
 		switch(args[0]) {
@@ -84,7 +98,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			case "list":
 
-				plugin.databaseType().getHomes(player);
+				plugin.databaseType().listHomes(player);
 
 				break;
 
@@ -114,9 +128,12 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 					subcommands.add("list");
 					return subcommands;
 				}
-			} else {
+			} else if (args.length == 2) {
 
 				return getHomes;
+			} else if (args.length > 2){
+
+				return null;
 			}
 		}
 		return null;

@@ -35,21 +35,32 @@ public class HomesGUI {
 
 			String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), getHome);
 			World homeWorld = Bukkit.getWorld(getWorld);
+			assert homeWorld != null;
 			double homeX = sqlData.getX(plugin.getSQL(), player.getUniqueId(), getHome);
 			double homeY = sqlData.getY(plugin.getSQL(), player.getUniqueId(), getHome);
 			double homeZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId(), getHome);
 
 			List<String> homeLore = new ArrayList<>();
-			for(String getLore : fileManager.getGui().getStringList("HomeGUI.Items.Homes.Lore")) {
-				homeLore.add(plugin.setColor(getLore));
-
-				ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Homes.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Homes.Amount"),
-						plugin.setColor(Objects.requireNonNull(fileManager.getGui().getString("HomesGUI.Items.Homes.Name")).replace("%player_home%", getHome)), homeLore);
-
-				gui.setItem(slot, home);
-				slot++;
+			for(String getLore : fileManager.getGui().getStringList("HomesGUI.Items.Homes.Lore")) {
+				homeLore.add(plugin.setColor(getLore)
+						.replace("%home_x%", String.valueOf(homeX))
+						.replace("%home_y%", String.valueOf(homeY))
+						.replace("%home_z%", String.valueOf(homeZ))
+						.replace("%home_world%", homeWorld.getName())
+						.replace("%home_name%", getHome));
 			}
+
+			ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Homes.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Homes.Amount"),
+					plugin.setColor(Objects.requireNonNull(fileManager.getGui().getString("HomesGUI.Items.Homes.Name")).replace("%home_x%", String.valueOf(homeX))
+							.replace("%home_y%", String.valueOf(homeY))
+							.replace("%home_z%", String.valueOf(homeZ))
+							.replace("%home_world%", homeWorld.getName())
+							.replace("%home_name%", getHome)), homeLore);
+
+			gui.setItem(slot, home);
+			slot++;
+
 		}
-        player.openInventory(gui);
+		player.openInventory(gui);
 	}
 }

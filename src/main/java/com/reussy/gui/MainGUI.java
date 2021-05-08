@@ -24,7 +24,7 @@ public class MainGUI {
 		ItemStack Homes = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Homes.Icon")), fileManager.getGui().getInt("MainGUI.Items.Homes.Amount")
 				, plugin.setColor(fileManager.getGui().getString("MainGUI.Items.Homes.Name")), null);
 
-		gui.setItem(23, Homes);
+		gui.setItem(fileManager.getGui().getInt("MainGUI.Items.Homes.Slot"), Homes);
 		player.openInventory(gui);
 
 	}

@@ -5,6 +5,7 @@ import com.reussy.filemanager.FileManager;
 import com.reussy.gui.MainGUI;
 import com.reussy.sql.SQLData;
 import com.reussy.utils.ParticleDisplay;
+import com.reussy.utils.SQLType;
 import com.reussy.utils.XParticle;
 import com.reussy.utils.XSound;
 import org.bukkit.Bukkit;
@@ -50,7 +51,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		}
 
 		Player player = (Player) sender;
-		boolean hasHome = sqlData.hasHomes(plugin.getSQL(), player.getUniqueId());
 
 		if(cmd.getName().equalsIgnoreCase("home")) {
 
@@ -62,124 +62,29 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			}
 		}
 
-		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
-		String world = player.getWorld().getName();
-		double x = player.getLocation().getBlockX();
-		double y = player.getLocation().getBlockY();
-		double z = player.getLocation().getBlockZ();
-		float pitch = player.getLocation().getPitch();
-		float yaw = player.getLocation().getYaw();
-
 		switch(args[0]) {
 
-			case "set":
+			case "create":
 
-				if(plugin.getConfig().getString("Database-Type").equalsIgnoreCase("MySQL")) {
-
-					if(getHomes.contains(args[1])) {
-
-						player.sendMessage(plugin.setColor(fileManager.getLang().getString("Has-Home")
-								.replace("%prefix%", fileManager.PX)));
-
-						return false;
-					}
-
-					sqlData.createHomes(plugin.getSQL(), player.getUniqueId(), player, world, args[1], x, y, z, pitch, yaw);
-				}
-
-				player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Created")
-						.replace("%prefix%", fileManager.PX).replace("%home_name%", args[1])));
-				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), 1, 1);
-				XParticle.circle(5, 10, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Create-Home"))));
-
+				plugin.databaseType().createHome(player, args[1]);
 
 				break;
 
 			case "delete":
 
-				if(plugin.getConfig().getString("Database-Type").equalsIgnoreCase("MySQL")) {
-
-					if(!hasHome) {
-
-						player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
-								.replace("%prefix%", fileManager.PX)));
-
-						return false;
-					}
-
-					if(!getHomes.contains(args[1])) {
-
-						player.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Home")
-								.replace("%prefix%", fileManager.PX).replace("%home_name%", args[1])));
-
-						return false;
-					}
-
-					if(getHomes.contains(args[1])) {
-
-						sqlData.deleteHomes(plugin.getSQL(), player.getUniqueId(), args[1]);
-						player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Deleted")
-								.replace("%prefix%", fileManager.PX).replace("%home_name%", args[1])));
-						player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")).parseSound(), 1, 1);
-
-					}
-				}
+				plugin.databaseType().deleteHome(player, args[1]);
 
 				break;
 
 			case "go":
 
-				String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), args[1]);
-				World World = Bukkit.getWorld(getWorld);
-				double getX = sqlData.getX(plugin.getSQL(), player.getUniqueId(), args[1]);
-				double getY = sqlData.getY(plugin.getSQL(), player.getUniqueId(), args[1]);
-				double getZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId(), args[1]);
-				float getPitch = sqlData.getPitch(plugin.getSQL(), player.getUniqueId(), args[1]);
-				float getYaw = sqlData.getYaw(plugin.getSQL(), player.getUniqueId(), args[1]);
-				Location Home = new Location(World, getX, getY, getZ, getYaw, getPitch);
-
-				if(!hasHome) {
-
-					player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
-							.replace("%prefix%", fileManager.PX)));
-
-					return false;
-				}
-
-				if(!getHomes.contains(args[1])) {
-
-					player.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Home")
-							.replace("%prefix%", fileManager.PX).replace("%home_name%", args[1])));
-
-					return false;
-				}
-
-				if(getHomes.contains(args[1])) {
-
-					player.teleport(Home);
-					assert World != null;
-					player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Teleport").replace("%home_name%", args[1])));
-					player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), 1, 1);
-					XParticle.circle(5, 10, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
-				}
+				plugin.databaseType().goHome(player, args[1]);
 
 				break;
 
 			case "list":
 
-				if(!hasHome) {
-
-					player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
-							.replace("%prefix%", fileManager.PX)));
-
-					return false;
-				}
-
-				for(String homes : getHomes) {
-
-					player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Format")
-							.replace("%prefix%", fileManager.PX).replace("%home_name%", homes)));
-				}
+				plugin.databaseType().getHomes(player);
 
 				break;
 
@@ -203,7 +108,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			if(args.length == 1) {
 				if(player.hasPermission("homes.command.player")) {
 
-					subcommands.add("set");
+					subcommands.add("create");
 					subcommands.add("delete");
 					subcommands.add("go");
 					subcommands.add("list");

@@ -13,43 +13,43 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomesGUI {
 
-    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-    FileManager fileManager = new FileManager();
-    SQLData sqlData = new SQLData();
-    ItemBuilder itemBuilder = new ItemBuilder();
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	FileManager fileManager = new FileManager();
+	SQLData sqlData = new SQLData();
+	ItemBuilder itemBuilder = new ItemBuilder();
 
-    public void GUI(Player player){
+	public void GUI(Player player) {
 
-        int slot = 0;
-        int size = fileManager.getGui().getInt("HomesGUI.Size");
-        String title = plugin.setColor(fileManager.getGui().getString("HomesGUI.Title"));
-        List<String> getHomes = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
+		int slot = 0;
+		int size = fileManager.getGui().getInt("HomesGUI.Size");
+		String title = plugin.setColor(fileManager.getGui().getString("HomesGUI.Title"));
+		List<String> getHomes = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
 
-        Inventory gui = Bukkit.createInventory(null, size, title);
+		Inventory gui = Bukkit.createInventory(null, size, title);
 
-        for (String getHome : getHomes) {
+		for(String getHome : getHomes) {
 
-            String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), getHome);
-            World homeWorld = Bukkit.getWorld(getWorld);
-            double homeX = sqlData.getX(plugin.getSQL(), player.getUniqueId(), getHome);
-            double homeY = sqlData.getY(plugin.getSQL(), player.getUniqueId(), getHome);
-            double homeZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId(), getHome);
+			String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), getHome);
+			World homeWorld = Bukkit.getWorld(getWorld);
+			double homeX = sqlData.getX(plugin.getSQL(), player.getUniqueId(), getHome);
+			double homeY = sqlData.getY(plugin.getSQL(), player.getUniqueId(), getHome);
+			double homeZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId(), getHome);
 
-            List<String> homeLore = new ArrayList<>();
-            for (String getLore : fileManager.getGui().getStringList("HomeGUI.Items.Homes.Lore"))
-                homeLore.add(plugin.setColor(getLore));
+			List<String> homeLore = new ArrayList<>();
+			for(String getLore : fileManager.getGui().getStringList("HomeGUI.Items.Homes.Lore")) {
+				homeLore.add(plugin.setColor(getLore));
 
-            ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Homes.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Homes.Amount"),
-                    plugin.setColor(fileManager.getGui().getString("HomesGUI.Items.Homes.Name").replace("%player_home%", getHome)), homeLore);
+				ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Homes.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Homes.Amount"),
+						plugin.setColor(Objects.requireNonNull(fileManager.getGui().getString("HomesGUI.Items.Homes.Name")).replace("%player_home%", getHome)), homeLore);
 
-            gui.setItem(slot, home);
-
-            slot++;
-
-            player.openInventory(gui);
-        }
-    }
+				gui.setItem(slot, home);
+				slot++;
+			}
+		}
+        player.openInventory(gui);
+	}
 }

@@ -56,7 +56,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 					plugin.reloadConfig();
 					fileManager.reloadLang();
 					fileManager.reloadGui();
-					fileManager.reloadStorage();
 
 					sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Reload-Message")
 							.replace("%prefix%", fileManager.PX)));

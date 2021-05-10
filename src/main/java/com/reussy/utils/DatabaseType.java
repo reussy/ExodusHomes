@@ -2,6 +2,8 @@ package com.reussy.utils;
 
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public interface DatabaseType {
 
 	boolean hasHome(Player player);
@@ -12,7 +14,7 @@ public interface DatabaseType {
 
 	void goHome(Player player, String home);
 
-	void getHomes(Player player);
+	void listHomes(Player player);
 
 	String getWorld(Player player, String home);
 
@@ -25,4 +27,7 @@ public interface DatabaseType {
 	float getPitch(Player player, String home);
 
 	float getYaw(Player player, String home);
+
+	List<String> getHomes(Player player);
+
 }

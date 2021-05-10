@@ -18,13 +18,13 @@ public class SQLType implements DatabaseType {
 
 	@Override
 	public boolean hasHome(Player player) {
-		return sqlData.hasHomes(plugin.getSQL(), player.getUniqueId());
+		return !sqlData.hasHomes(plugin.getSQL(), player.getUniqueId());
 	}
 
 	@Override
 	public void createHome(Player player, String home) {
 
-		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
+		List<String> getHomes = this.getHomes(player);
 		String world = player.getWorld().getName();
 		double x = player.getLocation().getBlockX();
 		double y = player.getLocation().getBlockY();
@@ -50,7 +50,7 @@ public class SQLType implements DatabaseType {
 
 		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
 
-		if(!hasHome(player)) {
+		if(hasHome(player)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
@@ -76,16 +76,8 @@ public class SQLType implements DatabaseType {
 	public void goHome(Player player, String home) {
 
 		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
-		String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), home);
-		org.bukkit.World World = Bukkit.getWorld(getWorld);
-		double getX = sqlData.getX(plugin.getSQL(), player.getUniqueId(), home);
-		double getY = sqlData.getY(plugin.getSQL(), player.getUniqueId(), home);
-		double getZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId(), home);
-		float getPitch = sqlData.getPitch(plugin.getSQL(), player.getUniqueId(), home);
-		float getYaw = sqlData.getYaw(plugin.getSQL(), player.getUniqueId(), home);
-		Location Home = new Location(World, getX, getY, getZ, getYaw, getPitch);
 
-		if(!hasHome(player)) {
+		if(hasHome(player)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
@@ -93,26 +85,32 @@ public class SQLType implements DatabaseType {
 			return;
 		}
 
+		if(!getHomes.contains(home)) {
+
+			player.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Home")
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
+			return;
+		}
+
+		String getWorld = this.getWorld(player, home);
+		org.bukkit.World World = Bukkit.getWorld(getWorld);
+		Location Home = new Location(World, this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+
 		if(getHomes.contains(home)) {
 
 			player.teleport(Home);
-			assert World != null;
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Teleport").replace("%home_name%", home)));
 			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), 1, 1);
 			XParticle.circle(5, 10, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
 
-		} else {
-
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Home")
-					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 		}
 
 	}
 
 	@Override
-	public void getHomes(Player player) {
+	public void listHomes(Player player) {
 
-		if(!hasHome(player)) {
+		if(hasHome(player)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
@@ -122,7 +120,7 @@ public class SQLType implements DatabaseType {
 
 		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
 
-		for (String homeList : getHomes){
+		for(String homeList : getHomes) {
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Format")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
 		}
@@ -156,5 +154,11 @@ public class SQLType implements DatabaseType {
 	@Override
 	public float getYaw(Player player, String home) {
 		return sqlData.getYaw(plugin.getSQL(), player.getUniqueId(), home);
+	}
+
+	@Override
+	public List<String> getHomes(Player player) {
+
+		return sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
 	}
 }

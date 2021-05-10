@@ -19,7 +19,6 @@ import java.sql.Connection;
 public final class ExodusHomes extends JavaPlugin {
 
 	public boolean setFill = this.getConfig().getBoolean("Background.Fill");
-	public boolean setSQL = (getConfig().getString("Database-Type").equalsIgnoreCase("MySQL"));
 	DatabaseType type;
 	private SQLMain connect;
 
@@ -54,7 +53,6 @@ public final class ExodusHomes extends JavaPlugin {
 			connect = new SQLMain(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"));
 			connect.createTable();
 			type = new SQLType();
-
 		} else if((getConfig().getString("Database-Type")).equalsIgnoreCase("YAML")) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6YAML"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eRegistering events..."));
@@ -98,12 +96,11 @@ public final class ExodusHomes extends JavaPlugin {
 
 	public void Files() throws IOException {
 
-		FileManager FManager = new FileManager();
-
-		FManager.generateConfig();
-		FManager.generateLang();
-		FManager.generateGui();
-		FManager.generateStorage();
+		FileManager fileManager = new FileManager();
+		fileManager.generateFolder();
+		fileManager.generateConfig();
+		fileManager.generateLang();
+		fileManager.generateGui();
 	}
 
 	public Connection getSQL() {

@@ -3,15 +3,7 @@ package com.reussy.commands;
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.gui.MainGUI;
-import com.reussy.sql.SQLData;
-import com.reussy.utils.ParticleDisplay;
-import com.reussy.utils.SQLType;
-import com.reussy.utils.XParticle;
 import com.reussy.utils.XSound;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +19,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 	FileManager fileManager = new FileManager();
-	SQLData sqlData = new SQLData();
 	MainGUI mainGUI = new MainGUI();
 	List<String> subcommands = new ArrayList<>();
 
@@ -61,14 +52,14 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 
-			if (args.length == 1){
+			if(args.length == 1 && !args[0].equalsIgnoreCase("list")) {
 
 				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Few-Arguments")
 						.replace("%prefix%", fileManager.PX)));
 				return false;
 			}
 
-			if (args.length > 2){
+			if(args.length > 2) {
 
 				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Many-Arguments")
 						.replace("%prefix%", fileManager.PX)));
@@ -116,26 +107,28 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 
 		Player player = (Player) sender;
-		List<String> getHomes = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
+		List<String> getHomes = plugin.databaseType().getHomes(player);
 
-		if(command.getName().equalsIgnoreCase("home")) {
-			if(args.length == 1) {
-				if(player.hasPermission("homes.command.player")) {
+		if (getHomes.isEmpty()) return null;
 
-					subcommands.add("create");
-					subcommands.add("delete");
-					subcommands.add("go");
-					subcommands.add("list");
-					return subcommands;
+		do {
+			if(command.getName().equalsIgnoreCase("home")) {
+				if(args.length == 1) {
+					if(player.hasPermission("homes.command.player")) {
+
+						subcommands.add("create");
+						subcommands.add("delete");
+						subcommands.add("go");
+						subcommands.add("list");
+						return subcommands;
+					}
+				} else if(args.length == 2) {
+					return getHomes;
+				} else if(args.length > 2) {
+					return null;
 				}
-			} else if (args.length == 2) {
-
-				return getHomes;
-			} else if (args.length > 2){
-
-				return null;
 			}
-		}
+		} while(!getHomes.isEmpty());
 		return null;
 	}
 }

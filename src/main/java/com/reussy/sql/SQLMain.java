@@ -30,14 +30,14 @@ public class SQLMain {
 				this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
 
 				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', ""));
-				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lExodusHomes &8| &aConnected to your database!"));
+				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aConnected to your database!"));
 			}
 
 		} catch(SQLException | ClassNotFoundException e) {
 
 			Bukkit.getConsoleSender().sendMessage("");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lExodusHomes &8| &4Could not connect to the database!"));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error: &c" + e.getCause()));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Could not connect to the database!"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error &c" + e.getCause()));
 		}
 	}
 
@@ -52,8 +52,8 @@ public class SQLMain {
 		} catch(SQLException | NullPointerException e) {
 
 			Bukkit.getConsoleSender().sendMessage("");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lExodusHomes &8| &4Could not connect to the database!"));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error: &c" + e.getCause()));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Could not connect to the database!"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error &c" + e.getCause()));
 			e.printStackTrace();
 		}
 	}

@@ -20,8 +20,14 @@ public class FileManager {
 	public String PX = ChatColor.translateAlternateColorCodes('&', this.getLang().getString("Plugin-Prefix"));
 	private File guiFile = new File(plugin.getDataFolder(), "gui.yml");
 	public FileConfiguration guiYaml = YamlConfiguration.loadConfiguration(guiFile);
-	private File StorageFile = new File(plugin.getDataFolder(), "storage.yml");
-	public FileConfiguration Storage = YamlConfiguration.loadConfiguration(StorageFile);
+
+	public void generateFolder() {
+
+		if(plugin.getConfig().getString("Database-Type").equalsIgnoreCase("YAML")) {
+			File idFile = new File(plugin.getDataFolder() + File.separator + "storage");
+			if(!idFile.exists()) idFile.mkdirs();
+		}
+	}
 
 	public void generateConfig() {
 
@@ -124,60 +130,6 @@ public class FileManager {
 
 		} catch(IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public void generateStorage() {
-
-		if(!StorageFile.exists()) {
-
-			plugin.saveResource("storage.yml", false);
-		}
-	}
-
-	public FileConfiguration getStorage() {
-
-		if(Storage == null) reloadStorage();
-
-		return Storage;
-
-	}
-
-	public void reloadStorage() {
-
-		if(Storage == null) StorageFile = new File(plugin.getDataFolder(), "storage.yml");
-
-		Storage = YamlConfiguration.loadConfiguration(StorageFile);
-
-		Reader defConfigStream = new InputStreamReader(plugin.getResource("storage.yml"), StandardCharsets.UTF_8);
-
-		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-		Storage.setDefaults(defConfig);
-	}
-
-	public void registerStorage() {
-
-		StorageFile = new File(plugin.getDataFolder(), "storage.yml");
-
-		if(!StorageFile.exists()) {
-
-			getStorage().options().copyDefaults(true);
-			plugin.saveDefaultConfig();
-			saveStorage();
-		}
-	}
-
-	public void saveStorage() {
-
-		try {
-
-			Storage.save(StorageFile);
-			plugin.saveDefaultConfig();
-
-		} catch(IOException e) {
-
-			e.printStackTrace();
-
 		}
 	}
 }

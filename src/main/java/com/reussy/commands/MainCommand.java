@@ -30,7 +30,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		if(cmd.getName().equalsIgnoreCase("home-admin")) {
+		if(cmd.getName().equalsIgnoreCase("exodushomes")) {
 
 			if(args.length == 0) {
 
@@ -84,7 +84,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 		Player player = (Player) sender;
 
-		if(command.getName().equalsIgnoreCase("home-admin")) {
+		if(command.getName().equalsIgnoreCase("exodushomes")) {
 			if(args.length == 1) {
 				if(player.hasPermission("homes.command.admin")) {
 

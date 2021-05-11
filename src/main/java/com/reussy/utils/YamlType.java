@@ -10,19 +10,23 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class YamlType implements DatabaseType {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 	FileManager fileManager = new FileManager();
 
+
 	@Override
 	public boolean hasHome(Player player) {
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 		ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
 		assert section != null;
-		return false;
+		Set<String> key = section.getKeys(false);
+		return !key.isEmpty();
 	}
 
 	@Override
@@ -30,6 +34,16 @@ public class YamlType implements DatabaseType {
 
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 		List<String> getHomes = this.getHomes(player);
+		int Time = plugin.getConfig().getInt("Cooldown.Time");
+
+		if (plugin.cooldown.containsKey(player.getName())){
+
+			long timeLeft = (Long) plugin.cooldown.get(player.getName()) / 1000L + Time - System.currentTimeMillis() / 1000L;
+			if (timeLeft > 0L)
+			player.sendMessage(plugin.setColor(fileManager.getLang().getString("In-Cooldown")
+					.replace("%prefix%", fileManager.PX).replace("%cooldown%", String.valueOf(timeLeft))));
+			return;
+		}
 
 		if(getHomes.contains(home)) {
 
@@ -60,7 +74,7 @@ public class YamlType implements DatabaseType {
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 
 
-		if(hasHome(player)) {
+		if(!hasHome(player)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
@@ -90,7 +104,7 @@ public class YamlType implements DatabaseType {
 
 		List<String> getHomes = this.getHomes(player);
 
-		if(hasHome(player)) {
+		if(!hasHome(player)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
@@ -104,7 +118,6 @@ public class YamlType implements DatabaseType {
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 			return;
 		}
-
 
 		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
 
@@ -122,7 +135,7 @@ public class YamlType implements DatabaseType {
 	@Override
 	public void listHomes(Player player) {
 
-		if(hasHome(player)) {
+		if(!hasHome(player)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));

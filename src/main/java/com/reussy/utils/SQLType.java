@@ -32,6 +32,17 @@ public class SQLType implements DatabaseType {
 		float pitch = player.getLocation().getPitch();
 		float yaw = player.getLocation().getYaw();
 
+		int Time = plugin.getConfig().getInt("Cooldown.Time");
+
+		if (plugin.cooldown.containsKey(player.getName())){
+
+			long timeLeft = (Long) plugin.cooldown.get(player.getName()) / 1000L + Time - System.currentTimeMillis() / 1000L;
+			if (timeLeft > 0L)
+				player.sendMessage(plugin.setColor(fileManager.getLang().getString("In-Cooldown")
+						.replace("%prefix%", fileManager.PX).replace("%cooldown%", String.valueOf(timeLeft))));
+			return;
+		}
+
 		if(getHomes.contains(home)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Has-Home")

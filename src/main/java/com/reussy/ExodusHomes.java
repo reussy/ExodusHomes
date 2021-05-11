@@ -15,9 +15,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.HashMap;
 
 public final class ExodusHomes extends JavaPlugin {
 
+	public HashMap<String, Long> cooldown = new HashMap<>();
 	public boolean setFill = this.getConfig().getBoolean("Background.Fill");
 	DatabaseType type;
 	private SQLMain connect;

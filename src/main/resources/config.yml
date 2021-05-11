@@ -18,6 +18,25 @@ MySQL:
   username: root
   password:
 
+#Cooldown for /home create
+#in seconds
+#Set false for disable!
+Cooldown:
+  Enable: true
+  Time: 5 #in seconds
+
+#Worlds where homes are allowed!
+Whitelist-Worlds:
+  - world
+
+#Words not allowed for names
+Blacklist-Words:
+  - fuck
+  - bitch
+
+#Feature for fill inventory
+#with items
+#Set false for disable!
 Background:
   Fill: true
   Icon: BLACK_STAINED_GLASS_PANE

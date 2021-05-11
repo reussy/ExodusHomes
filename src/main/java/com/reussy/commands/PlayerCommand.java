@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PlayerCommand implements CommandExecutor, TabCompleter {
@@ -33,6 +34,15 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
+		for (String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")){
+
+			if (!((Player) sender).getWorld().equals(allowedWorlds)){
+				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Deny-World")
+						.replace("%prefix%", fileManager.PX)));
+				return false;
+			}
+		}
+
 		if(!sender.hasPermission("homes.command.player")) {
 
 			sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
@@ -42,6 +52,8 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		}
 
 		Player player = (Player) sender;
+		int max_amount = 0;
+		int amount = plugin.databaseType().getHomes(player).size();
 
 		if(cmd.getName().equalsIgnoreCase("home")) {
 
@@ -65,13 +77,20 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 						.replace("%prefix%", fileManager.PX)));
 				return false;
 			}
+
+			if (!sender.hasPermission("homes.create." + amount)){
+
+				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
+						.replace("%prefix%", fileManager.PX)));
+				return false;
+			}
 		}
 
 		switch(args[0]) {
 
 			case "create":
 
-				plugin.databaseType().createHome(player, args[1]);
+					plugin.databaseType().createHome(player, args[1]);
 
 				break;
 

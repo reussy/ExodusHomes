@@ -34,16 +34,6 @@ public class YamlType implements DatabaseType {
 
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 		List<String> getHomes = this.getHomes(player);
-		int Time = plugin.getConfig().getInt("Cooldown.Time");
-
-		if (plugin.cooldown.containsKey(player.getName())){
-
-			long timeLeft = (Long) plugin.cooldown.get(player.getName()) / 1000L + Time - System.currentTimeMillis() / 1000L;
-			if (timeLeft > 0L)
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("In-Cooldown")
-					.replace("%prefix%", fileManager.PX).replace("%cooldown%", String.valueOf(timeLeft))));
-			return;
-		}
 
 		if(getHomes.contains(home)) {
 
@@ -120,6 +110,7 @@ public class YamlType implements DatabaseType {
 		}
 
 		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+		Home.add(0.5D, 0.0D, 0.5D);
 
 		if(getHomes.contains(home)) {
 

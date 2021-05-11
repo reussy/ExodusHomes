@@ -10,20 +10,13 @@
 
 #Avaible Types: YAML or MySQL
 #Recommended MySQL!
-Database-Type: MySQL
+Database-Type: YAML
 MySQL:
   host: localhost
   port: 3306
   database: exodus_homes
   username: root
   password:
-
-#Cooldown for /home create
-#in seconds
-#Set false for disable!
-Cooldown:
-  Enable: true
-  Time: 5 #in seconds
 
 #Worlds where homes are allowed!
 Whitelist-Worlds:

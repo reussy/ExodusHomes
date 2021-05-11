@@ -13,6 +13,8 @@ Insufficient-Permission: '%prefix% &cYou do not have permissions for this comman
 No-Console: '%prefix% &4You must be a player for execute this command!'
 Many-Arguments: '%prefix% &cMaybe you exceeded the number of arguments for this command!'
 Few-Arguments: '%prefix% &cMore arguments are needed use the /home help command for help!'
+Deny-World: '%prefix% &cYou cannot use the homes in this world!'
+In-Cooldown: '%prefix% &cWait %cooldown% seconds to create another home again!'
 Reload-Message: '%prefix% &aConfiguration reloaded successfully!'
 Unknown-Command: '%prefix% &cThis command does not exist, try to use &e/home help&7!'
 Unknown-Player: '%prefix% &e%target% &cnever been seen on the server!'

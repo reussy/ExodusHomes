@@ -57,19 +57,11 @@ public class InventoryClickListener implements Listener {
 			e.setCancelled(true);
 
 			int i = e.getSlot();
-			List<String> getHome = sqlData.getHomes(plugin.getSQL(), player.getUniqueId());
-			String getWorld = sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), getHome.get(i));
-			World World = Bukkit.getWorld(getWorld);
-			double getX = sqlData.getX(plugin.getSQL(), player.getUniqueId(), getHome.get(i));
-			double getY = sqlData.getY(plugin.getSQL(), player.getUniqueId(), getHome.get(i));
-			double getZ = sqlData.getZ(plugin.getSQL(), player.getUniqueId(), getHome.get(i));
-			float getPitch = sqlData.getPitch(plugin.getSQL(), player.getUniqueId(), getHome.get(i));
-			float getYaw = sqlData.getYaw(plugin.getSQL(), player.getUniqueId(), getHome.get(i));
-			Location Home = new Location(World, getX, getY, getZ, getYaw, getPitch);
+			List<String> getHome = plugin.databaseType().getHomes(player);
 
 			if(e.getCurrentItem().getType() == XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Homes.Icon")).parseMaterial()) {
 
-				player.teleport(Home);
+				plugin.databaseType().goHome(player, getHome.get(i));
 			}
 		}
 	}

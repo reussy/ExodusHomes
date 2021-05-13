@@ -15,11 +15,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public final class ExodusHomes extends JavaPlugin {
 
-	public boolean setFill = this.getConfig().getBoolean("Background.Fill");
+	public boolean setFill = this.getConfig().getBoolean("Background.Enable");
+	public ArrayList<String> playerCache = new ArrayList<>();
 	DatabaseType type;
 	private SQLMain connect;
 

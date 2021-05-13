@@ -5,9 +5,6 @@ import com.reussy.filemanager.FileManager;
 import com.reussy.gui.HomesGUI;
 import com.reussy.sql.SQLData;
 import com.reussy.utils.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -62,6 +59,7 @@ public class InventoryClickListener implements Listener {
 			if(e.getCurrentItem().getType() == XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Homes.Icon")).parseMaterial()) {
 
 				plugin.databaseType().goHome(player, getHome.get(i));
+				player.closeInventory();
 			}
 		}
 	}

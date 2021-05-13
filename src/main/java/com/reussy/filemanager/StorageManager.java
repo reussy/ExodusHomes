@@ -31,11 +31,10 @@ public class StorageManager {
 		if(!idFile.exists()) {
 
 			try {
+				Bukkit.getConsoleSender().sendMessage("Creating new file in storage for " + player.getName());
 				idFile.createNewFile();
 				idYaml.set(player.getName() + ".UUID", player.getUniqueId().toString());
 				idYaml.save(idFile);
-				Bukkit.getConsoleSender().sendMessage("Creating new file in storage for " + player.getName());
-
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

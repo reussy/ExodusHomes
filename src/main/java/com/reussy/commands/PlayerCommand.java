@@ -3,6 +3,8 @@ package com.reussy.commands;
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.gui.MainGUI;
+import com.reussy.utils.NMSExtras;
+import com.reussy.utils.ReflectionUtils;
 import com.reussy.utils.XSound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class PlayerCommand implements CommandExecutor, TabCompleter {
@@ -22,6 +23,8 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 	FileManager fileManager = new FileManager();
 	MainGUI mainGUI = new MainGUI();
 	List<String> subcommands = new ArrayList<>();
+	int teleportTask;
+	int time = plugin.getConfig().getInt("Teleport-Delay.Time");
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
@@ -34,15 +37,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		for (String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")){
-
-			if (!((Player) sender).getWorld().equals(allowedWorlds)){
-				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Deny-World")
-						.replace("%prefix%", fileManager.PX)));
-				return false;
-			}
-		}
-
 		if(!sender.hasPermission("homes.command.player")) {
 
 			sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
@@ -52,7 +46,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		}
 
 		Player player = (Player) sender;
-		int max_amount = 0;
+		int max_amount = 6;
 		int amount = plugin.databaseType().getHomes(player).size();
 
 		if(cmd.getName().equalsIgnoreCase("home")) {
@@ -78,7 +72,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 
-			if (!sender.hasPermission("homes.create." + amount)){
+			if(!sender.hasPermission("homes.create." + amount)) {
 
 				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
 						.replace("%prefix%", fileManager.PX)));
@@ -86,11 +80,31 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			}
 		}
 
+		for(String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")) {
+
+			if(!((Player) sender).getWorld().getName().contains(allowedWorlds)) {
+				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Deny-World")
+						.replace("%prefix%", fileManager.PX)));
+				return false;
+			}
+		}
+
+		for(String disallowedNames : plugin.getConfig().getStringList("Blacklist-Names")) {
+
+			if(args[0].equalsIgnoreCase("create")) {
+				if(args[1].contains(disallowedNames)) {
+					sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Name-Not-Allowed")
+							.replace("%prefix%", fileManager.PX)));
+					return false;
+				}
+			}
+		}
+
 		switch(args[0]) {
 
 			case "create":
 
-					plugin.databaseType().createHome(player, args[1]);
+				plugin.databaseType().createHome(player, args[1]);
 
 				break;
 
@@ -128,7 +142,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		Player player = (Player) sender;
 		List<String> getHomes = plugin.databaseType().getHomes(player);
 
-		if (getHomes.isEmpty()) return null;
+		if(getHomes.isEmpty()) return null;
 
 		do {
 			if(command.getName().equalsIgnoreCase("home")) {

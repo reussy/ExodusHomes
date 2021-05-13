@@ -10,7 +10,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +17,7 @@ public class YamlType implements DatabaseType {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 	FileManager fileManager = new FileManager();
-
+	int time = plugin.getConfig().getInt("Teleport-Delay.Time");
 
 	@Override
 	public boolean hasHome(Player player) {
@@ -111,16 +110,11 @@ public class YamlType implements DatabaseType {
 
 		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
 		Home.add(0.5D, 0.0D, 0.5D);
+		TeleportTask teleportTask = new TeleportTask(plugin, time, player, Home, home);
 
 		if(getHomes.contains(home)) {
-
-			player.teleport(Home);
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Teleport").replace("%home_name%", home)));
-			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), 1, 1);
-			XParticle.circle(5, 10, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
-
+			teleportTask.runTask();
 		}
-
 	}
 
 	@Override

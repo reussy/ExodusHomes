@@ -15,6 +15,7 @@ public class SQLType implements DatabaseType {
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 	SQLData sqlData = new SQLData();
 	FileManager fileManager = new FileManager();
+	int time = plugin.getConfig().getInt("Teleport-Delay.Time");
 
 	@Override
 	public boolean hasHome(Player player) {
@@ -32,22 +33,12 @@ public class SQLType implements DatabaseType {
 		float pitch = player.getLocation().getPitch();
 		float yaw = player.getLocation().getYaw();
 
-		int Time = plugin.getConfig().getInt("Cooldown.Time");
-
-		if (plugin.cooldown.containsKey(player.getName())){
-
-			long timeLeft = (Long) plugin.cooldown.get(player.getName()) / 1000L + Time - System.currentTimeMillis() / 1000L;
-			if (timeLeft > 0L)
-				player.sendMessage(plugin.setColor(fileManager.getLang().getString("In-Cooldown")
-						.replace("%prefix%", fileManager.PX).replace("%cooldown%", String.valueOf(timeLeft))));
-			return;
-		}
-
 		if(getHomes.contains(home)) {
 
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Has-Home")
 					.replace("%prefix%", fileManager.PX)));
 		} else {
+
 			sqlData.createHomes(plugin.getSQL(), player.getUniqueId(), player, world, home, x, y, z, pitch, yaw);
 			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Created")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
@@ -103,19 +94,13 @@ public class SQLType implements DatabaseType {
 			return;
 		}
 
-		String getWorld = this.getWorld(player, home);
-		org.bukkit.World World = Bukkit.getWorld(getWorld);
-		Location Home = new Location(World, this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+		Home.add(0.5D, 0.0D, 0.5D);
+		TeleportTask teleportTask = new TeleportTask(plugin, time, player, Home, home);
 
 		if(getHomes.contains(home)) {
-
-			player.teleport(Home);
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Teleport").replace("%home_name%", home)));
-			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), 1, 1);
-			XParticle.circle(5, 10, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
-
+			teleportTask.runTask();
 		}
-
 	}
 
 	@Override

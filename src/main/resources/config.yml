@@ -23,15 +23,21 @@ Whitelist-Worlds:
   - world
 
 #Words not allowed for names
-Blacklist-Words:
+#Check name in /homes create <name>
+Blacklist-Names:
   - fuck
   - bitch
+
+#Delay for teleport to home
+#Set 0 for disable
+Teleport-Delay:
+  Time: 5 #in seconds
 
 #Feature for fill inventory
 #with items
 #Set false for disable!
 Background:
-  Fill: true
+  Enable: true
   Icon: BLACK_STAINED_GLASS_PANE
   Name: ''
 

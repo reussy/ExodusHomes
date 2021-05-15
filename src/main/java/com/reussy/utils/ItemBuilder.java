@@ -1,6 +1,8 @@
 package com.reussy.utils;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +26,7 @@ public class ItemBuilder {
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 
-		if(item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
+		if(item.getType() == Material.PLAYER_HEAD) {
 
 			SkullMeta texture = (SkullMeta) item.getItemMeta();
 			texture.setOwningPlayer(player);
@@ -36,7 +38,7 @@ public class ItemBuilder {
 
 	public void setBackground(Inventory inventory, XMaterial material, int amount, String name, int size, int slot) {
 
-		boolean setFill = plugin.getConfig().getBoolean("Background.Fill");
+		boolean setFill = plugin.getConfig().getBoolean("Background.Enable");
 		ItemStack item = material.parseItem();
 		assert item != null;
 		item.setAmount(amount);

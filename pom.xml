@@ -23,24 +23,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>com.cryptomorin.xseries</pattern>
-                            <!-- Be sure to change the package below -->
-                            <shadedPattern>my.plugin.utils</shadedPattern>
-                        </relocation>
-                    </relocations>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>com/cryptomorin/xseries/XBiome*</exclude>
-                                <exclude>com/cryptomorin/xseries/NoteBlockMusic*</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -86,10 +68,6 @@
 
     <repositories>
         <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>paper-repo</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
@@ -103,15 +81,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>minecraft-server</artifactId>
-            <version>1.16.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>20.1.0</version>
-            <scope>compile</scope>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 </project>

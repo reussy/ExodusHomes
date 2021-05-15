@@ -3,16 +3,12 @@ package com.reussy.commands;
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.gui.MainGUI;
-import com.reussy.utils.NMSExtras;
-import com.reussy.utils.ReflectionUtils;
-import com.reussy.utils.XSound;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +23,11 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 	int time = plugin.getConfig().getInt("Teleport-Delay.Time");
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 		if(!(sender instanceof Player)) {
 
-			sender.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Console")
+			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Console")
 					.replace("%prefix%", fileManager.PX)));
 
 			return false;
@@ -39,7 +35,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 		if(!sender.hasPermission("homes.command.player")) {
 
-			sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
+			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
 					.replace("%prefix%", fileManager.PX)));
 
 			return false;
@@ -54,27 +50,27 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			if(args.length == 0) {
 
 				mainGUI.GUI(player);
-				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Open-GUI")).parseSound(), 1, 1);
+				player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Open-GUI")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 				return false;
 			}
 
 			if(args.length == 1 && !args[0].equalsIgnoreCase("list")) {
 
-				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Few-Arguments")
+				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
 						.replace("%prefix%", fileManager.PX)));
 				return false;
 			}
 
 			if(args.length > 2) {
 
-				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Many-Arguments")
+				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Many-Arguments")
 						.replace("%prefix%", fileManager.PX)));
 				return false;
 			}
 
 			if(!sender.hasPermission("homes.create." + amount)) {
 
-				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
+				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
 						.replace("%prefix%", fileManager.PX)));
 				return false;
 			}
@@ -83,7 +79,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		for(String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")) {
 
 			if(!((Player) sender).getWorld().getName().contains(allowedWorlds)) {
-				sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Deny-World")
+				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Deny-World")
 						.replace("%prefix%", fileManager.PX)));
 				return false;
 			}
@@ -93,7 +89,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			if(args[0].equalsIgnoreCase("create")) {
 				if(args[1].contains(disallowedNames)) {
-					sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Name-Not-Allowed")
+					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Name-Not-Allowed")
 							.replace("%prefix%", fileManager.PX)));
 					return false;
 				}
@@ -128,16 +124,15 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			default:
 				for(String Help : fileManager.getLang().getStringList("Help-Player")) {
-					sender.sendMessage(plugin.setColor(Help));
+					sender.sendMessage(plugin.setHexColor(Help));
 				}
 		}
 
 		return false;
 	}
 
-	@Nullable
 	@Override
-	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
 		Player player = (Player) sender;
 		List<String> getHomes = plugin.databaseType().getHomes(player);

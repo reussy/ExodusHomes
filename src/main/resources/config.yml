@@ -41,10 +41,18 @@ Background:
   Icon: BLACK_STAINED_GLASS_PANE
   Name: ''
 
+Titles:
+  Enable: true
+  Fade-In: 20
+  Stay: 15
+  Fade-Out: 20
+
 #Use sounds that are in the
 #version of your server!
 #https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
 Sounds:
+  Volume: 2
+  Pitch: 1.5
   Create-Home: ENTITY_PLAYER_LEVELUP
   Delete-Home: ENTITY_VILLAGER_YES
   Teleport-Home: ENTITY_ENDERMAN_TELEPORT

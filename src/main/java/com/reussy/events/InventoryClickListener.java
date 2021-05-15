@@ -1,10 +1,11 @@
 package com.reussy.events;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.gui.HomesGUI;
 import com.reussy.sql.SQLData;
-import com.reussy.utils.XMaterial;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,11 +25,11 @@ public class InventoryClickListener implements Listener {
 
 		Player player = (Player) e.getWhoClicked();
 
-		if(e.getView().getTitle().equalsIgnoreCase(plugin.setColor(fileManager.getGui().getString("MainGUI.Title")))) {
+		if(e.getView().getTitle().equalsIgnoreCase(plugin.setHexColor(fileManager.getGui().getString("MainGUI.Title")))) {
 
 			if(e.getCurrentItem() == null) return;
 
-			if(e.getCurrentItem().getType() == XMaterial.AIR.parseMaterial()) return;
+			if(e.getCurrentItem().getType() == Material.AIR) return;
 
 			e.setCancelled(true);
 
@@ -43,13 +44,13 @@ public class InventoryClickListener implements Listener {
 
 		Player player = (Player) e.getWhoClicked();
 
-		if(e.getView().getTitle().equalsIgnoreCase(plugin.setColor(fileManager.getGui().getString("HomesGUI.Title")))) {
+		if(e.getView().getTitle().equalsIgnoreCase(plugin.setHexColor(fileManager.getGui().getString("HomesGUI.Title")))) {
 
 			if(e.getClickedInventory() == player.getOpenInventory().getBottomInventory()) return;
 
 			if(e.getCurrentItem() == null) return;
 
-			if(e.getCurrentItem().getType() == XMaterial.AIR.parseMaterial()) return;
+			if(e.getCurrentItem().getType() == Material.AIR) return;
 
 			e.setCancelled(true);
 

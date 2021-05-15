@@ -10,12 +10,15 @@ import com.reussy.utils.DatabaseType;
 import com.reussy.utils.SQLType;
 import com.reussy.utils.YamlType;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.md_5.bungee.api.ChatColor;
 
 public final class ExodusHomes extends JavaPlugin {
 
@@ -24,7 +27,18 @@ public final class ExodusHomes extends JavaPlugin {
 	DatabaseType type;
 	private SQLMain connect;
 
-	public String setColor(String text) {
+	public String setHexColor(String text){
+
+		final Pattern pattern = Pattern.compile("#[a-fA-f0-9]{6}");
+
+		if (Bukkit.getVersion().contains("1.16")) {
+			Matcher matcher = pattern.matcher(text);
+			while(matcher.find()){
+
+				String setColor = text.substring(matcher.start(), matcher.end());
+				text = text.replace(setColor, ChatColor.of(setColor) + "");
+			}
+		}
 
 		return ChatColor.translateAlternateColorCodes('&', text);
 	}

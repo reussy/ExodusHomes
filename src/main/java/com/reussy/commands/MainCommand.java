@@ -7,8 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +18,11 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	List<String> subcommands = new ArrayList<>();
 
 	@Override
-	public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 		if(!sender.hasPermission("homes.command.admin")) {
 
-			sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Insufficient-Permission")
+			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
 					.replace("%prefix%", fileManager.PX)));
 
 			return false;
@@ -34,9 +32,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 			if(args.length == 0) {
 
-				sender.sendMessage(plugin.setColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
-				sender.sendMessage(plugin.setColor("&eCreated by &breussy"));
-				sender.sendMessage(plugin.setColor("&eUse &6/homes-admin help &efor commands!"));
+				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
+				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
+				sender.sendMessage(plugin.setHexColor("&eUse &6/homes-admin help &efor commands!"));
 
 				return false;
 			}
@@ -46,7 +44,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 				case "help":
 
 					for(String Help : fileManager.getLang().getStringList("Help-Administrator")) {
-						sender.sendMessage(plugin.setColor(Help));
+						sender.sendMessage(plugin.setHexColor(Help));
 					}
 
 					return false;
@@ -57,7 +55,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 					fileManager.reloadLang();
 					fileManager.reloadGui();
 
-					sender.sendMessage(plugin.setColor(fileManager.getLang().getString("Reload-Message")
+					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Reload-Message")
 							.replace("%prefix%", fileManager.PX)));
 
 					return false;
@@ -66,7 +64,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 					if(!(sender instanceof Player)) {
 
-						sender.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Console")
+						sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Console")
 								.replace("%prefix%", fileManager.PX)));
 					}
 
@@ -78,9 +76,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 		return false;
 	}
 
-	@Nullable
 	@Override
-	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
 		Player player = (Player) sender;
 

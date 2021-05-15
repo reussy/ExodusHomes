@@ -1,11 +1,13 @@
 package com.reussy.utils;
 
+import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.filemanager.StorageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -17,6 +19,7 @@ public class YamlType implements DatabaseType {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 	FileManager fileManager = new FileManager();
+	PacketsManager packetsManager = new PacketsManager();
 	int time = plugin.getConfig().getInt("Teleport-Delay.Time");
 
 	@Override
@@ -36,7 +39,7 @@ public class YamlType implements DatabaseType {
 
 		if(getHomes.contains(home)) {
 
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Has-Home")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Has-Home")
 					.replace("%prefix%", fileManager.PX)));
 
 		} else {
@@ -49,10 +52,9 @@ public class YamlType implements DatabaseType {
 			storageManager.getFile().set("Homes." + home + ".Yaw", player.getLocation().getYaw());
 			storageManager.saveFile();
 
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Created")
-					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
-			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), 1, 1);
-			XParticle.circle(5, 10, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Create-Home"))));
+			packetsManager.sendTitle(player, plugin.setHexColor("&a&lSUCCESS"), plugin.setHexColor("&bYou have created the home &7" + home), 5, 10, 5);
+			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+			player.spawnParticle(Particle.valueOf(plugin.getConfig().getString("Particles.Create-Home")), player.getLocation(), 10);
 		}
 	}
 
@@ -65,7 +67,7 @@ public class YamlType implements DatabaseType {
 
 		if(!hasHome(player)) {
 
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
 
 			return;
@@ -76,13 +78,13 @@ public class YamlType implements DatabaseType {
 			storageManager.getFile().set("Homes." + home, null);
 			storageManager.getFile().set(home, null);
 			storageManager.saveFile();
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Home-Deleted")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Home-Deleted")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
-			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")).parseSound(), 1, 1);
+			player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
 		} else {
 
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Home")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 		}
 
@@ -95,7 +97,7 @@ public class YamlType implements DatabaseType {
 
 		if(!hasHome(player)) {
 
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
 
 			return;
@@ -103,7 +105,7 @@ public class YamlType implements DatabaseType {
 
 		if(!getHomes.contains(home)) {
 
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("No-Home")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 			return;
 		}
@@ -122,7 +124,7 @@ public class YamlType implements DatabaseType {
 
 		if(!hasHome(player)) {
 
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Empty")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
 
 			return;
@@ -131,7 +133,7 @@ public class YamlType implements DatabaseType {
 		List<String> getHomes = (this.getHomes(player));
 
 		for(String homeList : getHomes) {
-			player.sendMessage(plugin.setColor(fileManager.getLang().getString("Homes-Format")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Format")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
 		}
 

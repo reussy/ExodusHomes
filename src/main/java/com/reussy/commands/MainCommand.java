@@ -43,6 +43,31 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 				case "help":
 
+					if (sender.hasPermission("homes.command.admin") || sender.isOp()){
+
+						sender.sendMessage(plugin.setHexColor("&8-----------------------"));
+						sender.sendMessage(plugin.setHexColor("&r"));
+						sender.sendMessage(plugin.setHexColor("&r                   &c&oAdmin Commands"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/exodushomes help &8- &7Show this message"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/exodushomes reload &8- &7Reload Configuration Files"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/exodushomes manage &8- &7Manage Homes for Players"));
+						sender.sendMessage(plugin.setHexColor("&r"));
+						sender.sendMessage(plugin.setHexColor("&8-----------------------"));
+					} else {
+
+						sender.sendMessage(plugin.setHexColor("&8-----------------------"));
+						sender.sendMessage(plugin.setHexColor("&r"));
+						sender.sendMessage(plugin.setHexColor("&r                   &e&oPlayer Commands"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/home help &8- &7Show this message"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/home &8- &7Open Main GUI"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/home create <name> &8- &7Create a home"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/home delete <home> &8- &7Delete a home"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/home go <home> &8- &7Teleport to home"));
+						sender.sendMessage(plugin.setHexColor(" &8&l! &b/home list <home> &8- &7List of your home's"));
+						sender.sendMessage(plugin.setHexColor("&r"));
+						sender.sendMessage(plugin.setHexColor("&8-----------------------"));
+					}
+
 					for(String Help : fileManager.getLang().getStringList("Help-Administrator")) {
 						sender.sendMessage(plugin.setHexColor(Help));
 					}

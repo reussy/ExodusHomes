@@ -42,8 +42,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		}
 
 		Player player = (Player) sender;
-		int max_amount = 6;
-		int amount = plugin.databaseType().getHomes(player).size();
 
 		if(cmd.getName().equalsIgnoreCase("home")) {
 
@@ -54,7 +52,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 
-			if(args.length == 1 && !args[0].equalsIgnoreCase("list")) {
+			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help")) {
 
 				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
 						.replace("%prefix%", fileManager.PX)));
@@ -64,13 +62,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			if(args.length > 2) {
 
 				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Many-Arguments")
-						.replace("%prefix%", fileManager.PX)));
-				return false;
-			}
-
-			if(!sender.hasPermission("homes.create." + amount)) {
-
-				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
 						.replace("%prefix%", fileManager.PX)));
 				return false;
 			}
@@ -98,6 +89,23 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 		switch(args[0]) {
 
+			case "help":
+
+				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
+				sender.sendMessage(plugin.setHexColor("&r"));
+				sender.sendMessage(plugin.setHexColor("&r                   &e&oPlayer Commands"));
+				sender.sendMessage(plugin.setHexColor("&r"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home help &8- &7Show this message"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home &8- &7Open Main GUI"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home create <name> &8- &7Create a home"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home delete <home> &8- &7Delete a home"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home go <home> &8- &7Teleport to home"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home list &8- &7List of your home's"));
+				sender.sendMessage(plugin.setHexColor("&r"));
+				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
+
+				break;
+
 			case "create":
 
 				plugin.databaseType().createHome(player, args[1]);
@@ -123,9 +131,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			default:
-				for(String Help : fileManager.getLang().getStringList("Help-Player")) {
-					sender.sendMessage(plugin.setHexColor(Help));
-				}
 		}
 
 		return false;
@@ -136,10 +141,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 		Player player = (Player) sender;
 		List<String> getHomes = plugin.databaseType().getHomes(player);
-
-		if(getHomes.isEmpty()) return null;
-
-		do {
 			if(command.getName().equalsIgnoreCase("home")) {
 				if(args.length == 1) {
 					if(player.hasPermission("homes.command.player")) {
@@ -156,7 +157,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 					return null;
 				}
 			}
-		} while(!getHomes.isEmpty());
 		return null;
 	}
 }

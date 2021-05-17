@@ -5,7 +5,6 @@ import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.utils.ItemBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

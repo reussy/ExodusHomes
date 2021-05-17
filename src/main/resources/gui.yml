@@ -8,20 +8,25 @@
 #                                                                                           #
 #############################################################################################
 
+#You can use normal color codes
+#https://www.colorschemer.com/minecraft-color-codes/
+#Also can use HEX colors (+1.16)
+#https://coolors.co
+
 MainGUI:
-  Title: '&8Main GUI'
+  Title: '&8Exodus Homes'
   Size: 54
   Items:
     Homes:
       Icon: BOOKSHELF
       Amount: 1
       Slot: 22
-      Name: '&6&lYOUR HOMES'
+      Name: '&6&lYour Homes'
       Lore:
-        - ''
+        - '&7Open GUI Homes'
 
 HomesGUI:
-  Title: '&8You Homes'
+  Title: '&8Homes'
   Size: 54
   Items:
     Homes:
@@ -29,6 +34,13 @@ HomesGUI:
       Amount: 1
       Name: '&a%home_name%'
       Lore:
-        - '&8X: &b%home_x% &8Y: &b%home_y% &8Z: &b%home_z%'
-        - '&8World: &b%home_world%'
+        - '&7X: &b%home_x% &7Y: &b%home_y% &7Z: &b%home_z%'
+        - '&7World: &b%home_world%'
+    Player-Info:
+      Icon: PLAYER_HEAD
+      Amount: 1
+      Slot: 49
+      Name: '&e%player_name%'
+      Lore:
+        - '&7Homes: &a%homes_count%'
 

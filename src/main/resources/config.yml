@@ -18,6 +18,17 @@ MySQL:
   username: root
   password:
 
+#Sets the maximum number of households
+#in a group. You need give the permission:
+#homes.group.<group> - case sensitive
+#For example homes.group.member
+#You can change groups name
+#and add more groups!
+Groups:
+  Member: 1
+  MVP: 3
+  GOD: 5
+
 #Worlds where homes are allowed!
 Whitelist-Worlds:
   - world

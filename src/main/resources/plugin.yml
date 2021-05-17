@@ -15,3 +15,12 @@ commands:
     aliases:
       - homes
       - homegui
+
+permissions:
+  homes.command.admin:
+    description: Permission for administrator commands
+    default: false
+
+  homes.command.player:
+    description: Permission for player commands
+    default: false

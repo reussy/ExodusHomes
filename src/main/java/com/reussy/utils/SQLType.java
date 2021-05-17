@@ -1,13 +1,11 @@
 package com.reussy.utils;
 
 import com.cryptomorin.xseries.XSound;
-import com.cryptomorin.xseries.particles.XParticle;
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.sql.SQLData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -35,6 +33,8 @@ public class SQLType implements DatabaseType {
 		double z = player.getLocation().getBlockZ();
 		float pitch = player.getLocation().getPitch();
 		float yaw = player.getLocation().getYaw();
+
+		if (!player.isOp()) plugin.checkGroup(fileManager, player);
 
 		if(getHomes.contains(home)) {
 

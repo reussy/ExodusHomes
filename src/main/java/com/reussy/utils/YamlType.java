@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class YamlType implements DatabaseType {
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 		List<String> getHomes = this.getHomes(player);
 
+		if (!player.isOp()) plugin.checkGroup(fileManager, player);
+
 		if(getHomes.contains(home)) {
 
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Has-Home")
@@ -52,7 +55,8 @@ public class YamlType implements DatabaseType {
 			storageManager.getFile().set("Homes." + home + ".Yaw", player.getLocation().getYaw());
 			storageManager.saveFile();
 
-			packetsManager.sendTitle(player, plugin.setHexColor("&a&lSUCCESS"), plugin.setHexColor("&bYou have created the home &7" + home), 5, 10, 5);
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Home-Created")
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 			player.spawnParticle(Particle.valueOf(plugin.getConfig().getString("Particles.Create-Home")), player.getLocation(), 10);
 		}
@@ -134,7 +138,7 @@ public class YamlType implements DatabaseType {
 
 		for(String homeList : getHomes) {
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Format")
-					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList).replace("%home_number%", String.valueOf(getHomes.size()))));
 		}
 
 	}

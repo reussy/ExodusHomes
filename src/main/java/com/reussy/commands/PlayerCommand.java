@@ -54,7 +54,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
 
 				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
-						.replace("%prefix%", fileManager.PX)));
+						.replace("%prefix%", fileManager.PX).replace("%cmd%", "home")));
 				return false;
 			}
 
@@ -98,6 +98,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home &8- &7Open Main GUI"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home create <name> &8- &7Create a home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home delete <home> &8- &7Delete a home"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home deleteall &8- &7Delete all yor current home's"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home go <home> &8- &7Teleport to home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home list &8- &7List of your home's"));
 				sender.sendMessage(plugin.setHexColor("&r"));
@@ -132,7 +133,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+	public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
 
 		Player player = (Player) sender;
 		List<String> getHomes = plugin.databaseType().getHomes(player);

@@ -32,14 +32,6 @@ public final class ExodusHomes extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
-		Commands();
-		Events();
-		try {
-			Files();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lExodusHomes &8| &aEnabled "));
@@ -72,6 +64,14 @@ public final class ExodusHomes extends JavaPlugin {
 
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
+
+		try {
+			Files();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		Commands();
+		Events();
 
 	}
 

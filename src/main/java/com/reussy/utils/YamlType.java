@@ -9,10 +9,10 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +20,6 @@ public class YamlType implements DatabaseType {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 	FileManager fileManager = new FileManager();
-	PacketsManager packetsManager = new PacketsManager();
 	int time = plugin.getConfig().getInt("Teleport-Delay.Time");
 
 	@Override
@@ -37,8 +36,15 @@ public class YamlType implements DatabaseType {
 
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 		List<String> getHomes = this.getHomes(player);
+		int getLimit = plugin.getPermission(player);
 
-		if (!player.isOp()) plugin.checkGroup(fileManager, player);
+		if (getLimit == getHomes.size()){
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Limit-Home")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
 
 		if(getHomes.contains(home)) {
 
@@ -68,7 +74,6 @@ public class YamlType implements DatabaseType {
 		List<String> getHomes = (this.getHomes(player));
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 
-
 		if(!hasHome(player)) {
 
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
@@ -92,6 +97,31 @@ public class YamlType implements DatabaseType {
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 		}
 
+	}
+
+	@Override
+	public void deleteAll(Player player) {
+
+		StorageManager storageManager = new StorageManager(player.getUniqueId());
+		ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
+
+		if(!hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
+
+		for (String home : section.getKeys(false)){
+
+			storageManager.getFile().set("Homes." + home, null);
+			storageManager.getFile().set(home, null);
+			storageManager.saveFile();
+		}
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Deleted")
+				.replace("%prefix%", fileManager.PX)));
+		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 	}
 
 	@Override
@@ -138,7 +168,7 @@ public class YamlType implements DatabaseType {
 
 		for(String homeList : getHomes) {
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Format")
-					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList).replace("%home_number%", String.valueOf(getHomes.size()))));
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
 		}
 
 	}
@@ -195,7 +225,8 @@ public class YamlType implements DatabaseType {
 	public List<String> getHomes(Player player) {
 		StorageManager storageManager = new StorageManager(player.getUniqueId());
 		ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
-		assert section != null;
-		return new ArrayList<>(section.getKeys(false));
+		if (section != null) return new ArrayList<>(section.getKeys(false));
+
+		return null;
 	}
 }

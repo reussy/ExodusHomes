@@ -12,6 +12,8 @@ public interface DatabaseType {
 
 	void deleteHome(Player player, String home);
 
+	void deleteAll(Player player);
+
 	void goHome(Player player, String home);
 
 	void listHomes(Player player);

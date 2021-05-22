@@ -5,11 +5,19 @@ api-version: 1.13
 authors: [ reussy ]
 description: Set your homes easily!
 softdepend:
-  - EssentialsX
+  - PlaceholderAPI
 
 commands:
   exodushomes:
     description: Main Command for ExodusHomes.
+    aliases:
+      - eh
+      - ehomes
+  exodushomesmanage:
+    description: Command for Manage Players and Homes
+    aliases:
+      - ehm
+      - ehmanage
   home:
     description: Main Command for Players.
     aliases:

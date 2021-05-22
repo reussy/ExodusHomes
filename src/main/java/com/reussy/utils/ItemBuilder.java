@@ -2,6 +2,7 @@ package com.reussy.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,17 +14,19 @@ import java.util.List;
 
 public class ItemBuilder {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-
 	public ItemStack createItem(Player player, XMaterial material, int amount, String name, List<String> lore) {
 
+		String namePlaceholders;
+		List<String> lorePlaceholders;
 		ItemStack item = material.parseItem();
 		assert item != null;
 		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();
 		assert meta != null;
-		meta.setDisplayName(name);
-		meta.setLore(lore);
+		namePlaceholders = PlaceholderAPI.setPlaceholders(player, name);
+		meta.setDisplayName(namePlaceholders);
+		lorePlaceholders = PlaceholderAPI.setPlaceholders(player, lore);
+		meta.setLore(lorePlaceholders);
 		item.setItemMeta(meta);
 
 		if(item.getType() == Material.PLAYER_HEAD) {
@@ -34,24 +37,5 @@ public class ItemBuilder {
 		}
 
 		return item;
-	}
-
-	public void setBackground(Inventory inventory, XMaterial material, int amount, String name, int size, int slot) {
-
-		boolean setFill = plugin.getConfig().getBoolean("Background.Enable");
-		ItemStack item = material.parseItem();
-		assert item != null;
-		item.setAmount(amount);
-		ItemMeta meta = item.getItemMeta();
-		assert meta != null;
-		meta.setDisplayName(name);
-		item.setItemMeta(meta);
-
-		if(setFill)
-			while(size < inventory.getSize()) {
-
-				inventory.setItem(slot, item);
-				slot++;
-			}
 	}
 }

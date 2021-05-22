@@ -29,6 +29,8 @@ public class HomesGUI {
 
 		for(String getHome : getHomes) {
 
+			if (getHomes.isEmpty()) return ;
+
 			String homeWorld = plugin.databaseType().getWorld(player, getHome);
 			double homeX = plugin.databaseType().getX(player, getHome);
 			double homeY = plugin.databaseType().getY(player, getHome);
@@ -55,14 +57,14 @@ public class HomesGUI {
 
 			slot++;
 
-			if (slot > 45) break;
+			if(slot > 45) break;
 
 		}
 
 		ItemStack itemFill = itemBuilder.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
 				, plugin.setHexColor(plugin.getConfig().getString("Background.Name")), null);
 
-		while (slot_1 < 54){
+		while(slot_1 < 54) {
 
 			gui.setItem(slot_1, itemFill);
 
@@ -70,7 +72,7 @@ public class HomesGUI {
 		}
 
 		List<String> playerLore = new ArrayList<>();
-		for (String getLore : fileManager.getGui().getStringList("HomesGUI.Items.Player-Info.Lore"))
+		for(String getLore : fileManager.getGui().getStringList("HomesGUI.Items.Player-Info.Lore"))
 			playerLore.add(plugin.setHexColor(getLore).replace("%homes_count%", String.valueOf(getHomes.size())));
 
 		ItemStack head = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Player-Info.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Player-Info.Amount"),

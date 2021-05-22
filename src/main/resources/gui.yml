@@ -12,7 +12,10 @@
 #https://www.colorschemer.com/minecraft-color-codes/
 #Also can use HEX colors (+1.16)
 #https://coolors.co
+#Example #55D6C2Exodus Homes
 
+#Support PlaceholderAPI for
+#all items created here!
 MainGUI:
   Title: '&8Exodus Homes'
   Size: 54
@@ -21,7 +24,7 @@ MainGUI:
       Icon: BOOKSHELF
       Amount: 1
       Slot: 22
-      Name: '&6&lYour Homes'
+      Name: '&eYour Homes &7(Click)'
       Lore:
         - '&7Open GUI Homes'
 
@@ -40,7 +43,7 @@ HomesGUI:
       Icon: PLAYER_HEAD
       Amount: 1
       Slot: 49
-      Name: '&e%player_name%'
+      Name: '&a%player_name%'
       Lore:
         - '&7Homes: &a%homes_count%'
 

@@ -231,4 +231,21 @@ public class SQLData {
 			e.printStackTrace();
 		}
 	}
+
+	public void deleteAll(Connection connection, UUID uuid){
+
+		try {
+
+			if (hasHomes(connection, uuid)){
+
+				String homes = "DELETE FROM homes WHERE UUID=?";
+				PreparedStatement statement = connection.prepareStatement(homes);
+				statement.setString(1, uuid.toString());
+				statement.executeUpdate();
+				statement.close();
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 }

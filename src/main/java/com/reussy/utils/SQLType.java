@@ -27,6 +27,7 @@ public class SQLType implements DatabaseType {
 	public void createHome(Player player, String home) {
 
 		List<String> getHomes = this.getHomes(player);
+		int getLimit = plugin.getPermission(player);
 		String world = player.getWorld().getName();
 		double x = player.getLocation().getBlockX();
 		double y = player.getLocation().getBlockY();
@@ -34,7 +35,13 @@ public class SQLType implements DatabaseType {
 		float pitch = player.getLocation().getPitch();
 		float yaw = player.getLocation().getYaw();
 
-		if (!player.isOp()) plugin.checkGroup(fileManager, player);
+		if (getLimit == getHomes.size() || getLimit == 0){
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Limit-Home")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
 
 		if(getHomes.contains(home)) {
 
@@ -53,7 +60,7 @@ public class SQLType implements DatabaseType {
 	@Override
 	public void deleteHome(Player player, String home) {
 
-		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
+		List<String> getHomes = (this.getHomes(player));
 
 		if(hasHome(player)) {
 
@@ -75,6 +82,23 @@ public class SQLType implements DatabaseType {
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 		}
+	}
+
+	@Override
+	public void deleteAll(Player player) {
+
+		if(hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
+
+		sqlData.deleteAll(plugin.getSQL(), player.getUniqueId());
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Deleted")
+				.replace("%prefix%", fileManager.PX)));
+		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 	}
 
 	@Override

@@ -12,6 +12,7 @@
 #https://www.colorschemer.com/minecraft-color-codes/
 #Also can use HEX colors (+1.16)
 #https://coolors.co
+#Example #55D6C2Exodus Homes
 
 Plugin-Prefix: '&b&lHOMES &8»'
 Insufficient-Permission: '%prefix% &cYou do not have permissions for this command!'
@@ -27,10 +28,13 @@ Name-Not-Allowed: '%prefix% &cThat name is not allowed to use!'
 Limit-Home: '%prefix% &cYou have reached the limit of homes!'
 Home-Created: '%prefix% &bHome &7&o%home_name% &bhas been created in your position!'
 Home-Deleted: '%prefix% &bThe home &7&o%home_name% &bhas been deleted!'
+Homes-Deleted: '%prefix% &bAll your homes have been deleted!'
+Home-Admin-Deleted: '%prefix% &bThe home &7&o%home_name% &bhas been deleted for &7%target%&b!'
+Homes-Admin-Deleted: '%prefix% &bAll homes of &7%target% &bhas been deleted!'
 Teleport-Delay: '%prefix% &b&oTeleporting in %seconds% seconds...'
 Already-Teleporting: '%prefix% &cYou are already being teleported!'
 Home-Teleport: '%prefix% &bTeleported successfully to &7%home_name%&b!'
 Has-Home: '%prefix% &cYou already have a home with that name!'
 No-Home: '%prefix% &cHome &7&o%home_name% &cdoes not exist!'
 Homes-Empty: '%prefix% &cYou have no home created :('
-Homes-Format: '&b%home_number% &a%home_name%'
+Homes-Format: '&a%home_name%'

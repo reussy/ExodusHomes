@@ -6,6 +6,7 @@ import com.reussy.filemanager.FileManager;
 import com.reussy.sql.SQLData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -20,7 +21,7 @@ public class SQLType implements DatabaseType {
 
 	@Override
 	public boolean hasHome(Player player) {
-		return !sqlData.hasHomes(plugin.getSQL(), player.getUniqueId());
+		return sqlData.hasHomes(plugin.getSQL(), player.getUniqueId());
 	}
 
 	@Override
@@ -70,22 +71,46 @@ public class SQLType implements DatabaseType {
 			return;
 		}
 
-		if(getHomes.contains(home)) {
+		if (!getHomes.contains(home)){
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
+			return;
+		}
 
 			sqlData.deleteHomes(plugin.getSQL(), player.getUniqueId(), home);
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Home-Deleted")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
 			player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
-		} else {
-
-			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
-					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
-		}
 	}
 
 	@Override
 	public void deleteHomeByAdmin(Player player, String home) {
+
+		List<String> getHomes = (this.getHomes(player));
+
+		if(hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Empty")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
+
+		if (!getHomes.contains(home)){
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)
+					.replace("%target%", player.getName())));
+			return;
+		}
+
+		sqlData.deleteHomes(plugin.getSQL(), player.getUniqueId(), home);
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Home-Deleted")
+				.replace("%prefix%", fileManager.PX).replace("%home_name%", home).replace("%target%", player.getName())));
+		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+
 
 	}
 
@@ -108,6 +133,19 @@ public class SQLType implements DatabaseType {
 
 	@Override
 	public void deleteAllByAdmin(Player player) {
+
+		if(hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Empty")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
+
+		sqlData.deleteAll(plugin.getSQL(), player.getUniqueId());
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Deleted")
+				.replace("%prefix%", fileManager.PX).replace("%target%", player.getName())));
+		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
 	}
 
@@ -134,16 +172,45 @@ public class SQLType implements DatabaseType {
 		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
 		Home.add(0.5D, 0.0D, 0.5D);
 		TeleportTask teleportTask = new TeleportTask(plugin, time, player, Home, home);
+		teleportTask.runTask();
 
-		if(getHomes.contains(home)) {
-			teleportTask.runTask();
+	}
+
+	@Override
+	public void goHomeByAdmin(Player player, String home) {
+
+		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
+
+		if(hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Empty")
+					.replace("%prefix%", fileManager.PX)
+					.replace("%target%", player.getName())));
+
+			return;
 		}
+
+		if(!getHomes.contains(home)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)
+					.replace("%target%", player.getName())));
+			return;
+		}
+
+		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+		Home.add(0.5D, 0.0D, 0.5D);
+		player.teleport(Home);
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Home-Teleport")
+				.replace("%prefix%", fileManager.PX)
+				.replace("%home_name%", home)
+				.replace("%target%", player.getName())));
 	}
 
 	@Override
 	public void listHomes(Player player) {
 
-		if(hasHome(player)) {
+		if(!hasHome(player)) {
 
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
@@ -157,6 +224,26 @@ public class SQLType implements DatabaseType {
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Format")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
 		}
+	}
+
+	@Override
+	public void listHomesByAdmin(Player player) {
+
+		if(!hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Empty")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
+
+		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
+
+		for(String homeList : getHomes) {
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Format")
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
+		}
+
 	}
 
 	@Override

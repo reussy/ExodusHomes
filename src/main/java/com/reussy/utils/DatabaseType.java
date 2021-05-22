@@ -20,7 +20,11 @@ public interface DatabaseType {
 
 	void goHome(Player player, String home);
 
+	void goHomeByAdmin(Player player, String home);
+
 	void listHomes(Player player);
+
+	void listHomesByAdmin(Player player);
 
 	String getWorld(Player player, String home);
 

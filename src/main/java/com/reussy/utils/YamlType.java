@@ -106,8 +106,8 @@ public class YamlType implements DatabaseType {
 
 		if(!hasHome(player)) {
 
-			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
-					.replace("%prefix%", fileManager.PX)));
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Empty")
+					.replace("%prefix%", fileManager.PX).replace("%target%", player.getName())));
 
 			return;
 		}
@@ -115,15 +115,16 @@ public class YamlType implements DatabaseType {
 		if(!getHomes.contains(home)) {
 
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Home")
-					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", home)
+					.replace("%target%", player.getName())));
 			return;
 		}
 
 		storageManager.getFile().set("Homes." + home, null);
 		storageManager.getFile().set(home, null);
 		storageManager.saveFile();
-		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Home-Admin-Deleted")
-				.replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Home-Admin-Deleted")
+				.replace("%prefix%", fileManager.PX).replace("%home_name%", home).replace("%target%", player.getName())));
 		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
 	}
@@ -147,10 +148,10 @@ public class YamlType implements DatabaseType {
 			storageManager.getFile().set("Homes." + home, null);
 			storageManager.getFile().set(home, null);
 			storageManager.saveFile();
-			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Deleted")
-					.replace("%prefix%", fileManager.PX)));
-			player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 		}
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Deleted")
+				.replace("%prefix%", fileManager.PX)));
+		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 	}
 
 	@Override
@@ -161,7 +162,7 @@ public class YamlType implements DatabaseType {
 
 		if(!hasHome(player)) {
 
-			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Empty")
 					.replace("%prefix%", fileManager.PX)));
 
 			return;
@@ -172,11 +173,10 @@ public class YamlType implements DatabaseType {
 			storageManager.getFile().set("Homes." + home, null);
 			storageManager.getFile().set(home, null);
 			storageManager.saveFile();
-			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Admin-Deleted")
-					.replace("%prefix%", fileManager.PX)));
-			player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 		}
-
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Admin-Deleted")
+				.replace("%prefix%", fileManager.PX).replace("%target%", player.getName())));
+		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 	}
 
 	@Override
@@ -207,6 +207,36 @@ public class YamlType implements DatabaseType {
 	}
 
 	@Override
+	public void goHomeByAdmin(Player player, String home) {
+
+		List<String> getHomes = this.getHomes(player);
+
+		if(!hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Empty")
+					.replace("%prefix%", fileManager.PX)
+					.replace("%target%", player.getName())));
+
+			return;
+		}
+
+		if(!getHomes.contains(home)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.No-Home")
+					.replace("%prefix%", fileManager.PX)
+					.replace("%home_name%", home)
+					.replace("%target%", player.getName())));
+			return;
+		}
+
+		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+		Home.add(0.5D, 0.0D, 0.5D);
+		player.teleport(Home);
+		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Home-Teleport")
+				.replace("%prefix%", fileManager.PX).replace("%home_name%", home).replace("%target%", player.getName())));
+	}
+
+	@Override
 	public void listHomes(Player player) {
 
 		if(!hasHome(player)) {
@@ -221,6 +251,26 @@ public class YamlType implements DatabaseType {
 
 		for(String homeList : getHomes) {
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Format")
+					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
+		}
+
+	}
+
+	@Override
+	public void listHomesByAdmin(Player player) {
+
+		if(!hasHome(player)) {
+
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Empty")
+					.replace("%prefix%", fileManager.PX)));
+
+			return;
+		}
+
+		List<String> getHomes = (this.getHomes(player));
+
+		for(String homeList : getHomes) {
+			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Manage.Homes-Format")
 					.replace("%prefix%", fileManager.PX).replace("%home_name%", homeList)));
 		}
 

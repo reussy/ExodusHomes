@@ -35,7 +35,7 @@ public class SQLType implements DatabaseType {
 		float pitch = player.getLocation().getPitch();
 		float yaw = player.getLocation().getYaw();
 
-		if (getLimit == getHomes.size() || getLimit == 0){
+		if(getLimit == getHomes.size() || getLimit == 0) {
 
 			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Limit-Home")
 					.replace("%prefix%", fileManager.PX)));
@@ -85,6 +85,11 @@ public class SQLType implements DatabaseType {
 	}
 
 	@Override
+	public void deleteHomeByAdmin(Player player, String home) {
+
+	}
+
+	@Override
 	public void deleteAll(Player player) {
 
 		if(hasHome(player)) {
@@ -99,6 +104,11 @@ public class SQLType implements DatabaseType {
 		player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Homes-Deleted")
 				.replace("%prefix%", fileManager.PX)));
 		player.playSound(player.getLocation(), Sound.valueOf(plugin.getConfig().getString("Sounds.Delete-Home")), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+	}
+
+	@Override
+	public void deleteAllByAdmin(Player player) {
+
 	}
 
 	@Override

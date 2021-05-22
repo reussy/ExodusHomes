@@ -12,7 +12,11 @@ public interface DatabaseType {
 
 	void deleteHome(Player player, String home);
 
+	void deleteHomeByAdmin(Player player, String home);
+
 	void deleteAll(Player player);
+
+	void deleteAllByAdmin(Player player);
 
 	void goHome(Player player, String home);
 

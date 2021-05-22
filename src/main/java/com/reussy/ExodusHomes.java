@@ -12,7 +12,6 @@ import com.reussy.utils.SQLType;
 import com.reussy.utils.YamlType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,7 +67,8 @@ public final class ExodusHomes extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 
-		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ) Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6PlaceholderAPI"));
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6PlaceholderAPI"));
 
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
@@ -139,15 +138,15 @@ public final class ExodusHomes extends JavaPlugin {
 
 	public int getPermission(Player player) {
 
-		if (player.isOp()) return -1;
+		if(player.isOp()) return -1;
 
 		for(PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
 
 			String permission = perms.getPermission();
 
-			if (player.hasPermission("homes.limit.unlimited")) return -1;
+			if(player.hasPermission("homes.limit.unlimited")) return -1;
 
-			if (permission.startsWith("homes.limit.")){
+			if(permission.startsWith("homes.limit.")) {
 
 				return Integer.parseInt(permission.substring(permission.lastIndexOf(".") + 1));
 			}

@@ -232,11 +232,11 @@ public class SQLData {
 		}
 	}
 
-	public void deleteAll(Connection connection, UUID uuid){
+	public void deleteAll(Connection connection, UUID uuid) {
 
 		try {
 
-			if (hasHomes(connection, uuid)){
+			if(hasHomes(connection, uuid)) {
 
 				String homes = "DELETE FROM homes WHERE UUID=?";
 				PreparedStatement statement = connection.prepareStatement(homes);
@@ -244,7 +244,7 @@ public class SQLData {
 				statement.executeUpdate();
 				statement.close();
 			}
-		} catch(SQLException e){
+		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}

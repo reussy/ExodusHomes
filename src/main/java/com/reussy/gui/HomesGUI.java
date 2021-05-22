@@ -29,7 +29,7 @@ public class HomesGUI {
 
 		for(String getHome : getHomes) {
 
-			if (getHomes.isEmpty()) return ;
+			if(getHomes.isEmpty()) return;
 
 			String homeWorld = plugin.databaseType().getWorld(player, getHome);
 			double homeX = plugin.databaseType().getX(player, getHome);

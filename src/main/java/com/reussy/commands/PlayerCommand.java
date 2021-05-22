@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 	List<String> subcommands = new ArrayList<>();
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
 		if(!(sender instanceof Player)) {
 
@@ -105,38 +106,23 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			case "create":
-
-				try{
-					plugin.databaseType().createHome(player, args[1]);
-					
-				} catch(Exception e){
-					e.printStackTrace();
-				}
-
+				plugin.databaseType().createHome(player, args[1]);
 				break;
 
 			case "delete":
-
 				plugin.databaseType().deleteHome(player, args[1]);
-
 				break;
 
 			case "deleteall":
-
 				plugin.databaseType().deleteAll(player);
-
 				break;
 
 			case "go":
-
 				plugin.databaseType().goHome(player, args[1]);
-
 				break;
 
 			case "list":
-
 				plugin.databaseType().listHomes(player);
-
 				break;
 
 			default:

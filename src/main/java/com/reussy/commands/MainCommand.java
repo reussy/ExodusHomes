@@ -49,7 +49,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 					sender.sendMessage(plugin.setHexColor("&r"));
 					sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh help &8- &7Show this message"));
 					sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh reload &8- &7Reload Configuration Files"));
-					sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm manage &8- &7Manage Homes for Players"));
+					sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm &8- &7Manage Homes for Players"));
 					sender.sendMessage(plugin.setHexColor("&r"));
 					sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
 

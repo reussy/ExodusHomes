@@ -1,7 +1,6 @@
 package com.reussy.filemanager;
 
 import com.reussy.ExodusHomes;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -14,10 +13,10 @@ import java.nio.charset.StandardCharsets;
 public class FileManager {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	public String PX = plugin.setHexColor(this.getLang().getString("Plugin-Prefix"));
 	public File configFile = new File(plugin.getDataFolder(), "config.yml");
 	private File langFile = new File(plugin.getDataFolder(), "lang.yml");
 	public FileConfiguration langYaml = YamlConfiguration.loadConfiguration(langFile);
+	public String PX = plugin.setHexColor(this.getLang().getString("Plugin-Prefix"));
 	private File guiFile = new File(plugin.getDataFolder(), "gui.yml");
 	public FileConfiguration guiYaml = YamlConfiguration.loadConfiguration(guiFile);
 

@@ -4,7 +4,6 @@ import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
 import com.reussy.gui.HomesGUI;
-import com.reussy.sql.SQLData;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +16,6 @@ public class InventoryClickListener implements Listener {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 	FileManager fileManager = new FileManager();
-	SQLData sqlData = new SQLData();
 	HomesGUI homesGUI = new HomesGUI();
 
 	@EventHandler

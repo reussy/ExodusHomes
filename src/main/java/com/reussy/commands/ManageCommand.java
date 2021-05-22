@@ -2,13 +2,13 @@ package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
 import com.reussy.filemanager.FileManager;
-import com.reussy.sql.SQLData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 	List<String> subcommands = new ArrayList<>();
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
 		if(!(sender instanceof Player)) {
 
@@ -38,9 +38,9 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		if (cmd.getName().equalsIgnoreCase("exodushomesmanage")){
+		if(cmd.getName().equalsIgnoreCase("exodushomesmanage")) {
 
-			if (args.length == 0) {
+			if(args.length == 0) {
 
 				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
 				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
@@ -50,7 +50,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 			}
 		}
 
-		switch(args[0]){
+		switch(args[0]) {
 
 			case "help":
 
@@ -67,7 +67,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 			case "delete":
 
-				if (!args[1].equalsIgnoreCase(Bukkit.getPlayer(args[1]).getName())){
+				if(!args[1].equalsIgnoreCase(Bukkit.getPlayer(args[1]).getName())) {
 
 					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
 							.replace("%prefix%", fileManager.PX)));
@@ -75,13 +75,13 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 					return false;
 				}
 
-				plugin.databaseType().deleteHome(Bukkit.getPlayer(args[1]).getPlayer(), args[2]);
+				plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), args[2]);
 
 				break;
 
 			case "deleteall":
 
-				if (!args[1].equalsIgnoreCase(Bukkit.getPlayer(args[1]).getName())) {
+				if(!args[1].equalsIgnoreCase(Bukkit.getPlayer(args[1]).getName())) {
 
 					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
 							.replace("%prefix%", fileManager.PX)));
@@ -89,8 +89,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 					return false;
 				}
 
-				plugin.databaseType().deleteAll(Bukkit.getPlayer(args[1]).getPlayer());
-
+				plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]));
 				break;
 
 			default:
@@ -100,11 +99,10 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args){
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 
-		if (cmd.getName().equalsIgnoreCase("exodushomesmanage")){
-
-			if (args.length == 1){
+		if(cmd.getName().equalsIgnoreCase("exodushomesmanage")) {
+			if(args.length == 1) {
 
 				subcommands.add("help");
 				subcommands.add("delete");

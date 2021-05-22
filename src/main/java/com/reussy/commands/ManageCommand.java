@@ -48,6 +48,22 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 				return false;
 			}
+
+			if(args.length == 1 && !args[0].equalsIgnoreCase("help")) {
+
+				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
+						.replace("%prefix%", fileManager.PX).replace("%cmd%", "ehm")));
+
+				return false;
+			}
+
+			if (args.length == 2 && args[0].equalsIgnoreCase("go")){
+
+				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
+						.replace("%prefix%", fileManager.PX).replace("%cmd%", "ehm")));
+
+				return false;
+			}
 		}
 
 		switch(args[0]) {
@@ -59,39 +75,32 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor("&r                   &6&oManage Commands"));
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm help &8- &7Show this message"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm deleteall <player> &8- &7Delete all homes a player!"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm go <player> <home> &8- &7Teleport to player home"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm delete <player> &8- &7Delete a homes for a player"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm deleteall <player> &8- &7Delete all homes for a player"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm list <player> &8- &7List of home's of player"));
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
 
 				break;
 
+			case "go":
+				if (args[2] == null) return false;
+				plugin.databaseType().goHomeByAdmin(Bukkit.getPlayer(args[1]), args[2]);
+				break;
+
 			case "delete":
-
-				if(!args[1].equalsIgnoreCase(Bukkit.getPlayer(args[1]).getName())) {
-
-					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
-							.replace("%prefix%", fileManager.PX)));
-
-					return false;
-				}
-
+				if (args[2] == null) return false;
 				plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), args[2]);
-
 				break;
 
 			case "deleteall":
-
-				if(!args[1].equalsIgnoreCase(Bukkit.getPlayer(args[1]).getName())) {
-
-					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
-							.replace("%prefix%", fileManager.PX)));
-
-					return false;
-				}
-
 				plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]));
 				break;
 
+			case "list":
+				plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]));
+				break;
 			default:
 		}
 
@@ -99,7 +108,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+	public List<String> onTabComplete(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
 
 		if(cmd.getName().equalsIgnoreCase("exodushomesmanage")) {
 			if(args.length == 1) {

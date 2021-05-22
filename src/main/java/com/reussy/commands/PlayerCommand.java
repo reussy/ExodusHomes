@@ -19,8 +19,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 	FileManager fileManager = new FileManager();
 	MainGUI mainGUI = new MainGUI();
 	List<String> subcommands = new ArrayList<>();
-	int teleportTask;
-	int time = plugin.getConfig().getInt("Teleport-Delay.Time");
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -33,7 +31,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		if(!sender.hasPermission("homes.command.player")) {
+		if(!sender.hasPermission("homes.command.player") || !sender.isOp()) {
 
 			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
 					.replace("%prefix%", fileManager.PX)));
@@ -52,7 +50,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 
-			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help")) {
+			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
 
 				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
 						.replace("%prefix%", fileManager.PX)));
@@ -108,13 +106,24 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			case "create":
 
-				plugin.databaseType().createHome(player, args[1]);
+				try{
+					plugin.databaseType().createHome(player, args[1]);
+					
+				} catch(Exception e){
+					e.printStackTrace();
+				}
 
 				break;
 
 			case "delete":
 
 				plugin.databaseType().deleteHome(player, args[1]);
+
+				break;
+
+			case "deleteall":
+
+				plugin.databaseType().deleteAll(player);
 
 				break;
 
@@ -141,22 +150,24 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 		Player player = (Player) sender;
 		List<String> getHomes = plugin.databaseType().getHomes(player);
-			if(command.getName().equalsIgnoreCase("home")) {
-				if(args.length == 1) {
-					if(player.hasPermission("homes.command.player")) {
+		if(command.getName().equalsIgnoreCase("home")) {
+			if(args.length == 1) {
+				if(player.hasPermission("homes.command.player")) {
 
-						subcommands.add("create");
-						subcommands.add("delete");
-						subcommands.add("go");
-						subcommands.add("list");
-						return subcommands;
-					}
-				} else if(args.length == 2) {
-					return getHomes;
-				} else if(args.length > 2) {
-					return null;
+					subcommands.add("help");
+					subcommands.add("create");
+					subcommands.add("delete");
+					subcommands.add("deleteall");
+					subcommands.add("go");
+					subcommands.add("list");
+					return subcommands;
 				}
+			} else if(args.length == 2) {
+				return getHomes;
+			} else if(args.length > 2) {
+				return null;
 			}
+		}
 		return null;
 	}
 }

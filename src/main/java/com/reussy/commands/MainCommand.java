@@ -20,7 +20,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-		if(!sender.hasPermission("homes.command.admin")) {
+		if(!sender.hasPermission("homes.command.admin") || !sender.isOp()) {
 
 			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
 					.replace("%prefix%", fileManager.PX)));
@@ -34,7 +34,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
 				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
-				sender.sendMessage(plugin.setHexColor("&eUse &6/exodushomes help &efor commands!"));
+				sender.sendMessage(plugin.setHexColor("&eUse &6/eh help &efor commands!"));
 
 				return false;
 			}
@@ -47,9 +47,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 					sender.sendMessage(plugin.setHexColor("&r"));
 					sender.sendMessage(plugin.setHexColor("&r                   &c&oAdmin Commands"));
 					sender.sendMessage(plugin.setHexColor("&r"));
-					sender.sendMessage(plugin.setHexColor(" &8&l! &b/exodushomes help &8- &7Show this message"));
-					sender.sendMessage(plugin.setHexColor(" &8&l! &b/exodushomes reload &8- &7Reload Configuration Files"));
-					sender.sendMessage(plugin.setHexColor(" &8&l! &b/exodushomes manage &8- &7Manage Homes for Players"));
+					sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh help &8- &7Show this message"));
+					sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh reload &8- &7Reload Configuration Files"));
+					sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm manage &8- &7Manage Homes for Players"));
 					sender.sendMessage(plugin.setHexColor("&r"));
 					sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
 
@@ -63,16 +63,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Reload-Message")
 							.replace("%prefix%", fileManager.PX)));
-
-					return false;
-
-				case "manage":
-
-					if(!(sender instanceof Player)) {
-
-						sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Console")
-								.replace("%prefix%", fileManager.PX)));
-					}
 
 					return false;
 
@@ -93,7 +83,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 					subcommands.add("help");
 					subcommands.add("reload");
-					subcommands.add("manage");
 				}
 			}
 			return subcommands;

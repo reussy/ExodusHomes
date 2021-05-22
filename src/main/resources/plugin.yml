@@ -27,8 +27,7 @@ commands:
 permissions:
   homes.command.admin:
     description: Permission for administrator commands
-    default: false
+    default: op
 
   homes.command.player:
     description: Permission for player commands
-    default: false

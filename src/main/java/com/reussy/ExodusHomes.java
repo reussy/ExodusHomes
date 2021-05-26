@@ -5,9 +5,10 @@ import com.reussy.commands.ManageCommand;
 import com.reussy.commands.PlayerCommand;
 import com.reussy.events.InventoryClickListener;
 import com.reussy.events.PlayerDataListener;
-import com.reussy.filemanager.FileManager;
+import com.reussy.managers.FileManager;
 import com.reussy.sql.SQLMain;
 import com.reussy.utils.DatabaseType;
+import com.reussy.utils.MessageUtils;
 import com.reussy.utils.SQLType;
 import com.reussy.utils.YamlType;
 import net.md_5.bungee.api.ChatColor;
@@ -16,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -24,9 +24,12 @@ import java.util.regex.Pattern;
 
 public final class ExodusHomes extends JavaPlugin {
 
+	public ExodusHomes plugin;
+	public DatabaseType type;
+	public FileManager fileManager;
+	public MessageUtils messageUtils;
 	public boolean setFill = this.getConfig().getBoolean("Background.Enable");
 	public ArrayList<String> playerCache = new ArrayList<>();
-	DatabaseType type;
 	private SQLMain connect;
 
 	@Override
@@ -41,23 +44,13 @@ public final class ExodusHomes extends JavaPlugin {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&fPlugin Version: &a" + this.getDescription().getVersion()));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 
-		if(("MySQL".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6MySQL"));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to connect to the database..."));
-			connect = new SQLMain(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"));
-			connect.createTable();
-			type = new SQLType();
-		} else if(("YAML".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6YAML"));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eRegistering events..."));
-			Bukkit.getPluginManager().registerEvents(new PlayerDataListener(), this);
-			type = new YamlType();
-		} else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6" + getConfig().getString("Database-Type")));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThat kind of database doesn't exist. Try YAML or MySQL"));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cDisabling plugin for avoid issues!"));
-			Bukkit.getPluginManager().disablePlugin(this);
-		}
+		plugin = this;
+		fileManager = new FileManager(this);
+		messageUtils = new MessageUtils(this);
+		getDatabaseType();
+		Files();
+		Events();
+		Commands();
 
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6PlaceholderAPI"));
@@ -65,24 +58,62 @@ public final class ExodusHomes extends JavaPlugin {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
 
-		try {
-			Files();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-		Commands();
-		Events();
-
 	}
 
 	@Override
 	public void onDisable() {
 
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lExodusHomes &8| &cDisabled "));
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
+		this.saveConfig();
+		fileManager.saveGui();
+		fileManager.saveLang();
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aExodusHomes disabled, goodbye!"));
+	}
+
+	public void getDatabaseType() {
+
+		if(("MySQL".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6MySQL"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to connect to the database..."));
+			connect = new SQLMain(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"));
+			connect.createTable();
+			type = new SQLType(this);
+
+		} else if(("YAML".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6YAML"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eRegistering events..."));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
+			type = new YamlType(this);
+			Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
+
+		} else {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6" + getConfig().getString("Database-Type")));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThat kind of database doesn't exist. Try YAML or MySQL"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cDisabling plugin for avoid issues!"));
+			Bukkit.getPluginManager().disablePlugin(this);
+		}
+	}
+
+	public void Files() {
+		fileManager.generateFolder();
+		fileManager.generateConfig();
+		fileManager.generateLang();
+		fileManager.generateGui();
+	}
+
+	public void Commands() {
+
+		this.getCommand("eh").setExecutor(new MainCommand(this));
+		this.getCommand("ehm").setExecutor(new ManageCommand(this));
+		this.getCommand("home").setExecutor(new PlayerCommand(this));
+		this.getCommand("eh").setTabCompleter(new MainCommand(this));
+		this.getCommand("ehm").setTabCompleter(new ManageCommand(this));
+		this.getCommand("home").setTabCompleter(new PlayerCommand(this));
+
+	}
+
+	public void Events() {
+
+		Bukkit.getPluginManager().registerEvents(new InventoryClickListener(this), this);
 	}
 
 	public String setHexColor(String text) {
@@ -96,34 +127,12 @@ public final class ExodusHomes extends JavaPlugin {
 				String setColor = text.substring(matcher.start(), matcher.end());
 				text = text.replace(setColor, ChatColor.of(setColor) + "");
 			}
+		} else {
+
+			return org.bukkit.ChatColor.translateAlternateColorCodes('&', text);
 		}
 
 		return ChatColor.translateAlternateColorCodes('&', text);
-	}
-
-	public void Commands() {
-
-		this.getCommand("exodushomes").setExecutor(new MainCommand());
-		this.getCommand("exodushomesmanage").setExecutor(new ManageCommand());
-		this.getCommand("home").setExecutor(new PlayerCommand());
-		this.getCommand("exodushomes").setTabCompleter(new MainCommand());
-		this.getCommand("exodushomesmanage").setTabCompleter(new ManageCommand());
-		this.getCommand("home").setTabCompleter(new PlayerCommand());
-
-	}
-
-	public void Events() {
-
-		Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), this);
-	}
-
-	public void Files() throws IOException {
-
-		FileManager fileManager = new FileManager();
-		fileManager.generateFolder();
-		fileManager.generateConfig();
-		fileManager.generateLang();
-		fileManager.generateGui();
 	}
 
 	public Connection getSQL() {
@@ -138,17 +147,20 @@ public final class ExodusHomes extends JavaPlugin {
 
 	public int getPermission(Player player) {
 
-		if(player.isOp()) return -1;
-
 		for(PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
 
 			String permission = perms.getPermission();
 
-			if(player.hasPermission("homes.limit.unlimited")) return -1;
+			if(player.isOp()) return -1;
+
+			if(permission.equalsIgnoreCase("homes.limit.unlimited")) return -1;
 
 			if(permission.startsWith("homes.limit.")) {
 
 				return Integer.parseInt(permission.substring(permission.lastIndexOf(".") + 1));
+			} else {
+
+				return 0;
 			}
 		}
 		return 0;

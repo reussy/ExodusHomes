@@ -1,7 +1,6 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
-import com.reussy.filemanager.FileManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,22 +12,24 @@ import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	FileManager fileManager = new FileManager();
+	private final ExodusHomes plugin;
 	List<String> subcommands = new ArrayList<>();
+
+	public MainCommand(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-		if(!sender.hasPermission("homes.command.admin") || !sender.isOp()) {
+		if(!sender.hasPermission("homes.command.player")) {
 
-			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
-					.replace("%prefix%", fileManager.PX)));
+			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
 
 			return false;
 		}
 
-		if(cmd.getName().equalsIgnoreCase("exodushomes")) {
+		if(cmd.getName().equalsIgnoreCase("eh")) {
 
 			if(args.length == 0) {
 
@@ -58,11 +59,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 				case "reload":
 
 					plugin.reloadConfig();
-					fileManager.reloadLang();
-					fileManager.reloadGui();
-
-					sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Reload-Message")
-							.replace("%prefix%", fileManager.PX)));
+					plugin.fileManager.reloadLang();
+					plugin.fileManager.reloadGui();
+					plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Reload-Message"));
 
 					return false;
 

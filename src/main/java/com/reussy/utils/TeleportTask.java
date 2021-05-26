@@ -1,8 +1,9 @@
 package com.reussy.utils;
 
 import com.cryptomorin.xseries.XSound;
+import com.cryptomorin.xseries.particles.ParticleDisplay;
+import com.cryptomorin.xseries.particles.XParticle;
 import com.reussy.ExodusHomes;
-import com.reussy.filemanager.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -11,13 +12,15 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public class TeleportTask {
 
-	private final Player player;
-	private final Location location;
-	private final String home;
-	FileManager fileManager = new FileManager();
+	private final ExodusHomes plugin;
 	int teleportTask;
 	int time;
-	private ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	private Player player;
+	private Location location;
+	private String home;
+	public TeleportTask(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
 
 	public TeleportTask(ExodusHomes plugin, int time, Player player, Location location, String home) {
 		this.plugin = plugin;
@@ -29,10 +32,11 @@ public class TeleportTask {
 	}
 
 	public void runTask() {
+
 		if(!plugin.playerCache.contains(player.getName())) {
 			plugin.playerCache.add(player.getName());
 		} else {
-			player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Already-Teleporting").replace("%prefix%", fileManager.PX)));
+			plugin.messageUtils.sendMessage(player, plugin.fileManager.getMessage("Already-Teleporting"));
 			return;
 		}
 
@@ -43,15 +47,14 @@ public class TeleportTask {
 				Bukkit.getScheduler().cancelTask(teleportTask);
 				player.teleport(location);
 				plugin.playerCache.remove(player.getName());
-				player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Home-Teleport").replace("%prefix%", fileManager.PX).replace("%home_name%", home)));
+				plugin.messageUtils.sendMessage(player, plugin.fileManager.getMessage("Home-Teleport").replace("%home_name%", home));
 				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-				player.spawnParticle(Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home")), player.getLocation(), 10);
+				XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
 
 			} else {
 
-				player.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Teleport-Delay")
-						.replace("%prefix%", fileManager.PX)
-						.replace("%seconds%", String.valueOf(time))));
+				plugin.messageUtils.sendMessage(player, plugin.fileManager.getMessage("Teleport-Delay")
+						.replace("%seconds%", String.valueOf(time)));
 				time--;
 			}
 		}, 0L, 20);

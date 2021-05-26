@@ -1,5 +1,6 @@
 package com.reussy.utils;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -12,19 +13,19 @@ public interface DatabaseType {
 
 	void deleteHome(Player player, String home);
 
-	void deleteHomeByAdmin(Player player, String home);
+	void deleteHomeByAdmin(Player player, CommandSender sender, String home);
 
 	void deleteAll(Player player);
 
-	void deleteAllByAdmin(Player player);
+	void deleteAllByAdmin(Player player, CommandSender sender);
 
 	void goHome(Player player, String home);
 
-	void goHomeByAdmin(Player player, String home);
+	void goHomeByAdmin(Player player, CommandSender sender, String home);
 
 	void listHomes(Player player);
 
-	void listHomesByAdmin(Player player);
+	void listHomesByAdmin(Player player, CommandSender sender);
 
 	String getWorld(Player player, String home);
 

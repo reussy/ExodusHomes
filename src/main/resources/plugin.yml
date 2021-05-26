@@ -8,25 +8,28 @@ softdepend:
   - PlaceholderAPI
 
 commands:
-  exodushomes:
+  eh:
     description: Main Command for ExodusHomes.
     aliases:
-      - eh
       - ehomes
-  exodushomesmanage:
+  ehm:
     description: Command for Manage Players and Homes
     aliases:
-      - ehm
       - ehmanage
   home:
     description: Main Command for Players.
     aliases:
       - homes
-      - homegui
+  ehd:
+    description: Debug command!
 
 permissions:
   homes.command.admin:
     description: Permission for administrator commands
+    default: op
+
+  homes.command.manage:
+    description: Permission for manage commands
     default: op
 
   homes.command.player:

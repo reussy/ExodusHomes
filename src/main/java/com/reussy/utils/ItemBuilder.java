@@ -1,8 +1,8 @@
 package com.reussy.utils;
 
+import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,10 +27,10 @@ public class ItemBuilder {
 		meta.setLore(lorePlaceholders);
 		item.setItemMeta(meta);
 
-		if(item.getType() == Material.PLAYER_HEAD) {
+		if(item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
 
 			SkullMeta texture = (SkullMeta) item.getItemMeta();
-			texture.setOwningPlayer(player);
+			SkullUtils.applySkin(texture, player);
 			item.setItemMeta(texture);
 		}
 

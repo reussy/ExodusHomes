@@ -1,7 +1,6 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
-import com.reussy.filemanager.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,30 +14,31 @@ import java.util.List;
 
 public class ManageCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	FileManager fileManager = new FileManager();
+	public ExodusHomes plugin;
 	List<String> subcommands = new ArrayList<>();
+
+	public ManageCommand(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
 		if(!(sender instanceof Player)) {
 
-			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("No-Console")
-					.replace("%prefix%", fileManager.PX)));
+			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("No-Console"));
 
 			return false;
 		}
 
-		if(!sender.hasPermission("homes.command.manage") || !sender.isOp()) {
+		if(!sender.hasPermission("homes.command.player")) {
 
-			sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Insufficient-Permission")
-					.replace("%prefix%", fileManager.PX)));
+			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
 
 			return false;
 		}
 
-		if(cmd.getName().equalsIgnoreCase("exodushomesmanage")) {
+		if(cmd.getName().equalsIgnoreCase("ehm")) {
 
 			if(args.length == 0) {
 
@@ -51,17 +51,21 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 			if(args.length == 1 && !args[0].equalsIgnoreCase("help")) {
 
-				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
-						.replace("%prefix%", fileManager.PX).replace("%cmd%", "ehm")));
+				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
 				return false;
 			}
 
-			if (args.length == 2 && args[0].equalsIgnoreCase("go")){
+			if(args.length == 2 && args[0].equalsIgnoreCase("go")) {
 
-				sender.sendMessage(plugin.setHexColor(fileManager.getLang().getString("Few-Arguments")
-						.replace("%prefix%", fileManager.PX).replace("%cmd%", "ehm")));
+				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Few-Arguments"));
 
+				return false;
+			}
+
+			if(Bukkit.getPlayer(args[1]) == null || !Bukkit.getPlayer(args[1]).isOnline()) {
+
+				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Unknown-Player"));
 				return false;
 			}
 		}
@@ -85,21 +89,21 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			case "go":
-				if (args[2] == null) return false;
-				plugin.databaseType().goHomeByAdmin(Bukkit.getPlayer(args[1]), args[2]);
+				if(args[2] == null) return false;
+				plugin.databaseType().goHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
 				break;
 
 			case "delete":
-				if (args[2] == null) return false;
-				plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), args[2]);
+				if(args[2] == null) return false;
+				plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
 				break;
 
 			case "deleteall":
-				plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]));
+				plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]), sender);
 				break;
 
 			case "list":
-				plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]));
+				plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]), sender);
 				break;
 			default:
 		}

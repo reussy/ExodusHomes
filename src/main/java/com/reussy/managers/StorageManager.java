@@ -1,4 +1,4 @@
-package com.reussy.filemanager;
+package com.reussy.managers;
 
 import com.reussy.ExodusHomes;
 import org.bukkit.Bukkit;
@@ -15,14 +15,15 @@ import java.util.UUID;
 
 public class StorageManager {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	UUID id;
+	private final ExodusHomes plugin;
+	UUID uuid;
 	File idFile;
 	FileConfiguration idYaml;
 
-	public StorageManager(UUID id) {
+	public StorageManager(UUID uuid, ExodusHomes plugin) {
 
-		idFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + id + ".yml");
+		this.plugin = plugin;
+		idFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + uuid + ".yml");
 		idYaml = YamlConfiguration.loadConfiguration(idFile);
 	}
 
@@ -33,7 +34,9 @@ public class StorageManager {
 			try {
 				Bukkit.getConsoleSender().sendMessage("Creating new file in storage for " + player.getName());
 				idFile.createNewFile();
-				idYaml.set(player.getName() + ".UUID", player.getUniqueId().toString());
+				idYaml.set("Information" + ".UUID", player.getUniqueId().toString());
+				idYaml.set("Information" + ".PlayerName", player.getName());
+				idYaml.createSection("Homes");
 				idYaml.save(idFile);
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -51,7 +54,7 @@ public class StorageManager {
 	public void reloadFile() {
 
 		idYaml = YamlConfiguration.loadConfiguration(idFile);
-		Reader stream = new InputStreamReader(plugin.getResource(File.separator + "storage" + File.separator + id + ".yml"), StandardCharsets.UTF_8);
+		Reader stream = new InputStreamReader(plugin.getResource(File.separator + "storage" + File.separator + uuid + ".yml"), StandardCharsets.UTF_8);
 		YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
 		idYaml.setDefaults(defStream);
 	}

@@ -2,7 +2,7 @@ package com.reussy.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
-import com.reussy.filemanager.FileManager;
+import com.reussy.managers.FileManager;
 import com.reussy.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,9 +14,12 @@ import java.util.List;
 
 public class HomesGUI {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	FileManager fileManager = new FileManager();
+	private final ExodusHomes plugin;
+	FileManager fileManager = new FileManager(null);
 	ItemBuilder itemBuilder = new ItemBuilder();
+	public HomesGUI(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
 
 	public void GUI(Player player) {
 
@@ -24,12 +27,11 @@ public class HomesGUI {
 		int slot_1 = 45;
 		int size = fileManager.getGui().getInt("HomesGUI.Size");
 		String title = plugin.setHexColor(fileManager.getGui().getString("HomesGUI.Title"));
-		List<String> getHomes = plugin.databaseType().getHomes(player);
 		Inventory gui = Bukkit.createInventory(null, size, title);
+		List<String> getHomes = plugin.databaseType().getHomes(player);
+		boolean hasHome = plugin.databaseType().hasHome(player);
 
 		for(String getHome : getHomes) {
-
-			if(getHomes.isEmpty()) return;
 
 			String homeWorld = plugin.databaseType().getWorld(player, getHome);
 			double homeX = plugin.databaseType().getX(player, getHome);
@@ -58,7 +60,6 @@ public class HomesGUI {
 			slot++;
 
 			if(slot > 45) break;
-
 		}
 
 		ItemStack itemFill = itemBuilder.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
@@ -73,7 +74,7 @@ public class HomesGUI {
 
 		List<String> playerLore = new ArrayList<>();
 		for(String getLore : fileManager.getGui().getStringList("HomesGUI.Items.Player-Info.Lore"))
-			playerLore.add(plugin.setHexColor(getLore).replace("%homes_count%", String.valueOf(getHomes.size())));
+			playerLore.add(plugin.setHexColor(getLore).replace("%homes_count%", Integer.toString(getHomes.size())));
 
 		ItemStack head = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Player-Info.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Player-Info.Amount"),
 				plugin.setHexColor(fileManager.getGui().getString("HomesGUI.Items.Player-Info.Name")), playerLore);

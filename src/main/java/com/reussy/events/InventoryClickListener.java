@@ -2,8 +2,8 @@ package com.reussy.events;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
-import com.reussy.filemanager.FileManager;
 import com.reussy.gui.HomesGUI;
+import com.reussy.managers.FileManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,14 +14,18 @@ import java.util.List;
 
 public class InventoryClickListener implements Listener {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	FileManager fileManager = new FileManager();
-	HomesGUI homesGUI = new HomesGUI();
+	private final ExodusHomes plugin;
+
+	public InventoryClickListener(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
 
 	@EventHandler
 	public void onMainGUI(InventoryClickEvent e) {
 
+		FileManager fileManager = new FileManager(plugin);
 		Player player = (Player) e.getWhoClicked();
+		HomesGUI homesGUI = new HomesGUI(plugin);
 
 		if(e.getView().getTitle().equalsIgnoreCase(plugin.setHexColor(fileManager.getGui().getString("MainGUI.Title")))) {
 
@@ -40,6 +44,7 @@ public class InventoryClickListener implements Listener {
 	@EventHandler
 	public void onHomesGUI(InventoryClickEvent e) {
 
+		FileManager fileManager = new FileManager(plugin);
 		Player player = (Player) e.getWhoClicked();
 
 		if(e.getView().getTitle().equalsIgnoreCase(plugin.setHexColor(fileManager.getGui().getString("HomesGUI.Title")))) {

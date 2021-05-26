@@ -39,6 +39,8 @@ HomesGUI:
       Lore:
         - '&7X: &b%home_x% &7Y: &b%home_y% &7Z: &b%home_z%'
         - '&7World: &b%home_world%'
+        - ''
+        - '&eClick to go!'
     Player-Info:
       Icon: PLAYER_HEAD
       Amount: 1
@@ -46,4 +48,5 @@ HomesGUI:
       Name: '&a%player_name%'
       Lore:
         - '&7Homes: &a%homes_count%'
+        - '&7Rank: %vault_prefix%'
 

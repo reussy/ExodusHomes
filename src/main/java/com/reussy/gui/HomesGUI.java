@@ -14,22 +14,32 @@ import java.util.List;
 
 public class HomesGUI {
 
-	private final ExodusHomes plugin;
-	FileManager fileManager = new FileManager(null);
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	FileManager fileManager = new FileManager();
 	ItemBuilder itemBuilder = new ItemBuilder();
-	public HomesGUI(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
 
 	public void GUI(Player player) {
 
 		int slot = 0;
 		int slot_1 = 45;
 		int size = fileManager.getGui().getInt("HomesGUI.Size");
-		String title = plugin.setHexColor(fileManager.getGui().getString("HomesGUI.Title"));
+		String title = plugin.setHexColor(fileManager.getText("HomesGUI.Title"));
 		Inventory gui = Bukkit.createInventory(null, size, title);
 		List<String> getHomes = plugin.databaseType().getHomes(player);
 		boolean hasHome = plugin.databaseType().hasHome(player);
+
+		if(!hasHome) {
+			List<String> emptyLore = new ArrayList<>();
+			for(String getLore : fileManager.getGui().getStringList("HomesGUI.Items.Empty.Lore")) {
+				emptyLore.add(plugin.setHexColor(getLore));
+			}
+
+			ItemStack emptyItem = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getText("HomesGUI.Items.Empty.Icon")),
+					fileManager.getGui().getInt("HomesGUI.Items.Empty.Amount"), fileManager.getText("HomesGUI.Items.Empty.Name"), emptyLore);
+
+			gui.setItem(22, emptyItem);
+
+		}
 
 		for(String getHome : getHomes) {
 
@@ -48,12 +58,12 @@ public class HomesGUI {
 						.replace("%home_name%", getHome));
 			}
 
-			ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Homes.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Homes.Amount"),
-					plugin.setHexColor(fileManager.getGui().getString("HomesGUI.Items.Homes.Name").replace("%home_x%", String.valueOf(homeX))
+			ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getText("HomesGUI.Items.Homes.Icon")), slot + 1,
+					fileManager.getText("HomesGUI.Items.Homes.Name").replace("%home_x%", String.valueOf(homeX))
 							.replace("%home_y%", String.valueOf(homeY))
 							.replace("%home_z%", String.valueOf(homeZ))
 							.replace("%home_world%", homeWorld)
-							.replace("%home_name%", getHome)), homeLore);
+							.replace("%home_name%", getHome), homeLore);
 
 			gui.setItem(slot, home);
 

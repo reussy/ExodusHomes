@@ -10,11 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerDataListener implements Listener {
 
-	private ExodusHomes plugin;
-
-	public PlayerDataListener(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
@@ -23,5 +19,4 @@ public class PlayerDataListener implements Listener {
 		StorageManager storage = new StorageManager(player.getUniqueId(), plugin);
 		storage.createPlayerFile(player);
 	}
-
 }

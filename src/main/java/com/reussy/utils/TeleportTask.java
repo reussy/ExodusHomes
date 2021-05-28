@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.particles.ParticleDisplay;
 import com.cryptomorin.xseries.particles.XParticle;
 import com.reussy.ExodusHomes;
+import com.reussy.managers.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -13,14 +14,13 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class TeleportTask {
 
 	private final ExodusHomes plugin;
+	private final Player player;
+	private final Location location;
+	private final String home;
 	int teleportTask;
 	int time;
-	private Player player;
-	private Location location;
-	private String home;
-	public TeleportTask(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
+	FileManager fileManager = new FileManager();
+	MessageUtils messageUtils = new MessageUtils();
 
 	public TeleportTask(ExodusHomes plugin, int time, Player player, Location location, String home) {
 		this.plugin = plugin;
@@ -36,7 +36,7 @@ public class TeleportTask {
 		if(!plugin.playerCache.contains(player.getName())) {
 			plugin.playerCache.add(player.getName());
 		} else {
-			plugin.messageUtils.sendMessage(player, plugin.fileManager.getMessage("Already-Teleporting"));
+			messageUtils.sendMessage(player, fileManager.getMessage("Already-Teleporting"));
 			return;
 		}
 
@@ -47,13 +47,14 @@ public class TeleportTask {
 				Bukkit.getScheduler().cancelTask(teleportTask);
 				player.teleport(location);
 				plugin.playerCache.remove(player.getName());
-				plugin.messageUtils.sendMessage(player, plugin.fileManager.getMessage("Home-Teleport").replace("%home_name%", home));
+				messageUtils.sendMessage(player, fileManager.getMessage("Home-Teleport").replace("%home_name%", home));
 				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 				XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
 
 			} else {
 
-				plugin.messageUtils.sendMessage(player, plugin.fileManager.getMessage("Teleport-Delay")
+				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Waiting-Teleport")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+				messageUtils.sendMessage(player, fileManager.getMessage("Teleport-Delay")
 						.replace("%seconds%", String.valueOf(time)));
 				time--;
 			}

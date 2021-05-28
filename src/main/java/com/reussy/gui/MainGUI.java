@@ -11,16 +11,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class MainGUI {
 
-	private final ExodusHomes plugin;
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	FileManager fileManager = new FileManager();
 	ItemBuilder itemBuilder = new ItemBuilder();
-
-	public MainGUI(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
 
 	public void GUI(Player player) {
 
-		FileManager fileManager = new FileManager(plugin);
 		int size = fileManager.getGui().getInt("MainGUI.Size");
 		int background = 0;
 		String title = plugin.setHexColor(fileManager.getGui().getString("MainGUI.Title"));

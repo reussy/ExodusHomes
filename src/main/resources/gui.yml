@@ -35,12 +35,21 @@ HomesGUI:
     Homes:
       Icon: BOOK
       Amount: 1
+      Slot: 22
       Name: '&a%home_name%'
       Lore:
         - '&7X: &b%home_x% &7Y: &b%home_y% &7Z: &b%home_z%'
         - '&7World: &b%home_world%'
         - ''
-        - '&eClick to go!'
+        - '&e&oLeft click to go!'
+        - '&c&oLeft click to delete!'
+    Empty:
+      Icon: BARRIER
+      Amount: 1
+      Slot: 22
+      Name: '&c&lEmpty'
+      Lore:
+        ''
     Player-Info:
       Icon: PLAYER_HEAD
       Amount: 1

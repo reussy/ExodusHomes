@@ -12,11 +12,12 @@ import java.nio.charset.StandardCharsets;
 
 public class FileManager {
 
-	private final ExodusHomes plugin;
-
-	public FileManager(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	File configFile = new File(plugin.getDataFolder(), "config.yml");
+	File langFile = new File(plugin.getDataFolder(), "lang.yml");
+	public FileConfiguration langYaml = YamlConfiguration.loadConfiguration(langFile);
+	File guiFile = new File(plugin.getDataFolder(), "gui.yml");
+	public FileConfiguration guiYaml = YamlConfiguration.loadConfiguration(guiFile);
 
 	public void generateFolder() {
 
@@ -28,7 +29,6 @@ public class FileManager {
 
 	public void generateConfig() {
 
-		File configFile = new File(plugin.getDataFolder(), "config.yml");
 		if(!configFile.exists()) {
 
 			plugin.saveResource("config.yml", false);
@@ -37,7 +37,6 @@ public class FileManager {
 
 	public void generateLang() {
 
-		File langFile = new File(plugin.getDataFolder(), "lang.yml");
 		if(!langFile.exists()) {
 
 			plugin.saveResource("lang.yml", false);
@@ -46,29 +45,26 @@ public class FileManager {
 
 	public FileConfiguration getLang() {
 
-		File langFile = new File(plugin.getDataFolder(), "lang.yml");
-		return YamlConfiguration.loadConfiguration(langFile);
+		if(langYaml == null)
+			reloadLang();
+		return langYaml;
 	}
 
 	public void reloadLang() {
 
-		File langFile;
-		FileConfiguration langYaml;
+		if(langYaml == null) {
 
-		langFile = new File(plugin.getDataFolder(), "lang.yml");
-		langYaml = YamlConfiguration.loadConfiguration(langFile);
-		YamlConfiguration defStream;
-		try(Reader stream = new InputStreamReader(plugin.getResource("lang.yml"), StandardCharsets.UTF_8)) {
-			defStream = YamlConfiguration.loadConfiguration(stream);
+			langFile = new File(plugin.getDataFolder(), "lang.yml");
+			langYaml = YamlConfiguration.loadConfiguration(langFile);
+			Reader stream = new InputStreamReader(plugin.getResource("lang.yml"), StandardCharsets.UTF_8);
+			YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
 			langYaml.setDefaults(defStream);
-		} catch(Exception e) {
-			e.printStackTrace();
 		}
 	}
 
 	public void registerLang() {
 
-		File langFile = new File(plugin.getDataFolder(), "lang.yml");
+		langFile = new File(plugin.getDataFolder(), "lang.yml");
 		if(!langFile.exists()) {
 
 			getLang().options().copyDefaults(true);
@@ -79,12 +75,9 @@ public class FileManager {
 
 	public void saveLang() {
 
-		File langFile = new File(plugin.getDataFolder(), "lang.yml");
-		FileConfiguration langYaml = YamlConfiguration.loadConfiguration(langFile);
 		try {
 			langYaml.save(langFile);
 			plugin.saveDefaultConfig();
-
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -92,7 +85,6 @@ public class FileManager {
 
 	public void generateGui() {
 
-		File guiFile = new File(plugin.getDataFolder(), "gui.yml");
 		if(!guiFile.exists()) {
 
 			plugin.saveResource("gui.yml", false);
@@ -100,22 +92,26 @@ public class FileManager {
 	}
 
 	public FileConfiguration getGui() {
-		File guiFile = new File(plugin.getDataFolder(), "gui.yml");
-		return YamlConfiguration.loadConfiguration(guiFile);
+		if(guiYaml == null)
+			reloadGui();
+		return guiYaml;
 	}
 
 	public void reloadGui() {
-		FileConfiguration guiYaml;
-		File guiFile = new File(plugin.getDataFolder(), "gui.yml");
-		guiYaml = YamlConfiguration.loadConfiguration(guiFile);
-		Reader stream = new InputStreamReader(plugin.getResource("gui.yml"), StandardCharsets.UTF_8);
-		YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
-		guiYaml.setDefaults(defStream);
+
+		if(guiYaml == null) {
+
+			guiFile = new File(plugin.getDataFolder(), "gui.yml");
+			guiYaml = YamlConfiguration.loadConfiguration(guiFile);
+			Reader stream = new InputStreamReader(plugin.getResource("gui.yml"), StandardCharsets.UTF_8);
+			YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
+			guiYaml.setDefaults(defStream);
+		}
 	}
 
 	public void registerGui() {
 
-		File guiFile = new File(plugin.getDataFolder(), "gui.yml");
+		guiFile = new File(plugin.getDataFolder(), "gui.yml");
 		if(!guiFile.exists()) {
 
 			getGui().options().copyDefaults(true);
@@ -125,8 +121,7 @@ public class FileManager {
 	}
 
 	public void saveGui() {
-		File guiFile = new File(plugin.getDataFolder(), "gui.yml");
-		FileConfiguration guiYaml = YamlConfiguration.loadConfiguration(guiFile);
+
 		try {
 			guiYaml.save(guiFile);
 			plugin.saveDefaultConfig();
@@ -139,5 +134,10 @@ public class FileManager {
 	public String getMessage(String message) {
 
 		return this.getLang().getString(message);
+	}
+
+	public String getText(String text) {
+
+		return plugin.setHexColor(this.getGui().getString(text));
 	}
 }

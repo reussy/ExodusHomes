@@ -2,9 +2,11 @@ package com.reussy.managers;
 
 import com.reussy.ExodusHomes;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,12 +34,20 @@ public class StorageManager {
 		if(!idFile.exists()) {
 
 			try {
-				Bukkit.getConsoleSender().sendMessage("Creating new file in storage for " + player.getName());
-				idFile.createNewFile();
-				idYaml.set("Information" + ".UUID", player.getUniqueId().toString());
-				idYaml.set("Information" + ".PlayerName", player.getName());
-				idYaml.createSection("Homes");
-				idYaml.save(idFile);
+				new BukkitRunnable() {
+					@lombok.SneakyThrows
+					@Override
+					public void run() {
+
+						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aCreating new file in storage for &e" + player.getName()));
+						idFile.createNewFile();
+						idYaml.set("Information" + ".UUID", player.getUniqueId().toString());
+						idYaml.set("Information" + ".PlayerName", player.getName());
+						idYaml.createSection("Homes");
+						idYaml.save(idFile);
+						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSuccess!"));
+					}
+				}.runTaskAsynchronously(plugin);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

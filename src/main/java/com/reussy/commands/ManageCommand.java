@@ -1,6 +1,8 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
+import com.reussy.managers.FileManager;
+import com.reussy.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,26 +16,25 @@ import java.util.List;
 
 public class ManageCommand implements CommandExecutor, TabCompleter {
 
-	public ExodusHomes plugin;
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	FileManager fileManager = new FileManager();
+	MessageUtils messageUtils = new MessageUtils();
 	List<String> subcommands = new ArrayList<>();
 
-	public ManageCommand(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
 		if(!(sender instanceof Player)) {
 
-			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("No-Console"));
+			messageUtils.sendMessage(sender, fileManager.getMessage("No-Console"));
 
 			return false;
 		}
 
 		if(!sender.hasPermission("homes.command.player")) {
 
-			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
+			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
 			return false;
 		}
@@ -51,21 +52,15 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 			if(args.length == 1 && !args[0].equalsIgnoreCase("help")) {
 
-				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
 				return false;
 			}
 
 			if(args.length == 2 && args[0].equalsIgnoreCase("go")) {
 
-				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Few-Arguments"));
+				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments"));
 
-				return false;
-			}
-
-			if(Bukkit.getPlayer(args[1]) == null || !Bukkit.getPlayer(args[1]).isOnline()) {
-
-				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Unknown-Player"));
 				return false;
 			}
 		}

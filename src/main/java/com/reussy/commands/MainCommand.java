@@ -1,6 +1,8 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
+import com.reussy.managers.FileManager;
+import com.reussy.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,19 +14,17 @@ import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin;
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	FileManager fileManager = new FileManager();
+	MessageUtils messageUtils = new MessageUtils();
 	List<String> subcommands = new ArrayList<>();
-
-	public MainCommand(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 		if(!sender.hasPermission("homes.command.player")) {
 
-			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
+			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
 			return false;
 		}
@@ -59,9 +59,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 				case "reload":
 
 					plugin.reloadConfig();
-					plugin.fileManager.reloadLang();
-					plugin.fileManager.reloadGui();
-					plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Reload-Message"));
+					fileManager.reloadLang();
+					fileManager.reloadGui();
+					messageUtils.sendMessage(sender, fileManager.getMessage("Reload-Message"));
 
 					return false;
 

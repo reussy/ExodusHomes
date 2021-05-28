@@ -3,6 +3,8 @@ package com.reussy.commands;
 import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import com.reussy.gui.MainGUI;
+import com.reussy.managers.FileManager;
+import com.reussy.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,19 +17,17 @@ import java.util.List;
 
 public class PlayerCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin;
+	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	FileManager fileManager = new FileManager();
+	MessageUtils messageUtils = new MessageUtils();
 	List<String> subcommands = new ArrayList<>();
-
-	public PlayerCommand(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
 		if(!(sender instanceof Player)) {
 
-			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("No-Console"));
+			messageUtils.sendMessage(sender, fileManager.getMessage("No-Console"));
 
 			return false;
 		}
@@ -35,7 +35,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		if(!sender.hasPermission("homes.command.player")) {
 
 
-			plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
+			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
 			return false;
 		}
@@ -46,7 +46,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			if(args.length == 0) {
 
-				MainGUI mainGUI = new MainGUI(plugin);
+				MainGUI mainGUI = new MainGUI();
 				mainGUI.GUI(player);
 				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Open-GUI")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 				return false;
@@ -54,14 +54,14 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
 
-				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "home"));
+				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "home"));
 
 				return false;
 			}
 
 			if(args.length > 2) {
 
-				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Many-Arguments"));
+				messageUtils.sendMessage(sender, fileManager.getMessage("Many-Arguments"));
 				return false;
 			}
 		}
@@ -69,7 +69,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		for(String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")) {
 
 			if(!((Player) sender).getWorld().getName().contains(allowedWorlds)) {
-				plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Deny-World"));
+				messageUtils.sendMessage(sender, fileManager.getMessage("Deny-World"));
 				return false;
 			}
 		}
@@ -78,7 +78,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			if(args[0].equalsIgnoreCase("create")) {
 				if(args[1].contains(disallowedNames)) {
-					plugin.messageUtils.sendMessage(sender, plugin.fileManager.getMessage("Name-Not-Allowed"));
+					messageUtils.sendMessage(sender, fileManager.getMessage("Name-Not-Allowed"));
 					return false;
 				}
 			}

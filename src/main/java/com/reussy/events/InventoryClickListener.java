@@ -3,6 +3,7 @@ package com.reussy.events;
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
 import com.reussy.gui.HomesGUI;
+import com.reussy.managers.EssentialsStorageManager;
 import com.reussy.managers.FileManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,6 +36,11 @@ public class InventoryClickListener implements Listener {
 
 			if(e.getCurrentItem().getType() == XMaterial.valueOf(fileManager.getText("MainGUI.Items.Homes.Icon")).parseMaterial()) {
 				homesGUI.GUI(player);
+			}
+			if(e.getCurrentItem().getType() == XMaterial.valueOf(fileManager.getText("MainGUI.Items.Import.Icon")).parseMaterial()) {
+				EssentialsStorageManager essentialsStorageManager = new EssentialsStorageManager(player.getUniqueId());
+				essentialsStorageManager.importHomes(player.getUniqueId(), player, player);
+				player.closeInventory();
 			}
 		}
 	}

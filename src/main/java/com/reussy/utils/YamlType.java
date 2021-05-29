@@ -60,7 +60,6 @@ public class YamlType implements DatabaseType {
 			storageManager.getFile().set("Homes." + home + ".Pitch", player.getLocation().getPitch());
 			storageManager.getFile().set("Homes." + home + ".Yaw", player.getLocation().getYaw());
 			storageManager.saveFile();
-			storageManager.getFile().getString("Information.UUID");
 			messageUtils.sendMessage(player, fileManager.getMessage("Home-Created").replace("%home_name%", home));
 			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 			XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), XParticle.getParticle(plugin.getConfig().getString("Particles.Create-Home"))));
@@ -100,12 +99,6 @@ public class YamlType implements DatabaseType {
 
 		StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 		List<String> getHomes = (this.getHomes(player));
-
-		if(!player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
 
 		if(!hasHome(player)) {
 
@@ -158,12 +151,6 @@ public class YamlType implements DatabaseType {
 		StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 		ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
 
-		if(player != null || !player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
-
 		if(!hasHome(player)) {
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", player.getName()));
@@ -212,12 +199,6 @@ public class YamlType implements DatabaseType {
 
 		List<String> getHomes = this.getHomes(player);
 
-		if(player != null || !player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
-
 		if(!hasHome(player)) {
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", player.getName())
@@ -261,15 +242,9 @@ public class YamlType implements DatabaseType {
 	@Override
 	public void listHomesByAdmin(Player player, CommandSender sender) {
 
-		if(player != null || !player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
-
 		if(!hasHome(player)) {
 
-			messageUtils.sendMessage(sender, fileManager.getMessage("Homes-Empty").replace("%target%", player.getName()));
+			messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", player.getName()));
 
 			return;
 		}

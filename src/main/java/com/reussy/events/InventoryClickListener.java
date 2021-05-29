@@ -25,7 +25,7 @@ public class InventoryClickListener implements Listener {
 		Player player = (Player) e.getWhoClicked();
 		HomesGUI homesGUI = new HomesGUI();
 
-		if(fileManager.getText("MainGUI.Title").equalsIgnoreCase(e.getView().getTitle())) {
+		if(e.getView().getTitle().equalsIgnoreCase(fileManager.getText("MainGUI.Title"))) {
 
 			if(e.getCurrentItem() == null) return;
 
@@ -44,7 +44,7 @@ public class InventoryClickListener implements Listener {
 
 		Player player = (Player) e.getWhoClicked();
 
-		if(fileManager.getText("HomesGUI.Title").equalsIgnoreCase(plugin.setHexColor(e.getView().getTitle()))) {
+		if(e.getView().getTitle().equalsIgnoreCase(fileManager.getText("HomesGUI.Title"))) {
 
 			if(e.getClickedInventory() == player.getOpenInventory().getBottomInventory()) return;
 

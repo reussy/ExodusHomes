@@ -90,12 +90,6 @@ public class SQLType implements DatabaseType {
 
 		List<String> getHomes = (this.getHomes(player));
 
-		if(!player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
-
 		if(!hasHome(player)) {
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty".replace("%target%", player.getName())));
@@ -135,12 +129,6 @@ public class SQLType implements DatabaseType {
 
 	@Override
 	public void deleteAllByAdmin(Player player, CommandSender sender) {
-
-		if(!player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
 
 		if(!hasHome(player)) {
 
@@ -184,13 +172,7 @@ public class SQLType implements DatabaseType {
 	@Override
 	public void goHomeByAdmin(Player player, CommandSender sender, String home) {
 
-		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
-
-		if(!player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
+		List<String> getHomes = (this.getHomes(player));
 
 		if(!hasHome(player)) {
 
@@ -233,12 +215,6 @@ public class SQLType implements DatabaseType {
 
 	@Override
 	public void listHomesByAdmin(Player player, CommandSender sender) {
-
-		if(!player.isOnline()) {
-
-			messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player"));
-			return;
-		}
 
 		if(!hasHome(player)) {
 

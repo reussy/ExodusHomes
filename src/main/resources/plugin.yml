@@ -6,6 +6,7 @@ authors: [ reussy ]
 description: Set your homes easily!
 softdepend:
   - PlaceholderAPI
+  - EssentialsX
 
 commands:
   eh:
@@ -20,8 +21,6 @@ commands:
     description: Main Command for Players.
     aliases:
       - homes
-  ehd:
-    description: Debug command!
 
 permissions:
   homes.command.admin:

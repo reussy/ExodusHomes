@@ -1,5 +1,6 @@
 package com.reussy.managers;
 
+import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -46,22 +47,14 @@ public class EssentialsStorageManager {
 		StorageManager storageManager = new StorageManager(uuid, plugin);
 		ConfigurationSection essentialsSection = getPlayerYaml().getConfigurationSection("homes");
 
-		if(essentialsSection == null) {
+		if(essentialsSection.getKeys(false).isEmpty()) {
 
-			sender.sendMessage(plugin.setHexColor("&cThere is no file created for " + player.getName()));
+			sender.sendMessage(plugin.setHexColor("&cThere is no home to import from " + player.getName()));
 			return;
 		}
 
-
 		sender.sendMessage(plugin.setHexColor("&e&oStarting to import EssentialsX into ExodusHomes..."));
 		for(String essentialsHome : essentialsSection.getKeys(false)) {
-
-			if(essentialsHome.isEmpty()) {
-
-				sender.sendMessage(plugin.setHexColor("&cThere is no home to import from " + player.getName()));
-				return;
-			}
-
 
 			String world = essentialsSection.getString(essentialsHome + ".world");
 			double x = essentialsSection.getDouble(essentialsHome + ".x");
@@ -77,9 +70,9 @@ public class EssentialsStorageManager {
 			storageManager.getFile().set("Homes." + essentialsHome + ".Pitch", pitch);
 			storageManager.getFile().set("Homes." + essentialsHome + ".Yaw", yaw);
 			storageManager.saveFile();
-
+			((Player) sender).playSound(((Player) sender).getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1.5F, 3);
 		}
 		sender.sendMessage(plugin.setHexColor("&aImport completed successfully!"));
-		sender.sendMessage(plugin.setHexColor("&b" + essentialsSection.getKeys(false).size() + " &ahomes have been imported for " + player.getName()));
+		sender.sendMessage(plugin.setHexColor("&b&l" + essentialsSection.getKeys(false).size() + " &ahomes have been imported for " + player.getName()));
 	}
 }

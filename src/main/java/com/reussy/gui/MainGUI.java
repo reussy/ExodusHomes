@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainGUI {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
@@ -31,10 +34,21 @@ public class MainGUI {
 			background++;
 		}
 
-		ItemStack Homes = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Homes.Icon")), fileManager.getGui().getInt("MainGUI.Items.Homes.Amount")
+		ItemStack itemHomes = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Homes.Icon")), fileManager.getGui().getInt("MainGUI.Items.Homes.Amount")
 				, plugin.setHexColor(fileManager.getGui().getString("MainGUI.Items.Homes.Name")), null);
 
-		gui.setItem(fileManager.getGui().getInt("MainGUI.Items.Homes.Slot"), Homes);
+		gui.setItem(fileManager.getGui().getInt("MainGUI.Items.Homes.Slot"), itemHomes);
+
+		List<String> importLore = new ArrayList<>();
+		for(String getLore : fileManager.getGui().getStringList("MainGUI.Items.Import.Lore"))
+			importLore.add(plugin.setHexColor(getLore));
+
+		ItemStack importItem = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Import.Icon")), fileManager.getGui().getInt("MainGUI.Items.Import.Amount"),
+				plugin.setHexColor(fileManager.getGui().getString("MainGUI.Items.Import.Name")), importLore);
+
+		if(player.hasPermission(fileManager.getGui().getString("MainGUI.Items.Import.Permission")))
+			gui.setItem(fileManager.getGui().getInt("MainGUI.Items.Import.Slot"), importItem);
+
 		player.openInventory(gui);
 
 	}

@@ -17,7 +17,7 @@
 #Support PlaceholderAPI for
 #all items created here!
 MainGUI:
-  Title: '&8Exodus Homes'
+  Title: '&0&l›  &8Exodus Homes'
   Size: 54
   Items:
     Homes:
@@ -27,9 +27,18 @@ MainGUI:
       Name: '&eYour Homes &7(Click)'
       Lore:
         - '&7Open GUI Homes'
+    Import:
+      Icon: BEACON
+      Amount: 1
+      Slot: 31
+      Name: '&bImport Homes &7(Click)'
+      Lore:
+        - '&7Import homes from Essentials'
+        - '&7into Exodus Homes.'
+      Permission: 'homes.gui.import'
 
 HomesGUI:
-  Title: '&8Homes'
+  Title: '&0&l›  &8Homes'
   Size: 54
   Items:
     Homes:

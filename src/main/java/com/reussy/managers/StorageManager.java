@@ -13,25 +13,26 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
 public class StorageManager {
 
 	private final ExodusHomes plugin;
 	UUID uuid;
-	File idFile;
-	FileConfiguration idYaml;
+	File playerFile;
+	FileConfiguration playerYaml;
 
 	public StorageManager(UUID uuid, ExodusHomes plugin) {
 
 		this.plugin = plugin;
-		idFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + uuid + ".yml");
-		idYaml = YamlConfiguration.loadConfiguration(idFile);
+		playerFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + uuid + ".yml");
+		playerYaml = YamlConfiguration.loadConfiguration(playerFile);
 	}
 
 	public void createPlayerFile(Player player) { //Create a file for each player
 
-		if(!idFile.exists()) {
+		if(!playerFile.exists()) {
 
 			try {
 				new BukkitRunnable() {
@@ -40,11 +41,11 @@ public class StorageManager {
 					public void run() {
 
 						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aCreating new file in storage for &e" + player.getName()));
-						idFile.createNewFile();
-						idYaml.set("Information" + ".UUID", player.getUniqueId().toString());
-						idYaml.set("Information" + ".PlayerName", player.getName());
-						idYaml.createSection("Homes");
-						idYaml.save(idFile);
+						playerFile.createNewFile();
+						playerYaml.set("Information" + ".UUID", player.getUniqueId().toString());
+						playerYaml.set("Information" + ".PlayerName", player.getName());
+						playerYaml.createSection("Homes");
+						playerYaml.save(playerFile);
 						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSuccess!"));
 					}
 				}.runTaskAsynchronously(plugin);
@@ -56,23 +57,23 @@ public class StorageManager {
 
 	public FileConfiguration getFile() {
 
-		if(idFile == null)
+		if(playerFile == null)
 			reloadFile();
-		return idYaml;
+		return playerYaml;
 	}
 
 	public void reloadFile() {
 
-		idYaml = YamlConfiguration.loadConfiguration(idFile);
-		Reader stream = new InputStreamReader(plugin.getResource(File.separator + "storage" + File.separator + uuid + ".yml"), StandardCharsets.UTF_8);
+		playerYaml = YamlConfiguration.loadConfiguration(playerFile);
+		Reader stream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(File.separator + "storage" + File.separator + uuid + ".yml")), StandardCharsets.UTF_8);
 		YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
-		idYaml.setDefaults(defStream);
+		playerYaml.setDefaults(defStream);
 	}
 
 	public void saveFile() {
 
 		try {
-			idYaml.save(idFile);
+			playerYaml.save(playerFile);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}

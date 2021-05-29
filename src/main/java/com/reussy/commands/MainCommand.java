@@ -1,13 +1,16 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
+import com.reussy.managers.EssentialsStorageManager;
 import com.reussy.managers.FileManager;
 import com.reussy.utils.MessageUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +67,24 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 					messageUtils.sendMessage(sender, fileManager.getMessage("Reload-Message"));
 
 					return false;
+
+				case "import":
+
+					Player player = Bukkit.getPlayer(args[1]);
+					if(player != null) {
+						EssentialsStorageManager essentialsStorageManager = new EssentialsStorageManager(player.getUniqueId());
+						try {
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									essentialsStorageManager.importHomes(player.getUniqueId(), player, sender);
+								}
+							}.runTaskAsynchronously(plugin);
+						} catch(NullPointerException e) {
+							sender.sendMessage("Cannot import homes! See the console");
+							e.printStackTrace();
+						}
+					}
 
 				default:
 			}

@@ -1,13 +1,10 @@
 package com.reussy.utils;
 
 import com.cryptomorin.xseries.XSound;
-import com.cryptomorin.xseries.particles.ParticleDisplay;
-import com.cryptomorin.xseries.particles.XParticle;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -49,7 +46,6 @@ public class TeleportTask {
 				plugin.playerCache.remove(player.getName());
 				messageUtils.sendMessage(player, fileManager.getMessage("Home-Teleport").replace("%home_name%", home));
 				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Teleport-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-				XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Teleport-Home"))));
 
 			} else {
 

@@ -9,7 +9,7 @@
 #############################################################################################
 
 #Avaible Types: YAML or MySQL
-#Recommended MySQL!
+#MySQL does not have support for importing homes from EssentialsX!
 Database-Type: YAML
 MySQL:
   host: localhost
@@ -45,12 +45,6 @@ Background:
   Icon: BLACK_STAINED_GLASS_PANE
   Name: ''
 
-Titles:
-  Enable: true
-  Fade-In: 20
-  Stay: 15
-  Fade-Out: 20
-
 #Use sounds that are in the
 #version of your server!
 #https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
@@ -62,10 +56,3 @@ Sounds:
   Teleport-Home: ENTITY_ENDERMAN_TELEPORT
   Waiting-Teleport: UI_BUTTON_CLICK
   Open-GUI: BLOCK_CHEST_OPEN
-
-#Use particles that are in the
-#version of your server!
-#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
-Particles:
-  Create-Home: VILLAGER_HAPPY
-  Teleport-Home: SPELL_WITCH

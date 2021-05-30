@@ -72,12 +72,12 @@ public class HomesGUI {
 			if(slot > 45) break;
 		}
 
-		ItemStack itemFill = itemBuilder.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
+		ItemStack fillItem = itemBuilder.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
 				, plugin.setHexColor(plugin.getConfig().getString("Background.Name")), null);
 
 		while(slot_1 < 54) {
 
-			gui.setItem(slot_1, itemFill);
+			gui.setItem(slot_1, fillItem);
 
 			slot_1++;
 		}
@@ -86,10 +86,10 @@ public class HomesGUI {
 		for(String getLore : fileManager.getGui().getStringList("HomesGUI.Items.Player-Info.Lore"))
 			playerLore.add(plugin.setHexColor(getLore).replace("%homes_count%", Integer.toString(getHomes.size())));
 
-		ItemStack head = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Player-Info.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Player-Info.Amount"),
+		ItemStack headItem = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("HomesGUI.Items.Player-Info.Icon")), fileManager.getGui().getInt("HomesGUI.Items.Player-Info.Amount"),
 				plugin.setHexColor(fileManager.getGui().getString("HomesGUI.Items.Player-Info.Name")), playerLore);
 
-		gui.setItem(fileManager.getGui().getInt("HomesGUI.Items.Player-Info.Slot"), head);
+		gui.setItem(fileManager.getGui().getInt("HomesGUI.Items.Player-Info.Slot"), headItem);
 
 		player.openInventory(gui);
 	}

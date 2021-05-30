@@ -74,10 +74,10 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor("&r                   &6&oManage Commands"));
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm help &8- &7Show this message"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm go <player> <home> &8- &7Teleport to player home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm list <player> &8- &7List of home's of player"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm delete <player> <home> &8- &7Delete a homes for a player"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm deleteall <player> &8- &7Delete all homes for a player"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm go <player> <home> &8- &7Teleport to other player home"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm delete <player> <home> &8- &7Delete a homes for other player"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm deleteall <player> &8- &7Delete all homes for other player"));
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
 
@@ -115,6 +115,10 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				}
 				break;
 			default:
+				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
+				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
+				sender.sendMessage(plugin.setHexColor("&eUse &6/ehm help &efor commands!"));
+				break;
 		}
 
 		return false;

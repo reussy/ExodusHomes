@@ -8,6 +8,8 @@
 #                                                                                           #
 #############################################################################################
 
+#Please don't delete any section from here!
+
 #You can use normal color codes
 #https://www.colorschemer.com/minecraft-color-codes/
 #Also can use HEX colors (+1.16)
@@ -23,19 +25,19 @@ MainGUI:
     Homes:
       Icon: BOOKSHELF
       Amount: 1
-      Slot: 22
+      Slot: 21
       Name: '&eYour Homes &7(Click)'
       Lore:
         - '&7Open GUI Homes'
     Import:
       Icon: BEACON
       Amount: 1
-      Slot: 31
+      Slot: 23
       Name: '&bImport Homes &7(Click)'
       Lore:
-        - '&7Import homes from Essentials'
+        - '&7Import your homes from Essentials'
         - '&7into Exodus Homes.'
-      Permission: 'homes.gui.import'
+      Permission: 'homes.gui.import' #Permission needed for view this item!
 
 HomesGUI:
   Title: '&0&l›  &8Homes'

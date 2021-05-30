@@ -24,8 +24,9 @@ import java.util.regex.Pattern;
 public final class ExodusHomes extends JavaPlugin {
 
 	public ExodusHomes plugin;
-	public DatabaseType type;
+	public DatabaseType databaseType;
 	public boolean setFill = this.getConfig().getBoolean("Background.Enable");
+	public Player player;
 	public ArrayList<String> playerCache = new ArrayList<>();
 	private SQLMain connect;
 
@@ -44,11 +45,9 @@ public final class ExodusHomes extends JavaPlugin {
 		plugin = this;
 		Files();
 		getDatabaseType();
+		registerHooks();
 		Events();
 		Commands();
-
-		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6PlaceholderAPI"));
 
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
@@ -61,6 +60,15 @@ public final class ExodusHomes extends JavaPlugin {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aExodusHomes disabled, goodbye!"));
 	}
 
+	public void Files() {
+
+		FileManager fileManager = new FileManager();
+		fileManager.generateFolder();
+		fileManager.generateConfig();
+		fileManager.generateLang();
+		fileManager.generateGui();
+	}
+
 	public void getDatabaseType() {
 
 		if(("MySQL".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
@@ -68,14 +76,14 @@ public final class ExodusHomes extends JavaPlugin {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to connect to the database..."));
 			connect = new SQLMain(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"));
 			connect.createTable();
-			type = new SQLType();
+			databaseType = new SQLType();
 
 		} else if(("YAML".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6YAML"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eRegistering events..."));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 			Bukkit.getPluginManager().registerEvents(new PlayerDataListener(), this);
-			type = new YamlType();
+			databaseType = new YamlType();
 
 		} else {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&lDatabase Type: &6" + getConfig().getString("Database-Type")));
@@ -85,13 +93,18 @@ public final class ExodusHomes extends JavaPlugin {
 		}
 	}
 
-	public void Files() {
+	public void registerHooks() {
 
-		FileManager fileManager = new FileManager();
-		fileManager.generateFolder();
-		fileManager.generateConfig();
-		fileManager.generateLang();
-		fileManager.generateGui();
+		if(Bukkit.getPluginManager().getPlugin("Essentials") != null) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6EssentialsX"));
+		} else {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Import Essentials Homes feature no registered because EssentialsX is not installed!"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
+		}
+
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6PlaceholderAPI"));
+
 	}
 
 	public void Commands() {
@@ -110,33 +123,14 @@ public final class ExodusHomes extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), this);
 	}
 
-	public String setHexColor(String text) {
-
-		final Pattern pattern = Pattern.compile("#[a-fA-f0-9]{6}");
-
-		if(Bukkit.getVersion().contains("1.16")) {
-			Matcher matcher = pattern.matcher(text);
-			while(matcher.find()) {
-
-				String setColor = text.substring(matcher.start(), matcher.end());
-				text = text.replace(setColor, ChatColor.of(setColor) + "");
-			}
-		} else {
-
-			return org.bukkit.ChatColor.translateAlternateColorCodes('&', text);
-		}
-
-		return ChatColor.translateAlternateColorCodes('&', text);
-	}
-
 	public Connection getSQL() {
 
-		return this.connect.getConnection();
+		return connect.getConnection();
 	}
 
 	public DatabaseType databaseType() {
 
-		return type;
+		return databaseType;
 	}
 
 	public int getPermission(Player player) {
@@ -158,5 +152,24 @@ public final class ExodusHomes extends JavaPlugin {
 			}
 		}
 		return 0;
+	}
+
+	public String setHexColor(String text) {
+
+		final Pattern pattern = Pattern.compile("#[a-fA-f0-9]{6}");
+
+		if(Bukkit.getVersion().contains("1.16")) {
+			Matcher matcher = pattern.matcher(text);
+			while(matcher.find()) {
+
+				String setColor = text.substring(matcher.start(), matcher.end());
+				text = text.replace(setColor, ChatColor.of(setColor) + "");
+			}
+		} else {
+
+			return org.bukkit.ChatColor.translateAlternateColorCodes('&', text);
+		}
+
+		return ChatColor.translateAlternateColorCodes('&', text);
 	}
 }

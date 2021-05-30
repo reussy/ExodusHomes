@@ -38,9 +38,20 @@ public class InventoryClickListener implements Listener {
 				homesGUI.GUI(player);
 			}
 			if(e.getCurrentItem().getType() == XMaterial.valueOf(fileManager.getText("MainGUI.Items.Import.Icon")).parseMaterial()) {
-				EssentialsStorageManager essentialsStorageManager = new EssentialsStorageManager(player.getUniqueId());
-				essentialsStorageManager.importHomes(player.getUniqueId(), player, player);
+
 				player.closeInventory();
+				try {
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId());
+							essentialsStorage.importHomes(player.getUniqueId(), player, player);
+						}
+					}.runTaskLaterAsynchronously(plugin, 20L);
+				} catch(NullPointerException error) {
+					player.sendMessage("Cannot import homes! Report this please.");
+					error.printStackTrace();
+				}
 			}
 		}
 	}

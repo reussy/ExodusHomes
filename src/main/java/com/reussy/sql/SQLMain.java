@@ -29,8 +29,8 @@ public class SQLMain {
 
 				this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
 
-				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', ""));
 				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aConnected to your database!"));
+				Bukkit.getConsoleSender().sendMessage(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&7"));
 			}
 
 		} catch(SQLException | ClassNotFoundException e) {

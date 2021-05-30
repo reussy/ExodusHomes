@@ -1,14 +1,11 @@
 package com.reussy.utils;
 
 import com.cryptomorin.xseries.XSound;
-import com.cryptomorin.xseries.particles.ParticleDisplay;
-import com.cryptomorin.xseries.particles.XParticle;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
 import com.reussy.sql.SQLData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -57,7 +54,6 @@ public class SQLType implements DatabaseType {
 			sqlData.createHomes(plugin.getSQL(), player.getUniqueId(), player, world, home, x, y, z, pitch, yaw);
 			messageUtils.sendMessage(player, fileManager.getMessage("Home-Created").replace("%home_name%", home));
 			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-			XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), Particle.valueOf(plugin.getConfig().getString("Particles.Create-Home"))));
 		}
 	}
 
@@ -148,7 +144,7 @@ public class SQLType implements DatabaseType {
 
 		List<String> getHomes = (sqlData.getHomes(plugin.getSQL(), player.getUniqueId()));
 
-		if(hasHome(player)) {
+		if(!hasHome(player)) {
 
 			messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
 

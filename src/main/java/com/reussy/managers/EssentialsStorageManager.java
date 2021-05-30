@@ -10,20 +10,31 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class EssentialsStorageManager {
 
 	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	private final List<HomesManager> homesManager = new ArrayList<>();
 	File essentialsFolder;
 	File playerFile;
 	FileConfiguration playerYaml;
 
-
 	public EssentialsStorageManager(UUID uuid) {
+
+		Player player = Bukkit.getPlayer(uuid);
+		assert player != null;
+
+		if(Bukkit.getPluginManager().getPlugin("Essentials") == null) {
+
+			player.sendMessage(plugin.setHexColor("&c&nEssentialsX is not installed..."));
+			return;
+		}
+
+		if(!("YAML").equalsIgnoreCase(plugin.getConfig().getString("Database-Type"))) {
+
+			player.sendMessage(plugin.setHexColor("&c&nMySQL database not support this feature!"));
+			return;
+		}
 
 		essentialsFolder = Bukkit.getServer().getPluginManager().getPlugin("Essentials").getDataFolder();
 		playerFile = new File(essentialsFolder, File.separator + "userdata/" + uuid + ".yml");
@@ -70,7 +81,8 @@ public class EssentialsStorageManager {
 			storageManager.getFile().set("Homes." + essentialsHome + ".Pitch", pitch);
 			storageManager.getFile().set("Homes." + essentialsHome + ".Yaw", yaw);
 			storageManager.saveFile();
-			((Player) sender).playSound(((Player) sender).getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1.5F, 3);
+
+			((Player) sender).playSound(((Player) sender).getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1.5F, 1);
 		}
 		sender.sendMessage(plugin.setHexColor("&aImport completed successfully!"));
 		sender.sendMessage(plugin.setHexColor("&b&l" + essentialsSection.getKeys(false).size() + " &ahomes have been imported for " + player.getName()));

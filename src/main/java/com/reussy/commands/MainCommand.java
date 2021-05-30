@@ -25,7 +25,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-		if(!sender.hasPermission("homes.command.player")) {
+		if(!sender.hasPermission("homes.command.admin")) {
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
@@ -42,52 +42,67 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 				return false;
 			}
+			if(args.length == 1 && args[0].equalsIgnoreCase("import")) {
 
-			switch(args[0]) {
-
-				case "help":
-
-					sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
-					sender.sendMessage(plugin.setHexColor("&r"));
-					sender.sendMessage(plugin.setHexColor("&r                   &c&oAdmin Commands"));
-					sender.sendMessage(plugin.setHexColor("&r"));
-					sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh help &8- &7Show this message"));
-					sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh reload &8- &7Reload Configuration Files"));
-					sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm &8- &7Manage Homes for Players"));
-					sender.sendMessage(plugin.setHexColor("&r"));
-					sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
-
-					break;
-
-				case "reload":
-
-					plugin.reloadConfig();
-					fileManager.reloadLang();
-					fileManager.reloadGui();
-					messageUtils.sendMessage(sender, fileManager.getMessage("Reload-Message"));
-
-					return false;
-
-				case "import":
-
-					Player player = Bukkit.getPlayer(args[1]);
-					if(player != null) {
-						EssentialsStorageManager essentialsStorageManager = new EssentialsStorageManager(player.getUniqueId());
-						try {
-							new BukkitRunnable() {
-								@Override
-								public void run() {
-									essentialsStorageManager.importHomes(player.getUniqueId(), player, sender);
-								}
-							}.runTaskAsynchronously(plugin);
-						} catch(NullPointerException e) {
-							sender.sendMessage("Cannot import homes! See the console");
-							e.printStackTrace();
-						}
-					}
-
-				default:
+				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "eh"));
+				return false;
 			}
+		}
+
+		switch(args[0]) {
+
+			case "help":
+
+				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
+				sender.sendMessage(plugin.setHexColor("&r"));
+				sender.sendMessage(plugin.setHexColor("&r                   &c&oAdmin Commands"));
+				sender.sendMessage(plugin.setHexColor("&r"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh help &8- &7Show this message"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh reload &8- &7Reload Configuration Files"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm &8- &7Manage Homes for Players"));
+				sender.sendMessage(plugin.setHexColor("&r"));
+				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
+
+				break;
+
+			case "reload":
+
+				plugin.reloadConfig();
+				fileManager.reloadLang();
+				fileManager.reloadGui();
+				messageUtils.sendMessage(sender, fileManager.getMessage("Reload-Message"));
+
+				return false;
+
+			case "import":
+
+				Player player = Bukkit.getPlayer(args[1]);
+
+				if(player == null) {
+
+					sender.sendMessage(plugin.setHexColor("&cThis player does not exist or is not connected!"));
+					return false;
+				}
+
+				EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId());
+
+				try {
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							essentialsStorage.importHomes(player.getUniqueId(), player, sender);
+						}
+					}.runTaskLaterAsynchronously(plugin, 20L);
+				} catch(NullPointerException e) {
+					sender.sendMessage("Cannot import homes! See the console and report this please.");
+					e.printStackTrace();
+				}
+
+			default:
+				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
+				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
+				sender.sendMessage(plugin.setHexColor("&eUse &6/eh help &efor commands!"));
+				break;
 		}
 		return false;
 	}
@@ -103,6 +118,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 					subcommands.add("help");
 					subcommands.add("reload");
+					subcommands.add("import");
 				}
 			}
 			return subcommands;

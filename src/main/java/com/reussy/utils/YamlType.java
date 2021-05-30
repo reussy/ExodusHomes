@@ -1,8 +1,6 @@
 package com.reussy.utils;
 
 import com.cryptomorin.xseries.XSound;
-import com.cryptomorin.xseries.particles.ParticleDisplay;
-import com.cryptomorin.xseries.particles.XParticle;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
 import com.reussy.managers.StorageManager;
@@ -50,7 +48,6 @@ public class YamlType implements DatabaseType {
 
 			messageUtils.sendMessage(player, fileManager.getMessage("Has-Home"));
 
-
 		} else {
 
 			storageManager.getFile().set("Homes." + home + ".World", player.getWorld().getName());
@@ -62,7 +59,6 @@ public class YamlType implements DatabaseType {
 			storageManager.saveFile();
 			messageUtils.sendMessage(player, fileManager.getMessage("Home-Created").replace("%home_name%", home));
 			player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-			XParticle.circle(2, 5, ParticleDisplay.display(player.getLocation(), XParticle.getParticle(plugin.getConfig().getString("Particles.Create-Home"))));
 
 		}
 	}

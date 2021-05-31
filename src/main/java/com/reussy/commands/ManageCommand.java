@@ -1,6 +1,7 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
+import com.reussy.managers.EssentialsStorageManager;
 import com.reussy.managers.FileManager;
 import com.reussy.utils.MessageUtils;
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -63,6 +65,8 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 				return false;
 			}
+
+
 		}
 
 		switch(args[0]) {
@@ -74,6 +78,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor("&r                   &6&oManage Commands"));
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm help &8- &7Show this message"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm import <player> &8- &7Import homes from EssentialsX"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm list <player> &8- &7List of home's of player"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm go <player> <home> &8- &7Teleport to other player home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm delete <player> <home> &8- &7Delete a homes for other player"));
@@ -81,6 +86,38 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
 
+				break;
+
+			case "import":
+
+				Player player = Bukkit.getPlayer(args[1]);
+
+				if(player == null) {
+
+					sender.sendMessage(plugin.setHexColor("&cThis player does not exist or is not connected!"));
+					return false;
+				}
+
+
+				try {
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId(), player, sender);
+						}
+					}.runTaskLaterAsynchronously(plugin, 20L);
+				} catch(NullPointerException e) {
+					sender.sendMessage("Cannot import homes! See the console and report this please.");
+					e.printStackTrace();
+				}
+				break;
+
+			case "list":
+				try {
+					plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]), sender);
+				} catch(NullPointerException e) {
+					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+				}
 				break;
 
 			case "go":
@@ -92,28 +129,31 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			case "delete":
-				try {
-					plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
-				} catch(NullPointerException e) {
-					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
-				}
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						try {
+							plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
+						} catch(NullPointerException e) {
+							messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+						}
+					}
+				}.runTaskAsynchronously(plugin);
 				break;
 
 			case "deleteall":
-				try {
-					plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]), sender);
-				} catch(NullPointerException e) {
-					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
-				}
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						try {
+							plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]), sender);
+						} catch(NullPointerException e) {
+							messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+						}
+					}
+				}.runTaskAsynchronously(plugin);
 				break;
 
-			case "list":
-				try {
-					plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]), sender);
-				} catch(NullPointerException e) {
-					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
-				}
-				break;
 			default:
 				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
 				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
@@ -131,6 +171,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 			if(args.length == 1) {
 
 				subcommands.add("help");
+				subcommands.add("import");
 				subcommands.add("go");
 				subcommands.add("list");
 				subcommands.add("delete");

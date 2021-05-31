@@ -1,16 +1,13 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
-import com.reussy.managers.EssentialsStorageManager;
 import com.reussy.managers.FileManager;
 import com.reussy.utils.MessageUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,30 +71,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 				return false;
 
-			case "import":
-
-				Player player = Bukkit.getPlayer(args[1]);
-
-				if(player == null) {
-
-					sender.sendMessage(plugin.setHexColor("&cThis player does not exist or is not connected!"));
-					return false;
-				}
-
-				EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId());
-
-				try {
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							essentialsStorage.importHomes(player.getUniqueId(), player, sender);
-						}
-					}.runTaskLaterAsynchronously(plugin, 20L);
-				} catch(NullPointerException e) {
-					sender.sendMessage("Cannot import homes! See the console and report this please.");
-					e.printStackTrace();
-				}
-
 			default:
 				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
 				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
@@ -118,7 +91,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 					subcommands.add("help");
 					subcommands.add("reload");
-					subcommands.add("import");
 				}
 			}
 			return subcommands;

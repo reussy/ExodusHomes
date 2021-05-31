@@ -19,20 +19,19 @@ public class EssentialsStorageManager {
 	File playerFile;
 	FileConfiguration playerYaml;
 
-	public EssentialsStorageManager(UUID uuid) {
+	public EssentialsStorageManager(UUID uuid, Player player, CommandSender sender) {
 
-		Player player = Bukkit.getPlayer(uuid);
 		assert player != null;
 
 		if(Bukkit.getPluginManager().getPlugin("Essentials") == null) {
 
-			player.sendMessage(plugin.setHexColor("&c&nEssentialsX is not installed..."));
+			sender.sendMessage(plugin.setHexColor("&c&nEssentialsX is not installed..."));
 			return;
 		}
 
 		if(!("YAML").equalsIgnoreCase(plugin.getConfig().getString("Database-Type"))) {
 
-			player.sendMessage(plugin.setHexColor("&c&nMySQL database not support this feature!"));
+			sender.sendMessage(plugin.setHexColor("&c&nMySQL database not support this feature!"));
 			return;
 		}
 
@@ -40,16 +39,7 @@ public class EssentialsStorageManager {
 		playerFile = new File(essentialsFolder, File.separator + "userdata/" + uuid + ".yml");
 		playerYaml = YamlConfiguration.loadConfiguration(playerFile);
 
-	}
-
-	public FileConfiguration getPlayerYaml() {
-
-		return playerYaml;
-	}
-
-	public void importHomes(UUID uuid, Player player, CommandSender sender) {
-
-		if(playerFile == null) {
+		if(!playerFile.exists()) {
 
 			sender.sendMessage(plugin.setHexColor("&cThere is no file created for " + player.getName()));
 			return;
@@ -86,5 +76,11 @@ public class EssentialsStorageManager {
 		}
 		sender.sendMessage(plugin.setHexColor("&aImport completed successfully!"));
 		sender.sendMessage(plugin.setHexColor("&b&l" + essentialsSection.getKeys(false).size() + " &ahomes have been imported for " + player.getName()));
+	}
+
+
+	public FileConfiguration getPlayerYaml() {
+
+		return playerYaml;
 	}
 }

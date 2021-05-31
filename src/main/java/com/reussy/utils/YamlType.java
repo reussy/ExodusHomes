@@ -34,15 +34,6 @@ public class YamlType implements DatabaseType {
 
 		StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 		List<String> getHomes = this.getHomes(player);
-		int getLimit = plugin.getPermission(player);
-
-		if(getLimit == getHomes.size()) {
-
-			messageUtils.sendMessage(player, fileManager.getMessage("Limit-Reached"));
-
-			return;
-
-		}
 
 		if(hasHome(player) && getHomes.contains(home)) {
 
@@ -182,10 +173,10 @@ public class YamlType implements DatabaseType {
 			return;
 		}
 
-		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
-		Home.add(0.5D, 0.0D, 0.5D);
+		Location homeLocation = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+		homeLocation.add(0.5D, 0.0D, 0.5D);
 		int time = plugin.getConfig().getInt("Teleport-Delay.Time");
-		TeleportTask teleportTask = new TeleportTask(plugin, time, player, Home, home);
+		TeleportTask teleportTask = new TeleportTask(plugin, time, player, homeLocation, home);
 		teleportTask.runTask();
 
 	}

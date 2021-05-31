@@ -26,7 +26,6 @@ public final class ExodusHomes extends JavaPlugin {
 	public ExodusHomes plugin;
 	public DatabaseType databaseType;
 	public boolean setFill = this.getConfig().getBoolean("Background.Enable");
-	public Player player;
 	public ArrayList<String> playerCache = new ArrayList<>();
 	private SQLMain connect;
 

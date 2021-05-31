@@ -20,7 +20,7 @@ MySQL:
 
 #Prefix for messages
 #Set '' if you don't want to use it!
-Plugin-Prefix: '&b&lHOMES &8»'
+Plugin-Prefix: '&8[&b&lHomes&8] '
 
 #Worlds where homes are allowed!
 Whitelist-Worlds:

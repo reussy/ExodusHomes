@@ -36,14 +36,14 @@ public class SQLType implements DatabaseType {
 		float pitch = player.getLocation().getPitch();
 		float yaw = player.getLocation().getYaw();
 
-		while(!getHomes.isEmpty()) {
-			if(getLimit == getHomes.size()) {
+		/*
+		if(getLimit == getHomes.size()) {
 
-				messageUtils.sendMessage(player, fileManager.getMessage("Limit-Reached"));
+			messageUtils.sendMessage(player, fileManager.getMessage("Limit-Reached"));
 
-				return;
-			}
+			return;
 		}
+		 */
 
 		if(hasHome(player) && getHomes.contains(home)) {
 
@@ -62,7 +62,7 @@ public class SQLType implements DatabaseType {
 
 		List<String> getHomes = (this.getHomes(player));
 
-		if(hasHome(player)) {
+		if(!hasHome(player)) {
 
 			messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
 
@@ -88,7 +88,7 @@ public class SQLType implements DatabaseType {
 
 		if(!hasHome(player)) {
 
-			messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty".replace("%target%", player.getName())));
+			messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", player.getName()));
 
 			return;
 		}
@@ -111,7 +111,7 @@ public class SQLType implements DatabaseType {
 	@Override
 	public void deleteAll(Player player) {
 
-		if(hasHome(player)) {
+		if(!hasHome(player)) {
 
 			messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
 
@@ -157,10 +157,10 @@ public class SQLType implements DatabaseType {
 			return;
 		}
 
-		Location Home = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
-		Home.add(0.5D, 0.0D, 0.5D);
+		Location homeLocation = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
+		homeLocation.add(0.5D, 0.0D, 0.5D);
 		int time = plugin.getConfig().getInt("Teleport-Delay.Time");
-		TeleportTask teleportTask = new TeleportTask(plugin, time, player, Home, home);
+		TeleportTask teleportTask = new TeleportTask(plugin, time, player, homeLocation, home);
 		teleportTask.runTask();
 
 	}

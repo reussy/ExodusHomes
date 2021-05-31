@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -84,6 +85,19 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			}
 		}
 
+		if(plugin.getPermission(player) == plugin.databaseType.getHomes(player).size()) {
+
+			messageUtils.sendMessage(player, fileManager.getMessage("Limit-Reached"));
+			return false;
+		}
+
+		if(!plugin.databaseType.hasHome(player)) {
+
+			messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
+
+			return false;
+		}
+
 		switch(args[0]) {
 
 			case "help":
@@ -99,22 +113,39 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home go <home> &8- &7Teleport to home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home delete <home> &8- &7Delete a home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home deleteall &8- &7Delete all yor current home's"));
-				;
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
 
 				break;
 
 			case "create":
-				plugin.databaseType().createHome(player, args[1]);
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						plugin.databaseType().createHome(player, args[1]);
+					}
+				}.runTaskAsynchronously(plugin);
+
 				break;
 
 			case "delete":
-				plugin.databaseType().deleteHome(player, args[1]);
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						plugin.databaseType().deleteHome(player, args[1]);
+					}
+				}.runTaskAsynchronously(plugin);
 				break;
 
 			case "deleteall":
-				plugin.databaseType().deleteAll(player);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						plugin.databaseType().deleteAll(player);
+					}
+				}.runTaskAsynchronously(plugin);
 				break;
 
 			case "go":

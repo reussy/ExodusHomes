@@ -21,21 +21,17 @@ public class MainGUI {
 	public void GUI(Player player) {
 
 		int size = fileManager.getGui().getInt("MainGUI.Size");
-		int background = 0;
 		String title = plugin.setHexColor(fileManager.getGui().getString("MainGUI.Title"));
 		Inventory gui = Bukkit.createInventory(null, size, title);
 
-		ItemStack itemFill = itemBuilder.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
-				, plugin.setHexColor(plugin.getConfig().getString("Background.Name")), null);
+		itemBuilder.setBackground(player, gui, 0, fileManager.getGui().getInt("MainGUI.Size"));
 
-		if(plugin.setFill) while(background < fileManager.getGui().getInt("MainGUI.Size")) {
-
-			gui.setItem(background, itemFill);
-			background++;
-		}
+		List<String> homesLore = new ArrayList<>();
+		for(String getLore : fileManager.getGui().getStringList("MainGUI.Items.Homes.Lore"))
+			homesLore.add(plugin.setHexColor(getLore));
 
 		ItemStack itemHomes = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Homes.Icon")), fileManager.getGui().getInt("MainGUI.Items.Homes.Amount")
-				, plugin.setHexColor(fileManager.getGui().getString("MainGUI.Items.Homes.Name")), null);
+				, plugin.setHexColor(fileManager.getGui().getString("MainGUI.Items.Homes.Name")), homesLore);
 
 		gui.setItem(fileManager.getGui().getInt("MainGUI.Items.Homes.Slot"), itemHomes);
 

@@ -44,8 +44,7 @@ public class InventoryClickListener implements Listener {
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId());
-							essentialsStorage.importHomes(player.getUniqueId(), player, player);
+							EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId(), player, player);
 						}
 					}.runTaskLaterAsynchronously(plugin, 20L);
 				} catch(NullPointerException error) {

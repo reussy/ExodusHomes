@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class FileManager {
 
@@ -52,14 +53,17 @@ public class FileManager {
 
 	public void reloadLang() {
 
-		if(langYaml == null) {
+		if(langFile == null) {
 
 			langFile = new File(plugin.getDataFolder(), "lang.yml");
-			langYaml = YamlConfiguration.loadConfiguration(langFile);
-			Reader stream = new InputStreamReader(plugin.getResource("lang.yml"), StandardCharsets.UTF_8);
-			YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
-			langYaml.setDefaults(defStream);
 		}
+
+		langYaml = YamlConfiguration.loadConfiguration(langFile);
+		Reader defConfigStream;
+		defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("lang.yml")), StandardCharsets.UTF_8);
+		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+		langYaml.setDefaults(defConfig);
+
 	}
 
 	public void registerLang() {
@@ -99,14 +103,16 @@ public class FileManager {
 
 	public void reloadGui() {
 
-		if(guiYaml == null) {
+		if(guiFile == null) {
 
 			guiFile = new File(plugin.getDataFolder(), "gui.yml");
-			guiYaml = YamlConfiguration.loadConfiguration(guiFile);
-			Reader stream = new InputStreamReader(plugin.getResource("gui.yml"), StandardCharsets.UTF_8);
-			YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
-			guiYaml.setDefaults(defStream);
 		}
+
+		guiYaml = YamlConfiguration.loadConfiguration(guiFile);
+		Reader defConfigStream;
+		defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("gui.yml")), StandardCharsets.UTF_8);
+		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+		guiYaml.setDefaults(defConfig);
 	}
 
 	public void registerGui() {

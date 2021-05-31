@@ -10,7 +10,7 @@ public class MessageUtils {
 	public void sendMessage(CommandSender sender, String message) {
 		String messagePrefix = plugin.setHexColor(plugin.getConfig().getString("Plugin-Prefix"));
 		try {
-			sender.sendMessage(plugin.setHexColor(messagePrefix + " " + message));
+			sender.sendMessage(plugin.setHexColor(messagePrefix + message));
 		} catch(NullPointerException e) {
 			e.printStackTrace();
 		}

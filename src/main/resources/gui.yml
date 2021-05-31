@@ -52,7 +52,7 @@ HomesGUI:
         - '&7X: &b%home_x% &7Y: &b%home_y% &7Z: &b%home_z%'
         - '&7World: &b%home_world%'
         - ''
-        - '&e&oLeft click to go!'
+        - '&a&oLeft click to teleport!'
         - '&c&oLeft click to delete!'
     Empty:
       Icon: BARRIER

@@ -65,8 +65,13 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 				return false;
 			}
+			if(!args[0].equalsIgnoreCase("help")) {
+				if(Bukkit.getPlayer(args[1]) == null) {
 
-
+					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+					return false;
+				}
+			}
 		}
 
 		switch(args[0]) {
@@ -113,43 +118,75 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			case "list":
-				try {
-					plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]), sender);
-				} catch(NullPointerException e) {
-					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+
+				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+
+					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+
+					return false;
 				}
+
+				plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]), sender);
 				break;
 
 			case "go":
-				try {
-					plugin.databaseType().goHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
-				} catch(NullPointerException e) {
-					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+
+				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+
+					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+
+					return false;
 				}
+
+				if(!plugin.databaseType.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
+
+					messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
+							.replace("%home_name%", args[2])
+							.replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+					return false;
+				}
+
+				plugin.databaseType().goHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
 				break;
 
 			case "delete":
+
+				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+
+					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+
+					return false;
+				}
+
+				if(!plugin.databaseType.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
+
+					messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
+							.replace("%home_name%", args[2])
+							.replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+					return false;
+				}
+
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						try {
-							plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
-						} catch(NullPointerException e) {
-							messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
-						}
+						plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
 					}
 				}.runTaskAsynchronously(plugin);
 				break;
 
 			case "deleteall":
+
+				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+
+					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+
+					return false;
+				}
+
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						try {
-							plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]), sender);
-						} catch(NullPointerException e) {
-							messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
-						}
+						plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]), sender);
 					}
 				}.runTaskAsynchronously(plugin);
 				break;
@@ -184,11 +221,15 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 				for(Player p : Bukkit.getOnlinePlayers()) {
 
+					if(p == null) return null;
+
 					onlinePlayers.add(p.getName());
 				}
 				return onlinePlayers;
 			} else if(args.length == 3) {
 				Player player = Bukkit.getPlayer(args[1]);
+
+				if(player == null) return null;
 
 				return plugin.databaseType().getHomes(player);
 			}

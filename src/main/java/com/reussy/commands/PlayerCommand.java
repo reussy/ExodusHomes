@@ -85,16 +85,9 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			}
 		}
 
-		if(plugin.getPermission(player) == plugin.databaseType.getHomes(player).size()) {
+		if(plugin.getPermission(player) >= plugin.databaseType.getHomes(player).size()) {
 
 			messageUtils.sendMessage(player, fileManager.getMessage("Limit-Reached"));
-			return false;
-		}
-
-		if(!plugin.databaseType.hasHome(player)) {
-
-			messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
-
 			return false;
 		}
 
@@ -120,6 +113,12 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			case "create":
 
+				if(plugin.databaseType.getHomes(player).contains(args[1])) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("Has-Home"));
+					return false;
+				}
+
 				new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -131,6 +130,18 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			case "delete":
 
+				if(!plugin.databaseType.hasHome(player)) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
+					return false;
+				}
+
+				if(!plugin.databaseType.getHomes(player).contains(args[1])) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
+					return false;
+				}
+
 				new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -140,6 +151,13 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			case "deleteall":
+
+				if(!plugin.databaseType.hasHome(player)) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
+					return false;
+				}
+
 				new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -149,10 +167,32 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			case "go":
+
+				if(!plugin.databaseType.hasHome(player)) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
+
+					return false;
+				}
+
+				if(!plugin.databaseType.getHomes(player).contains(args[1])) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
+					return false;
+				}
+
 				plugin.databaseType().goHome(player, args[1]);
 				break;
 
 			case "list":
+
+				if(!plugin.databaseType.hasHome(player)) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
+
+					return false;
+				}
+
 				plugin.databaseType().listHomes(player);
 				break;
 

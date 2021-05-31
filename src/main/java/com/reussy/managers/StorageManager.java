@@ -34,24 +34,27 @@ public class StorageManager {
 
 		if(!playerFile.exists()) {
 
-			try {
-				new BukkitRunnable() {
-					@lombok.SneakyThrows
-					@Override
-					public void run() {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
 
-						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aCreating new file in storage for &e" + player.getName()));
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aCreating new file in storage for &e" + player.getName()));
+					try {
 						playerFile.createNewFile();
-						playerYaml.set("Information" + ".UUID", player.getUniqueId().toString());
-						playerYaml.set("Information" + ".PlayerName", player.getName());
-						playerYaml.createSection("Homes");
-						playerYaml.save(playerFile);
-						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSuccess!"));
+					} catch(IOException e) {
+						e.printStackTrace();
 					}
-				}.runTaskAsynchronously(plugin);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+					playerYaml.set("Information" + ".UUID", player.getUniqueId().toString());
+					playerYaml.set("Information" + ".PlayerName", player.getName());
+					playerYaml.createSection("Homes");
+					try {
+						playerYaml.save(playerFile);
+					} catch(IOException e) {
+						e.printStackTrace();
+					}
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSuccess!"));
+				}
+			}.runTaskAsynchronously(plugin);
 		}
 	}
 

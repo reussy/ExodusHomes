@@ -1,6 +1,5 @@
 package com.reussy.sql;
 
-import com.reussy.ExodusHomes;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -13,13 +12,9 @@ import java.util.UUID;
 
 public class SQLData {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-
 	public boolean hasHomes(Connection connection, UUID uuid) {
 
 		try {
-
-			if(!plugin.getConfig().getString("Database-Type").equalsIgnoreCase("MySQL")) return false;
 
 			String hasHome = "SELECT * FROM homes WHERE (UUID=?)";
 			PreparedStatement statement = connection.prepareStatement(hasHome);
@@ -216,16 +211,12 @@ public class SQLData {
 
 		try {
 
-			if(hasHomes(connection, uuid)) {
-
-				String Home = "DELETE FROM homes WHERE UUID=? AND HOME=?";
-				PreparedStatement statement = connection.prepareStatement(Home);
-				statement.setString(1, uuid.toString());
-				statement.setString(2, home);
-				statement.executeUpdate();
-				statement.close();
-
-			}
+			String Home = "DELETE FROM homes WHERE UUID=? AND HOME=?";
+			PreparedStatement statement = connection.prepareStatement(Home);
+			statement.setString(1, uuid.toString());
+			statement.setString(2, home);
+			statement.executeUpdate();
+			statement.close();
 
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -235,15 +226,11 @@ public class SQLData {
 	public void deleteAll(Connection connection, UUID uuid) {
 
 		try {
-
-			if(hasHomes(connection, uuid)) {
-
-				String homes = "DELETE FROM homes WHERE UUID=?";
-				PreparedStatement statement = connection.prepareStatement(homes);
-				statement.setString(1, uuid.toString());
-				statement.executeUpdate();
-				statement.close();
-			}
+			String homes = "DELETE FROM homes WHERE UUID=?";
+			PreparedStatement statement = connection.prepareStatement(homes);
+			statement.setString(1, uuid.toString());
+			statement.executeUpdate();
+			statement.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}

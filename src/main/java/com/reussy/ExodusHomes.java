@@ -132,25 +132,25 @@ public final class ExodusHomes extends JavaPlugin {
 		return databaseType;
 	}
 
-	public int getPermission(Player player) {
+	public boolean getPerm(Player player) {
 
-		for(PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
+		for(PermissionAttachmentInfo permissionAttachmentInfo : player.getEffectivePermissions()) {
 
-			String permission = perms.getPermission();
+			String getPermission = permissionAttachmentInfo.getPermission();
 
-			if(player.isOp()) return -1;
+			if(player.isOp()) return true;
 
-			if(permission.equalsIgnoreCase("homes.limit.unlimited")) return -1;
+			if(getPermission.equalsIgnoreCase("homes.limit.*")) return true;
 
-			if(permission.startsWith("homes.limit.")) {
+			if(getPermission.startsWith("homes.limit.")) {
 
-				return Integer.parseInt(permission.substring(permission.lastIndexOf(".") + 1));
-			} else {
+				int homesLimit = Integer.parseInt(getPermission.substring(getPermission.lastIndexOf(".") + 1));
 
-				return 0;
+				if(this.databaseType.getHomes(player).size() < homesLimit) return true;
 			}
 		}
-		return 0;
+
+		return false;
 	}
 
 	public String setHexColor(String text) {

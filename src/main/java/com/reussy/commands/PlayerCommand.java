@@ -53,7 +53,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 
-			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
+			if(args.length == 1 && !args[0].equalsIgnoreCase("debug") && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
 
 				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "home"));
 
@@ -85,13 +85,13 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			}
 		}
 
-		if(plugin.getPermission(player) >= plugin.databaseType.getHomes(player).size()) {
-
-			messageUtils.sendMessage(player, fileManager.getMessage("Limit-Reached"));
-			return false;
-		}
-
 		switch(args[0]) {
+
+			case "debug":
+
+				player.sendMessage("Should create homes = " + plugin.getPerm(player));
+
+				break;
 
 			case "help":
 
@@ -116,6 +116,12 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				if(plugin.databaseType.getHomes(player).contains(args[1])) {
 
 					messageUtils.sendMessage(player, fileManager.getMessage("Has-Home"));
+					return false;
+				}
+
+				if(!plugin.getPerm(player)) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("Limit-Reached"));
 					return false;
 				}
 

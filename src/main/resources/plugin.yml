@@ -36,3 +36,6 @@ permissions:
 
   homes.command.player:
     description: Permission for player commands
+
+  homes.command.*:
+    description: No limit for create homes!

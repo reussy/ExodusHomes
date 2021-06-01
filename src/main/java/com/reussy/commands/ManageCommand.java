@@ -205,33 +205,35 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 	public List<String> onTabComplete(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
 
 		if(cmd.getName().equalsIgnoreCase("ehm")) {
-			if(args.length == 1) {
+			if(sender.hasPermission("homes.command.manage")) {
+				if(args.length == 1) {
 
-				subcommands.add("help");
-				subcommands.add("import");
-				subcommands.add("go");
-				subcommands.add("list");
-				subcommands.add("delete");
-				subcommands.add("deleteall");
+					subcommands.add("help");
+					subcommands.add("import");
+					subcommands.add("go");
+					subcommands.add("list");
+					subcommands.add("delete");
+					subcommands.add("deleteall");
 
 
-				return subcommands;
-			} else if(args.length == 2) {
-				List<String> onlinePlayers = new ArrayList<>();
+					return subcommands;
+				} else if(args.length == 2) {
+					List<String> onlinePlayers = new ArrayList<>();
 
-				for(Player p : Bukkit.getOnlinePlayers()) {
+					for(Player p : Bukkit.getOnlinePlayers()) {
 
-					if(p == null) return null;
+						if(p == null) return null;
 
-					onlinePlayers.add(p.getName());
+						onlinePlayers.add(p.getName());
+					}
+					return onlinePlayers;
+				} else if(args.length == 3) {
+					Player player = Bukkit.getPlayer(args[1]);
+
+					if(player == null) return null;
+
+					return plugin.databaseType().getHomes(player);
 				}
-				return onlinePlayers;
-			} else if(args.length == 3) {
-				Player player = Bukkit.getPlayer(args[1]);
-
-				if(player == null) return null;
-
-				return plugin.databaseType().getHomes(player);
 			}
 		}
 

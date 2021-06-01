@@ -87,12 +87,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 		switch(args[0]) {
 
-			case "debug":
-
-				player.sendMessage("Should create homes = " + plugin.getPerm(player));
-
-				break;
-
 			case "help":
 
 				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));

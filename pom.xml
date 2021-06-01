@@ -6,7 +6,7 @@
 
     <groupId>com.reussy</groupId>
     <artifactId>ExodusHomes</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>Exodus Homes</name>
@@ -57,6 +57,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <relocations>
+                        <!-- Using the maven-shade-plugin to shade and relocate the UpdateChecker -->
+                        <!-- Replace "your.package" with your plugin's package name -->
+                        <relocation>
+                            <pattern>de.jeff_media.updatechecker</pattern>
+                            <shadedPattern>com.reussy.utils</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -74,6 +97,10 @@
         <repository>
             <id>essentials-snapshots</id>
             <url>https://repo.essentialsx.net/snapshots/</url>
+        </repository>
+        <repository>
+            <id>jeff-media-gbr</id>
+            <url>https://repo.jeff-media.de/maven2/</url>
         </repository>
     </repositories>
 
@@ -94,6 +121,12 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.10.9</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.jeff_media</groupId>
+            <artifactId>SpigotUpdateChecker</artifactId>
+            <version>1.2.4</version> <!-- Check on GitHub for the latest version -->
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

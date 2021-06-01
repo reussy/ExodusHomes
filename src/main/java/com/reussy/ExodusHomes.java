@@ -10,6 +10,7 @@ import com.reussy.sql.SQLMain;
 import com.reussy.utils.DatabaseType;
 import com.reussy.utils.SQLType;
 import com.reussy.utils.YamlType;
+import de.jeff_media.updatechecker.UpdateChecker;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -47,6 +48,13 @@ public final class ExodusHomes extends JavaPlugin {
 		registerHooks();
 		Events();
 		Commands();
+		UpdateChecker.init(this, 92900)
+				.checkEveryXHours(1)
+				.setDonationLink("https://www.buymeacoffee.com/reussy")
+				.setFreeDownloadLink("https://rb.gy/qnegev")
+				.setChangelogLink("https://rb.gy/a9grgr")
+				.setNotifyOpsOnJoin(true)
+				.checkNow();
 
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
@@ -108,12 +116,12 @@ public final class ExodusHomes extends JavaPlugin {
 
 	public void Commands() {
 
-		this.getCommand("eh").setExecutor(new MainCommand());
-		this.getCommand("ehm").setExecutor(new ManageCommand());
-		this.getCommand("home").setExecutor(new PlayerCommand());
-		this.getCommand("eh").setTabCompleter(new MainCommand());
-		this.getCommand("ehm").setTabCompleter(new ManageCommand());
-		this.getCommand("home").setTabCompleter(new PlayerCommand());
+		this.getCommand("eh").setExecutor(new MainCommand(this));
+		this.getCommand("ehm").setExecutor(new ManageCommand(this));
+		this.getCommand("home").setExecutor(new PlayerCommand(this));
+		this.getCommand("eh").setTabCompleter(new MainCommand(this));
+		this.getCommand("ehm").setTabCompleter(new ManageCommand(this));
+		this.getCommand("home").setTabCompleter(new PlayerCommand(this));
 
 	}
 

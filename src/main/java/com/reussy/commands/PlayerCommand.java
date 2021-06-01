@@ -18,7 +18,12 @@ import java.util.List;
 
 public class PlayerCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	private final ExodusHomes plugin;
+
+	public PlayerCommand(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
+
 	FileManager fileManager = new FileManager();
 	MessageUtils messageUtils = new MessageUtils();
 	List<String> subcommands = new ArrayList<>();
@@ -39,6 +44,14 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
 			return false;
+		}
+
+		for(String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")) {
+
+			if(!((Player) sender).getWorld().getName().contains(allowedWorlds)) {
+				messageUtils.sendMessage(sender, fileManager.getMessage("Deny-World"));
+				return false;
+			}
 		}
 
 		Player player = (Player) sender;
@@ -63,14 +76,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			if(args.length > 2) {
 
 				messageUtils.sendMessage(sender, fileManager.getMessage("Many-Arguments"));
-				return false;
-			}
-		}
-
-		for(String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")) {
-
-			if(!((Player) sender).getWorld().getName().contains(allowedWorlds)) {
-				messageUtils.sendMessage(sender, fileManager.getMessage("Deny-World"));
 				return false;
 			}
 		}

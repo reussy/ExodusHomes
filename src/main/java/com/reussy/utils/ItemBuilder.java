@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,18 +19,26 @@ public class ItemBuilder {
 
 	public ItemStack createItem(Player player, XMaterial material, int amount, String name, List<String> lore) {
 
-		String namePlaceholders = null;
-		List<String> lorePlaceholders = null;
 		ItemStack item = material.parseItem();
 		assert item != null;
 		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();
 		assert meta != null;
-		if(name != null) namePlaceholders = PlaceholderAPI.setPlaceholders(player, name);
-		meta.setDisplayName(namePlaceholders);
-		if(lore != null) lorePlaceholders = PlaceholderAPI.setPlaceholders(player, lore);
-		meta.setLore(lorePlaceholders);
-		item.setItemMeta(meta);
+
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+			String namePlaceholders = null;
+			List<String> lorePlaceholders = null;
+			if(name != null) namePlaceholders = PlaceholderAPI.setPlaceholders(player, name);
+			meta.setDisplayName(namePlaceholders);
+			if(lore != null) lorePlaceholders = PlaceholderAPI.setPlaceholders(player, lore);
+			meta.setLore(lorePlaceholders);
+			item.setItemMeta(meta);
+
+		} else {
+			meta.setDisplayName(name);
+			meta.setLore(lore);
+			item.setItemMeta(meta);
+		}
 
 		if(item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
 
@@ -42,6 +51,8 @@ public class ItemBuilder {
 	}
 
 	public void setBackground(Player player, Inventory gui, int minSlot, int maxSlot) {
+
+		int test = 0, test2 = 9;
 
 		if(plugin.setFill) {
 

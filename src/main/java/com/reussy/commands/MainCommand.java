@@ -3,6 +3,7 @@ package com.reussy.commands;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
 import com.reussy.utils.MessageUtils;
+import de.jeff_media.updatechecker.UpdateChecker;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +15,12 @@ import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	private final ExodusHomes plugin;
+
+	public MainCommand(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
+
 	FileManager fileManager = new FileManager();
 	MessageUtils messageUtils = new MessageUtils();
 	List<String> subcommands = new ArrayList<>();
@@ -39,11 +45,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 				return false;
 			}
-			if(args.length == 1 && args[0].equalsIgnoreCase("import")) {
-
-				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "eh"));
-				return false;
-			}
 		}
 
 		switch(args[0]) {
@@ -56,6 +57,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh help &8- &7Show this message"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh reload &8- &7Reload Configuration Files"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh update &8- &7Check for updates"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm &8- &7Manage Homes for Players"));
 				sender.sendMessage(plugin.setHexColor("&r"));
 				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
@@ -70,6 +72,11 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 				messageUtils.sendMessage(sender, fileManager.getMessage("Reload-Message"));
 
 				return false;
+
+			case "update":
+
+				UpdateChecker.getInstance().checkNow(sender);
+				break;
 
 			default:
 				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
@@ -91,6 +98,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 					subcommands.add("help");
 					subcommands.add("reload");
+					subcommands.add("update");
 				}
 			}
 			return subcommands;

@@ -18,7 +18,12 @@ import java.util.List;
 
 public class ManageCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+	private final ExodusHomes plugin;
+
+	public ManageCommand(ExodusHomes plugin) {
+		this.plugin = plugin;
+	}
+
 	FileManager fileManager = new FileManager();
 	MessageUtils messageUtils = new MessageUtils();
 	List<String> subcommands = new ArrayList<>();

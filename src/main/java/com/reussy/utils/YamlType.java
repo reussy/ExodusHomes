@@ -146,6 +146,19 @@ public class YamlType implements DatabaseType {
 	}
 
 	@Override
+	public void setNewName(Player player, String home, String name) {
+
+		StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
+		ConfigurationSection getSection = storageManager.getFile().getConfigurationSection("Homes");
+		ConfigurationSection getHome = getSection.getConfigurationSection(home);
+
+		getHome.set("Homes.", name);
+		storageManager.saveFile();
+		messageUtils.sendMessage(player, fileManager.getMessage("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
+		player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Renamed-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+	}
+
+	@Override
 	public String getWorld(Player player, String home) {
 		StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 		ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");

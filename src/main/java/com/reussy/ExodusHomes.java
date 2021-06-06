@@ -157,7 +157,6 @@ public final class ExodusHomes extends JavaPlugin {
 				if(this.databaseType.getHomes(player).size() < homesLimit) return true;
 			}
 		}
-
 		return false;
 	}
 

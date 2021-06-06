@@ -55,6 +55,52 @@ public class SQLData {
 		}
 	}
 
+	public void setNewName(Connection connection, UUID uuid, String home, String newName) {
+
+		try {
+
+			String Name = "UPDATE homes SET Home=? WHERE UUID=? AND Home=?";
+			PreparedStatement statement = connection.prepareStatement(Name);
+			statement.setString(1, newName);
+			statement.setString(2, uuid.toString());
+			statement.setString(3, home);
+			statement.executeUpdate();
+			statement.close();
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteHomes(Connection connection, UUID uuid, String home) {
+
+		try {
+
+			String Home = "DELETE FROM homes WHERE UUID=? AND HOME=?";
+			PreparedStatement statement = connection.prepareStatement(Home);
+			statement.setString(1, uuid.toString());
+			statement.setString(2, home);
+			statement.executeUpdate();
+			statement.close();
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteAll(Connection connection, UUID uuid) {
+
+		try {
+			String homes = "DELETE FROM homes WHERE UUID=?";
+			PreparedStatement statement = connection.prepareStatement(homes);
+			statement.setString(1, uuid.toString());
+			statement.executeUpdate();
+			statement.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public List<String> getHomes(Connection connection, UUID uuid) {
 
 		List<String> homes = new ArrayList<>();
@@ -205,34 +251,5 @@ public class SQLData {
 
 		}
 		return 0;
-	}
-
-	public void deleteHomes(Connection connection, UUID uuid, String home) {
-
-		try {
-
-			String Home = "DELETE FROM homes WHERE UUID=? AND HOME=?";
-			PreparedStatement statement = connection.prepareStatement(Home);
-			statement.setString(1, uuid.toString());
-			statement.setString(2, home);
-			statement.executeUpdate();
-			statement.close();
-
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void deleteAll(Connection connection, UUID uuid) {
-
-		try {
-			String homes = "DELETE FROM homes WHERE UUID=?";
-			PreparedStatement statement = connection.prepareStatement(homes);
-			statement.setString(1, uuid.toString());
-			statement.executeUpdate();
-			statement.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
 	}
 }

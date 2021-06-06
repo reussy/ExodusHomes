@@ -27,6 +27,8 @@ public interface DatabaseType {
 
 	void listHomesByAdmin(Player player, CommandSender sender);
 
+	void setNewName(Player player, String home, String name);
+
 	String getWorld(Player player, String home);
 
 	double getX(Player player, String home);

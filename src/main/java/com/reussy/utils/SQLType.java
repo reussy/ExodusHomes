@@ -121,6 +121,14 @@ public class SQLType implements DatabaseType {
 	}
 
 	@Override
+	public void setNewName(Player player, String home, String name) {
+
+		sqlData.setNewName(plugin.getSQL(), player.getUniqueId(), home, name);
+		messageUtils.sendMessage(player, fileManager.getMessage("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
+		player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Renamed-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+	}
+
+	@Override
 	public String getWorld(Player player, String home) {
 		return sqlData.getWorld(plugin.getSQL(), player.getUniqueId(), home);
 	}

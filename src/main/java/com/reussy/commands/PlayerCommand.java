@@ -66,14 +66,14 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 
-			if(args.length == 1 && !args[0].equalsIgnoreCase("debug") && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
+			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
 
 				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "home"));
 
 				return false;
 			}
 
-			if(args.length > 2) {
+			if(args.length > 2 && !args[0].equalsIgnoreCase("rename")) {
 
 				messageUtils.sendMessage(sender, fileManager.getMessage("Many-Arguments"));
 				return false;
@@ -130,6 +130,18 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 						plugin.databaseType().createHome(player, args[1]);
 					}
 				}.runTaskAsynchronously(plugin);
+
+				break;
+
+			case "rename":
+
+				if(!plugin.databaseType.getHomes(player).contains(args[1])) {
+
+					messageUtils.sendMessage(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
+					return false;
+				}
+
+				plugin.databaseType.setNewName(player, args[1], args[2]);
 
 				break;
 

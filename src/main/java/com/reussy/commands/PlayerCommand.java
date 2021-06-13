@@ -102,6 +102,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home &8- &7Open Main GUI"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home list &8- &7List of your home's"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home create <name> &8- &7Create a home"));
+				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home rename <home> <newname> &8- &7Set new name for home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home go <home> &8- &7Teleport to home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home delete <home> &8- &7Delete a home"));
 				sender.sendMessage(plugin.setHexColor(" &8&l! &b/home deleteall &8- &7Delete all yor current home's"));
@@ -234,6 +235,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 					subcommands.add("help");
 					subcommands.add("create");
+					subcommands.add("rename");
 					subcommands.add("delete");
 					subcommands.add("deleteall");
 					subcommands.add("go");

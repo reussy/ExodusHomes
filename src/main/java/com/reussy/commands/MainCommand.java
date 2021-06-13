@@ -92,7 +92,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 		Player player = (Player) sender;
 
-		if(command.getName().equalsIgnoreCase("exodushomes")) {
+		if(command.getName().equalsIgnoreCase("eh")) {
 			if(args.length == 1) {
 				if(player.hasPermission("homes.command.admin")) {
 

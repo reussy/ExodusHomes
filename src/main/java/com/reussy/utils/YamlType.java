@@ -5,6 +5,7 @@ import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
 import com.reussy.managers.StorageManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -148,6 +149,12 @@ public class YamlType implements DatabaseType {
 	@Override
 	public void setNewName(Player player, String home, String name) {
 
+		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cDatabase YAML doesn't support this feature!"));
+		player.playSound(player.getLocation(), XSound.BLOCK_ANVIL_FALL.parseSound(), 0.5F, 0.5F);
+
+		/*
+		* Old code for future update
+
 		StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 		ConfigurationSection getSection = storageManager.getFile().getConfigurationSection("Homes");
 		ConfigurationSection getHome = getSection.getConfigurationSection(home);
@@ -156,6 +163,7 @@ public class YamlType implements DatabaseType {
 		storageManager.saveFile();
 		messageUtils.sendMessage(player, fileManager.getMessage("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
 		player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Renamed-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+		 */
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 
 public class PlayerDataListener implements Listener {
@@ -17,6 +18,12 @@ public class PlayerDataListener implements Listener {
 
 		Player player = e.getPlayer();
 		StorageManager storage = new StorageManager(player.getUniqueId(), plugin);
-		storage.createPlayerFile(player);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				storage.createPlayerFile(player);
+			}
+		}.runTaskAsynchronously(plugin);
 	}
 }

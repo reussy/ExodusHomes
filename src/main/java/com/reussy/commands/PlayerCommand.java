@@ -215,7 +215,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			default:
-				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
+				sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
 				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
 				sender.sendMessage(plugin.setHexColor("&eUse &6/home help &efor commands!"));
 				break;

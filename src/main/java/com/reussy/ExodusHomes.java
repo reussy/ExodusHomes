@@ -64,7 +64,7 @@ public final class ExodusHomes extends JavaPlugin {
 	@Override
 	public void onDisable() {
 
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aExodusHomes disabled, goodbye!"));
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aExodus Homes disabled, goodbye!"));
 	}
 
 	public void Files() {

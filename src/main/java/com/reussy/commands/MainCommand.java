@@ -8,7 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 				break;
 
 			default:
-				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
+				sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
 				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
 				sender.sendMessage(plugin.setHexColor("&eUse &6/eh help &efor commands!"));
 				break;
@@ -88,13 +88,11 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-
-		Player player = (Player) sender;
+	public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
 
 		if(command.getName().equalsIgnoreCase("eh")) {
 			if(args.length == 1) {
-				if(player.hasPermission("homes.command.admin")) {
+				if(sender.hasPermission("homes.command.admin")) {
 
 					subcommands.add("help");
 					subcommands.add("reload");

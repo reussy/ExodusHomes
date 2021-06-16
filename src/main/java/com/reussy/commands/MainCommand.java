@@ -53,7 +53,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 				for(String adminHelp : fileManager.getLang().getStringList("Help.Administrator")) {
 
-					messageUtils.sendMessage(sender, adminHelp);
+					sender.sendMessage(plugin.setHexColor(adminHelp));
 				}
 
 				break;

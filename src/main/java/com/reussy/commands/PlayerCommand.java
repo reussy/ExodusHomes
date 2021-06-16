@@ -94,7 +94,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 				for(String helpPlayer : fileManager.getLang().getStringList("Help.Player")) {
 
-					messageUtils.sendMessage(sender, helpPlayer);
+					sender.sendMessage(plugin.setHexColor(helpPlayer));
 				}
 				player.playSound(player.getLocation(), XSound.BLOCK_LAVA_POP.parseSound(), 2, 2.5F);
 

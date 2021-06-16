@@ -84,7 +84,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 			case "help":
 
 				for(String manageHelp : fileManager.getLang().getStringList("Help.Manage")) {
-					messageUtils.sendMessage(sender, manageHelp);
+					sender.sendMessage(plugin.setHexColor(manageHelp));
 				}
 
 				break;

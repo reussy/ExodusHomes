@@ -46,15 +46,13 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		for(String allowedWorlds : plugin.getConfig().getStringList("Whitelist-Worlds")) {
-
-			if(!((Player) sender).getWorld().getName().contains(allowedWorlds)) {
-				messageUtils.sendMessage(sender, fileManager.getMessage("Deny-World"));
-				return false;
-			}
-		}
-
 		Player player = (Player) sender;
+
+		if(!plugin.getConfig().getStringList("Whitelist-Worlds").contains(player.getWorld().getName())) {
+
+			messageUtils.sendMessage(sender, fileManager.getMessage("Deny-World"));
+			return false;
+		}
 
 		if(cmd.getName().equalsIgnoreCase("home")) {
 

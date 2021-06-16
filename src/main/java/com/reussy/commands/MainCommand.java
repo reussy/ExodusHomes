@@ -51,16 +51,10 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 			case "help":
 
-				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
-				sender.sendMessage(plugin.setHexColor("&r"));
-				sender.sendMessage(plugin.setHexColor("&r                   &c&oAdmin Commands"));
-				sender.sendMessage(plugin.setHexColor("&r"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh help &8- &7Show this message"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh reload &8- &7Reload Configuration Files"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/eh update &8- &7Check for updates"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm &8- &7Manage Homes for Players"));
-				sender.sendMessage(plugin.setHexColor("&r"));
-				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
+				for(String adminHelp : fileManager.getLang().getStringList("Help.Administrator")) {
+
+					messageUtils.sendMessage(sender, adminHelp);
+				}
 
 				break;
 

@@ -83,18 +83,9 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 			case "help":
 
-				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
-				sender.sendMessage(plugin.setHexColor("&r"));
-				sender.sendMessage(plugin.setHexColor("&r                   &6&oManage Commands"));
-				sender.sendMessage(plugin.setHexColor("&r"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm help &8- &7Show this message"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm import <player> &8- &7Import homes from EssentialsX"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm list <player> &8- &7List of home's of player"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm go <player> <home> &8- &7Teleport to other player home"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm delete <player> <home> &8- &7Delete a homes for other player"));
-				sender.sendMessage(plugin.setHexColor(" &8&l! &b/ehm deleteall <player> &8- &7Delete all homes for other player"));
-				sender.sendMessage(plugin.setHexColor("&r"));
-				sender.sendMessage(plugin.setHexColor("&8--------------------------------------"));
+				for(String manageHelp : fileManager.getLang().getStringList("Help.Manage")) {
+					messageUtils.sendMessage(sender, manageHelp);
+				}
 
 				break;
 

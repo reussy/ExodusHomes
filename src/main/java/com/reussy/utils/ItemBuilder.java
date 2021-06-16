@@ -52,14 +52,12 @@ public class ItemBuilder {
 
 	public void setBackground(Player player, Inventory gui, int minSlot, int maxSlot) {
 
-		int test = 0, test2 = 9;
-
-		if(plugin.setFill) {
+		if(plugin.getConfig().getBoolean("Background.Enable")) {
 
 			ItemStack itemFill = this.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
 					, plugin.setHexColor(plugin.getConfig().getString("Background.Name")), null);
 
-			if(plugin.setFill) while(minSlot < maxSlot) {
+			if(plugin.getConfig().getBoolean("Background.Enable")) while(minSlot < maxSlot) {
 
 				gui.setItem(minSlot, itemFill);
 				minSlot++;

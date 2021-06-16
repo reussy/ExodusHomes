@@ -39,7 +39,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		if(plugin.usePermissions && !sender.hasPermission("homes.command.player")) {
+		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.player")) {
 
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
@@ -227,7 +227,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		List<String> getHomes = plugin.databaseType().getHomes(player);
 		if(command.getName().equalsIgnoreCase("home")) {
 			if(args.length == 1) {
-				if(plugin.usePermissions && player.hasPermission("homes.command.player") || !plugin.usePermissions && !player.hasPermission("homes.command.player")) {
+				if(plugin.getConfig().getBoolean("Permissions-System") && player.hasPermission("homes.command.player") || !plugin.getConfig().getBoolean("Permissions-System") && !player.hasPermission("homes.command.player")) {
 
 					subcommands.add("help");
 					subcommands.add("gui");

@@ -20,8 +20,8 @@ public class MainGUI {
 
 	public void GUI(Player player) {
 
-		int size = fileManager.getGui().getInt("MainGUI.Size");
 		String title = plugin.setHexColor(fileManager.getGui().getString("MainGUI.Title"));
+		int size = fileManager.getGui().getInt("MainGUI.Size");
 		Inventory gui = Bukkit.createInventory(null, size, title);
 
 		itemBuilder.setBackground(player, gui, 0, fileManager.getGui().getInt("MainGUI.Size"));

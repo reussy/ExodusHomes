@@ -50,7 +50,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
 			if(args.length == 0) {
 
-				sender.sendMessage(plugin.setHexColor("&bExodusHomes &8&l- &7" + plugin.getDescription().getVersion()));
+				sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
 				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
 				sender.sendMessage(plugin.setHexColor("&eUse &6/ehm help &efor commands!"));
 

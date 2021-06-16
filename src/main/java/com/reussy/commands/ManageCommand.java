@@ -39,7 +39,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.player")) {
+		if(plugin.usePermissions && !sender.hasPermission("homes.command.manage")) {
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
@@ -201,7 +201,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 	public List<String> onTabComplete(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
 
 		if(cmd.getName().equalsIgnoreCase("ehm")) {
-			if(sender.hasPermission("homes.command.manage")) {
+			if(plugin.usePermissions && sender.hasPermission("homes.command.manage") || !plugin.usePermissions && !sender.hasPermission("homes.command.manage")) {
 				if(args.length == 1) {
 
 					subcommands.add("help");
@@ -210,7 +210,6 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 					subcommands.add("list");
 					subcommands.add("delete");
 					subcommands.add("deleteall");
-
 
 					return subcommands;
 				} else if(args.length == 2) {

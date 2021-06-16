@@ -43,7 +43,7 @@ public class MainGUI {
 		ItemStack importItem = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Import.Icon")), fileManager.getGui().getInt("MainGUI.Items.Import.Amount"),
 				plugin.setHexColor(fileManager.getGui().getString("MainGUI.Items.Import.Name")), importLore);
 
-		if(plugin.getConfig().getBoolean("Permissions-System") && player.hasPermission(Objects.requireNonNull(fileManager.getGui().getString("MainGUI.Items.Import.Permission"))))
+		if(plugin.usePermissions && player.hasPermission(Objects.requireNonNull(fileManager.getGui().getString("MainGUI.Items.Import.Permission"))))
 			gui.setItem(fileManager.getGui().getInt("MainGUI.Items.Import.Slot"), importItem);
 
 		player.openInventory(gui);

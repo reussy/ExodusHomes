@@ -26,6 +26,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 	FileManager fileManager = new FileManager();
 	MessageUtils messageUtils = new MessageUtils();
+	MainGUI mainGUI = new MainGUI();
 	List<String> subcommands = new ArrayList<>();
 
 	@Override
@@ -38,7 +39,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.player")) {
+		if(plugin.usePermissions && !sender.hasPermission("homes.command.player")) {
 
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
@@ -58,13 +59,12 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
 			if(args.length == 0) {
 
-				MainGUI mainGUI = new MainGUI();
 				mainGUI.GUI(player);
 				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Open-GUI")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 				return false;
 			}
 
-			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall")) {
+			if(args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall") && !args[0].equalsIgnoreCase("gui")) {
 
 				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "home"));
 
@@ -97,6 +97,13 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 					sender.sendMessage(plugin.setHexColor(helpPlayer));
 				}
 				player.playSound(player.getLocation(), XSound.BLOCK_LAVA_POP.parseSound(), 2, 2.5F);
+
+				break;
+
+			case "gui":
+
+				mainGUI.GUI(player);
+				player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Open-GUI")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
 				break;
 
@@ -220,9 +227,10 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 		List<String> getHomes = plugin.databaseType().getHomes(player);
 		if(command.getName().equalsIgnoreCase("home")) {
 			if(args.length == 1) {
-				if(player.hasPermission("homes.command.player")) {
+				if(plugin.usePermissions && player.hasPermission("homes.command.player") || !plugin.usePermissions && !player.hasPermission("homes.command.player")) {
 
 					subcommands.add("help");
+					subcommands.add("gui");
 					subcommands.add("create");
 					subcommands.add("rename");
 					subcommands.add("delete");

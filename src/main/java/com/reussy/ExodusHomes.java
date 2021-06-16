@@ -149,7 +149,7 @@ public final class ExodusHomes extends JavaPlugin {
 
 			if(player.isOp()) return true;
 
-			if(!this.getConfig().getBoolean("Permissions-System")) return true;
+			if(!plugin.usePermissions) return true;
 
 			if(getPermission.equalsIgnoreCase("homes.limit.*")) return true;
 

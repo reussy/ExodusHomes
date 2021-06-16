@@ -28,7 +28,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
+		if(plugin.usePermissions && !sender.hasPermission("homes.command.admin")) {
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
@@ -86,7 +86,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
 		if(command.getName().equalsIgnoreCase("eh")) {
 			if(args.length == 1) {
-				if(sender.hasPermission("homes.command.admin")) {
+				if(plugin.usePermissions && sender.hasPermission("homes.command.admin") || !plugin.usePermissions && !sender.hasPermission("homes.command.admin")) {
 
 					subcommands.add("help");
 					subcommands.add("reload");

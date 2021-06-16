@@ -22,6 +22,13 @@ MySQL:
 #Set '' if you don't want to use it!
 Plugin-Prefix: '&8[&b&lHomes&8] '
 
+#If set true you must set the plugin
+#permissions for your players
+#If set false the plugin will work without
+#permissions and everyone will be able
+#to access all the commands
+Permissions-System: true #default true
+
 #Worlds where homes are allowed!
 Whitelist-Worlds:
   - world

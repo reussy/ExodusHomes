@@ -27,6 +27,7 @@ public final class ExodusHomes extends JavaPlugin {
 	public ExodusHomes plugin;
 	public DatabaseType databaseType;
 	public boolean setFill = this.getConfig().getBoolean("Background.Enable");
+	public boolean usePermissions = this.getConfig().getBoolean("Permissions-System");
 	public ArrayList<String> playerCache = new ArrayList<>();
 	private SQLMain connect;
 
@@ -147,6 +148,8 @@ public final class ExodusHomes extends JavaPlugin {
 			String getPermission = permissionAttachmentInfo.getPermission();
 
 			if(player.isOp()) return true;
+
+			if(!this.getConfig().getBoolean("Permissions-System")) return true;
 
 			if(getPermission.equalsIgnoreCase("homes.limit.*")) return true;
 

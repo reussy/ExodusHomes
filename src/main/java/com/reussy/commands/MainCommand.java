@@ -26,9 +26,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	List<String> subcommands = new ArrayList<>();
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-		if(!sender.hasPermission("homes.command.admin")) {
+		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 

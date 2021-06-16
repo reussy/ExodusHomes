@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainGUI {
 
@@ -42,7 +43,7 @@ public class MainGUI {
 		ItemStack importItem = itemBuilder.createItem(player, XMaterial.valueOf(fileManager.getGui().getString("MainGUI.Items.Import.Icon")), fileManager.getGui().getInt("MainGUI.Items.Import.Amount"),
 				plugin.setHexColor(fileManager.getGui().getString("MainGUI.Items.Import.Name")), importLore);
 
-		if(player.hasPermission(fileManager.getGui().getString("MainGUI.Items.Import.Permission")))
+		if(plugin.getConfig().getBoolean("Permissions-System") && player.hasPermission(Objects.requireNonNull(fileManager.getGui().getString("MainGUI.Items.Import.Permission"))))
 			gui.setItem(fileManager.getGui().getInt("MainGUI.Items.Import.Slot"), importItem);
 
 		player.openInventory(gui);

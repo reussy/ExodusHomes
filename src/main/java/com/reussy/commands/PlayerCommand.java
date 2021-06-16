@@ -38,7 +38,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		if(!sender.hasPermission("homes.command.player")) {
+		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.player")) {
 
 
 			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));

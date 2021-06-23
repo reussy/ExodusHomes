@@ -1,0 +1,38 @@
+Title: '&0&l&oOverview'
+Size: 54
+
+#Contents means that they are
+#modifiable items and can be deleted
+Static-Contents:
+  Portal-Homes:
+    Material: BOOKSHELF
+    Amount: 1
+    Slot: 21
+    Name: '&aYour Homes'
+    Lore:
+      - '&7Open Portal GUI'
+  Import-Homes:
+    Material: BEACON
+    Amount: 1
+    Slot: 23
+    Name: '&bImport Homes'
+    Lore:
+      - '&7Import homes from Essentials'
+
+#Contents means that they are
+#modifiable items and can be deleted
+Contents:
+  Player-Head:
+    Material: PLAYER_HEAD
+    Amount: 1
+    Slot: 49
+    Name: '&a%player_name%'
+    Lore:
+      - '&7Rank: &e%vault_rank%'
+  1:
+    Material: BLUE_STAINED_GLASS_PANE
+    Amount: 1
+    Slot: 22
+    Name: '&r'
+    Lore:
+      - '&r'

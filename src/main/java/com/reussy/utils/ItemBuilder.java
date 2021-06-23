@@ -15,53 +15,52 @@ import java.util.List;
 
 public class ItemBuilder {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 
-	public ItemStack createItem(Player player, XMaterial material, int amount, String name, List<String> lore) {
+    public ItemStack createItem(Player player, XMaterial material, int amount, String name, List<String> lore) {
 
-		ItemStack item = material.parseItem();
-		assert item != null;
-		item.setAmount(amount);
-		ItemMeta meta = item.getItemMeta();
-		assert meta != null;
+        ItemStack item = material.parseItem();
+        assert item != null;
+        item.setAmount(amount);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
 
-		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-			String namePlaceholders = null;
-			List<String> lorePlaceholders = null;
-			if(name != null) namePlaceholders = PlaceholderAPI.setPlaceholders(player, name);
-			meta.setDisplayName(namePlaceholders);
-			if(lore != null) lorePlaceholders = PlaceholderAPI.setPlaceholders(player, lore);
-			meta.setLore(lorePlaceholders);
-			item.setItemMeta(meta);
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            String namePlaceholders = null;
+            List<String> lorePlaceholders = null;
+            if (name != null) namePlaceholders = PlaceholderAPI.setPlaceholders(player, plugin.setHexColor(name));
+            meta.setDisplayName(namePlaceholders);
+            if (lore != null) lorePlaceholders = PlaceholderAPI.setPlaceholders(player, lore);
+            meta.setLore(lorePlaceholders);
 
-		} else {
-			meta.setDisplayName(name);
-			meta.setLore(lore);
-			item.setItemMeta(meta);
-		}
+        } else {
+            meta.setDisplayName(plugin.setHexColor(name));
+            meta.setLore(lore);
+        }
+        item.setItemMeta(meta);
 
-		if(item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
+        if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
 
-			SkullMeta texture = (SkullMeta) item.getItemMeta();
-			SkullUtils.applySkin(texture, player);
-			item.setItemMeta(texture);
-		}
+            SkullMeta texture = (SkullMeta) item.getItemMeta();
+            SkullUtils.applySkin(texture, player);
+            item.setItemMeta(texture);
+        }
 
-		return item;
-	}
+        return item;
+    }
 
-	public void setBackground(Player player, Inventory gui, int minSlot, int maxSlot) {
+    public void setBackground(Player player, Inventory gui, int minSlot, int maxSlot) {
 
-		if(plugin.getConfig().getBoolean("Background.Enable")) {
+        if (plugin.getConfig().getBoolean("Background.Enable")) {
 
-			ItemStack itemFill = this.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
-					, plugin.setHexColor(plugin.getConfig().getString("Background.Name")), null);
+            ItemStack itemFill = this.createItem(player, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
+                    , plugin.setHexColor(plugin.getConfig().getString("Background.Name")), null);
 
-			if(plugin.getConfig().getBoolean("Background.Enable")) while(minSlot < maxSlot) {
+            if (plugin.getConfig().getBoolean("Background.Enable")) while (minSlot < maxSlot) {
 
-				gui.setItem(minSlot, itemFill);
-				minSlot++;
-			}
-		}
-	}
+                gui.setItem(minSlot, itemFill);
+                minSlot++;
+            }
+        }
+    }
 }

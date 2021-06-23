@@ -2,6 +2,7 @@ package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
+import com.reussy.managers.InventoryFileManager;
 import com.reussy.utils.MessageUtils;
 import de.jeff_media.updatechecker.UpdateChecker;
 import org.bukkit.command.Command;
@@ -15,86 +16,87 @@ import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin;
+    private final ExodusHomes plugin;
+    FileManager fileManager = new FileManager();
+    InventoryFileManager inventoryFileManager = new InventoryFileManager();
+    MessageUtils messageUtils = new MessageUtils();
+    List<String> subcommands = new ArrayList<>();
 
-	public MainCommand(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
+    public MainCommand(ExodusHomes plugin) {
+        this.plugin = plugin;
+    }
 
-	FileManager fileManager = new FileManager();
-	MessageUtils messageUtils = new MessageUtils();
-	List<String> subcommands = new ArrayList<>();
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+        if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
-		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
+            messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
-			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
+            return false;
+        }
 
-			return false;
-		}
+        if (cmd.getName().equalsIgnoreCase("eh")) {
 
-		if(cmd.getName().equalsIgnoreCase("eh")) {
+            if (args.length == 0) {
 
-			if(args.length == 0) {
+                sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
+                sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
+                sender.sendMessage(plugin.setHexColor("&eUse &6/eh help &efor commands!"));
 
-				sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
-				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
-				sender.sendMessage(plugin.setHexColor("&eUse &6/eh help &efor commands!"));
+                return false;
+            }
+        }
 
-				return false;
-			}
-		}
+        switch (args[0]) {
 
-		switch(args[0]) {
+            case "help":
 
-			case "help":
+                for (String adminHelp : fileManager.getLang().getStringList("Help.Administrator")) {
 
-				for(String adminHelp : fileManager.getLang().getStringList("Help.Administrator")) {
+                    sender.sendMessage(plugin.setHexColor(adminHelp));
+                }
 
-					sender.sendMessage(plugin.setHexColor(adminHelp));
-				}
+                break;
 
-				break;
+            case "reload":
 
-			case "reload":
+                plugin.reloadConfig();
+                fileManager.reloadLang();
+                inventoryFileManager.reloadOverview();
+                inventoryFileManager.reloadPortal();
+                messageUtils.sendMessage(sender, fileManager.getMessage("Reload-Message"));
 
-				plugin.reloadConfig();
-				fileManager.reloadLang();
-				fileManager.reloadGui();
-				messageUtils.sendMessage(sender, fileManager.getMessage("Reload-Message"));
+                return false;
 
-				return false;
+            case "update":
 
-			case "update":
+                UpdateChecker.getInstance().checkNow(sender);
+                break;
 
-				UpdateChecker.getInstance().checkNow(sender);
-				break;
+            default:
+                sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
+                sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
+                sender.sendMessage(plugin.setHexColor("&eUse &6/eh help &efor commands!"));
+                break;
+        }
+        return false;
+    }
 
-			default:
-				sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
-				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
-				sender.sendMessage(plugin.setHexColor("&eUse &6/eh help &efor commands!"));
-				break;
-		}
-		return false;
-	}
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
 
-	@Override
-	public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
+        if (command.getName().equalsIgnoreCase("eh")) {
+            if (args.length == 1) {
+                if (plugin.getConfig().getBoolean("Permissions-System") && sender.hasPermission("homes.command.admin") || !plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
-		if(command.getName().equalsIgnoreCase("eh")) {
-			if(args.length == 1) {
-				if(plugin.getConfig().getBoolean("Permissions-System") && sender.hasPermission("homes.command.admin") || !plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
-
-					subcommands.add("help");
-					subcommands.add("reload");
-					subcommands.add("update");
-				}
-			}
-			return subcommands;
-		}
-		return null;
-	}
+                    subcommands.add("help");
+                    subcommands.add("reload");
+                    subcommands.add("update");
+                }
+            }
+            return subcommands;
+        }
+        return null;
+    }
 }

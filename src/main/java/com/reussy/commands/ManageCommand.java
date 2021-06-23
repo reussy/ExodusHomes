@@ -18,220 +18,218 @@ import java.util.List;
 
 public class ManageCommand implements CommandExecutor, TabCompleter {
 
-	private final ExodusHomes plugin;
+    private final ExodusHomes plugin;
+    FileManager fileManager = new FileManager();
+    MessageUtils messageUtils = new MessageUtils();
+    List<String> subcommands = new ArrayList<>();
 
-	public ManageCommand(ExodusHomes plugin) {
-		this.plugin = plugin;
-	}
+    public ManageCommand(ExodusHomes plugin) {
+        this.plugin = plugin;
+    }
 
-	FileManager fileManager = new FileManager();
-	MessageUtils messageUtils = new MessageUtils();
-	List<String> subcommands = new ArrayList<>();
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
+        if (!(sender instanceof Player)) {
 
-	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+            messageUtils.sendMessage(sender, fileManager.getMessage("No-Console"));
 
-		if(!(sender instanceof Player)) {
+            return false;
+        }
 
-			messageUtils.sendMessage(sender, fileManager.getMessage("No-Console"));
+        if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
 
-			return false;
-		}
+            messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
 
-		if(plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
+            return false;
+        }
 
-			messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
+        if (cmd.getName().equalsIgnoreCase("ehm")) {
 
-			return false;
-		}
+            if (args.length == 0) {
 
-		if(cmd.getName().equalsIgnoreCase("ehm")) {
+                sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
+                sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
+                sender.sendMessage(plugin.setHexColor("&eUse &6/ehm help &efor commands!"));
 
-			if(args.length == 0) {
+                return false;
+            }
 
-				sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
-				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
-				sender.sendMessage(plugin.setHexColor("&eUse &6/ehm help &efor commands!"));
+            if (args.length == 1 && !args[0].equalsIgnoreCase("help")) {
 
-				return false;
-			}
+                messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
-			if(args.length == 1 && !args[0].equalsIgnoreCase("help")) {
+                return false;
+            }
 
-				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+            if (args.length == 2 && args[0].equalsIgnoreCase("go") || args.length == 2 && args[0].equalsIgnoreCase("delete")) {
 
-				return false;
-			}
+                messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
-			if(args.length == 2 && args[0].equalsIgnoreCase("go") || args.length == 2 && args[0].equalsIgnoreCase("delete")) {
+                return false;
+            }
+            if (!args[0].equalsIgnoreCase("help")) {
+                if (Bukkit.getPlayer(args[1]) == null) {
 
-				messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+                    messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+                    return false;
+                }
+            }
+        }
 
-				return false;
-			}
-			if(!args[0].equalsIgnoreCase("help")) {
-				if(Bukkit.getPlayer(args[1]) == null) {
+        switch (args[0]) {
 
-					messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
-					return false;
-				}
-			}
-		}
+            case "help":
 
-		switch(args[0]) {
+                for (String manageHelp : fileManager.getLang().getStringList("Help.Manage")) {
+                    sender.sendMessage(plugin.setHexColor(manageHelp));
+                }
 
-			case "help":
+                break;
 
-				for(String manageHelp : fileManager.getLang().getStringList("Help.Manage")) {
-					sender.sendMessage(plugin.setHexColor(manageHelp));
-				}
+            case "import":
 
-				break;
+                Player player = Bukkit.getPlayer(args[1]);
 
-			case "import":
+                if (player == null) {
 
-				Player player = Bukkit.getPlayer(args[1]);
+                    sender.sendMessage(plugin.setHexColor("&cThis player does not exist or is not connected!"));
+                    return false;
+                }
 
-				if(player == null) {
 
-					sender.sendMessage(plugin.setHexColor("&cThis player does not exist or is not connected!"));
-					return false;
-				}
+                try {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId(), player, sender);
+                        }
+                    }.runTaskLaterAsynchronously(plugin, 20L);
+                } catch (NullPointerException e) {
+                    sender.sendMessage("Cannot import homes! See the console and report this please.");
+                    e.printStackTrace();
+                }
+                break;
 
+            case "list":
 
-				try {
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId(), player, sender);
-						}
-					}.runTaskLaterAsynchronously(plugin, 20L);
-				} catch(NullPointerException e) {
-					sender.sendMessage("Cannot import homes! See the console and report this please.");
-					e.printStackTrace();
-				}
-				break;
+                if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-			case "list":
+                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
-				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+                    return false;
+                }
 
-					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                plugin.databaseManager.listHomesByAdmin(Bukkit.getPlayer(args[1]), sender);
+                break;
 
-					return false;
-				}
+            case "go":
 
-				plugin.databaseType().listHomesByAdmin(Bukkit.getPlayer(args[1]), sender);
-				break;
+                if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-			case "go":
+                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
-				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+                    return false;
+                }
 
-					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                if (!plugin.databaseManager.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
 
-					return false;
-				}
+                    messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
+                            .replace("%home_name%", args[2])
+                            .replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                    return false;
+                }
 
-				if(!plugin.databaseType.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
+                plugin.databaseManager.goHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
+                break;
 
-					messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
-							.replace("%home_name%", args[2])
-							.replace("%target%", Bukkit.getPlayer(args[1]).getName()));
-					return false;
-				}
+            case "delete":
 
-				plugin.databaseType().goHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
-				break;
+                if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-			case "delete":
+                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
-				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+                    return false;
+                }
 
-					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                if (!plugin.databaseManager.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
 
-					return false;
-				}
+                    messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
+                            .replace("%home_name%", args[2])
+                            .replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                    return false;
+                }
 
-				if(!plugin.databaseType.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        plugin.databaseManager.deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
+                    }
+                }.runTaskAsynchronously(plugin);
+                break;
 
-					messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
-							.replace("%home_name%", args[2])
-							.replace("%target%", Bukkit.getPlayer(args[1]).getName()));
-					return false;
-				}
+            case "deleteall":
 
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						plugin.databaseType().deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
-					}
-				}.runTaskAsynchronously(plugin);
-				break;
+                if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-			case "deleteall":
+                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
-				if(!plugin.databaseType.hasHome(Bukkit.getPlayer(args[1]))) {
+                    return false;
+                }
 
-					messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        plugin.databaseManager.deleteAllByAdmin(Bukkit.getPlayer(args[1]), sender);
+                    }
+                }.runTaskAsynchronously(plugin);
+                break;
 
-					return false;
-				}
+            default:
+                sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
+                sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
+                sender.sendMessage(plugin.setHexColor("&eUse &6/ehm help &efor commands!"));
+                break;
+        }
 
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						plugin.databaseType().deleteAllByAdmin(Bukkit.getPlayer(args[1]), sender);
-					}
-				}.runTaskAsynchronously(plugin);
-				break;
+        return false;
+    }
 
-			default:
-				sender.sendMessage(plugin.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
-				sender.sendMessage(plugin.setHexColor("&eCreated by &breussy"));
-				sender.sendMessage(plugin.setHexColor("&eUse &6/ehm help &efor commands!"));
-				break;
-		}
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
 
-		return false;
-	}
+        if (cmd.getName().equalsIgnoreCase("ehm")) {
+            if (plugin.getConfig().getBoolean("Permissions-System") && sender.hasPermission("homes.command.manage") || !plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
+                if (args.length == 1) {
 
-	@Override
-	public List<String> onTabComplete(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
+                    subcommands.add("help");
+                    subcommands.add("import");
+                    subcommands.add("go");
+                    subcommands.add("list");
+                    subcommands.add("delete");
+                    subcommands.add("deleteall");
 
-		if(cmd.getName().equalsIgnoreCase("ehm")) {
-			if(plugin.getConfig().getBoolean("Permissions-System") && sender.hasPermission("homes.command.manage") || !plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
-				if(args.length == 1) {
+                    return subcommands;
+                } else if (args.length == 2) {
+                    List<String> onlinePlayers = new ArrayList<>();
 
-					subcommands.add("help");
-					subcommands.add("import");
-					subcommands.add("go");
-					subcommands.add("list");
-					subcommands.add("delete");
-					subcommands.add("deleteall");
+                    for (Player p : Bukkit.getOnlinePlayers()) {
 
-					return subcommands;
-				} else if(args.length == 2) {
-					List<String> onlinePlayers = new ArrayList<>();
+                        if (p == null) return null;
 
-					for(Player p : Bukkit.getOnlinePlayers()) {
+                        onlinePlayers.add(p.getName());
+                    }
+                    return onlinePlayers;
+                } else if (args.length == 3) {
+                    Player player = Bukkit.getPlayer(args[1]);
 
-						if(p == null) return null;
+                    if (player == null) return null;
 
-						onlinePlayers.add(p.getName());
-					}
-					return onlinePlayers;
-				} else if(args.length == 3) {
-					Player player = Bukkit.getPlayer(args[1]);
+                    return plugin.databaseManager.getHomes(player);
+                }
+            }
+        }
 
-					if(player == null) return null;
-
-					return plugin.databaseType().getHomes(player);
-				}
-			}
-		}
-
-		return null;
-	}
+        return null;
+    }
 }

@@ -11,54 +11,54 @@ import java.sql.SQLException;
 
 public class SQLMain {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	private Connection connection;
+    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+    private Connection connection;
 
-	public SQLMain(String host, int port, String database, String username, String password) {
+    public SQLMain(String host, int port, String database, String username, String password) {
 
-		try {
+        try {
 
-			synchronized(this) {
+            synchronized (this) {
 
-				if(connection != null && !connection.isClosed()) {
+                if (connection != null && !connection.isClosed()) {
 
-					return;
-				}
+                    return;
+                }
 
-				Class.forName("com.mysql.cj.jdbc.Driver");
+                Class.forName("com.mysql.cj.jdbc.Driver");
 
-				this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+                this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
 
-				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aConnected to your database!"));
-				Bukkit.getConsoleSender().sendMessage(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&7"));
-			}
+                Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aConnected to your database!"));
+                Bukkit.getConsoleSender().sendMessage(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&7"));
+            }
 
-		} catch(SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
 
-			Bukkit.getConsoleSender().sendMessage("");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Could not connect to the database!"));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error &c" + e.getCause()));
-		}
-	}
+            Bukkit.getConsoleSender().sendMessage("");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Could not connect to the database!"));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error &c" + e.getCause()));
+        }
+    }
 
-	public void createTable() {
+    public void createTable() {
 
-		try {
+        try {
 
-			PreparedStatement statement = getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS homes (`UUID` VARCHAR(80) NOT NULL , `Player` VARCHAR(60) NOT NULL , `Home` VARCHAR(60) NOT NULL , `World` VARCHAR(80) NOT NULL , `X` INT(10) NOT NULL , `Y` INT(10) NOT NULL , `Z` INT(10) NOT NULL , `Pitch` FLOAT(15) , `Yaw` FLOAT(15) ) ENGINE = InnoDB");
-			statement.executeUpdate();
-			statement.close();
+            PreparedStatement statement = getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS homes (`UUID` VARCHAR(80) NOT NULL , `Player` VARCHAR(60) NOT NULL , `Home` VARCHAR(60) NOT NULL , `World` VARCHAR(80) NOT NULL , `X` INT(10) NOT NULL , `Y` INT(10) NOT NULL , `Z` INT(10) NOT NULL , `Pitch` FLOAT(15) , `Yaw` FLOAT(15) ) ENGINE = InnoDB");
+            statement.executeUpdate();
+            statement.close();
 
-		} catch(SQLException | NullPointerException e) {
+        } catch (SQLException | NullPointerException e) {
 
-			Bukkit.getConsoleSender().sendMessage("");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Could not connect to the database!"));
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error &c" + e.getCause()));
-			e.printStackTrace();
-		}
-	}
+            Bukkit.getConsoleSender().sendMessage("");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Could not connect to the database!"));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error &c" + e.getCause()));
+            e.printStackTrace();
+        }
+    }
 
-	public Connection getConnection() {
-		return connection;
-	}
+    public Connection getConnection() {
+        return connection;
+    }
 }

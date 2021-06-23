@@ -18,68 +18,68 @@ import java.util.UUID;
 
 public class StorageManager {
 
-	private final ExodusHomes plugin;
-	UUID uuid;
-	File playerFile;
-	FileConfiguration playerYaml;
+    private final ExodusHomes plugin;
+    UUID uuid;
+    File playerFile;
+    FileConfiguration playerYaml;
 
-	public StorageManager(UUID uuid, ExodusHomes plugin) {
+    public StorageManager(UUID uuid, ExodusHomes plugin) {
 
-		this.plugin = plugin;
-		playerFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + uuid + ".yml");
-		playerYaml = YamlConfiguration.loadConfiguration(playerFile);
-	}
+        this.plugin = plugin;
+        playerFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + uuid + ".yml");
+        playerYaml = YamlConfiguration.loadConfiguration(playerFile);
+    }
 
-	public void createPlayerFile(Player player) { //Create a file for each player
+    public void createPlayerFile(Player player) { //Create a file for each player
 
-		if(!playerFile.exists()) {
+        if (!playerFile.exists()) {
 
-			new BukkitRunnable() {
-				@Override
-				public void run() {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
 
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aCreating new file in storage for &e" + player.getName()));
-					try {
-						playerFile.createNewFile();
-					} catch(IOException e) {
-						e.printStackTrace();
-					}
-					playerYaml.set("Information" + ".UUID", player.getUniqueId().toString());
-					playerYaml.set("Information" + ".PlayerName", player.getName());
-					playerYaml.createSection("Homes");
-					try {
-						playerYaml.save(playerFile);
-					} catch(IOException e) {
-						e.printStackTrace();
-					}
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSuccess!"));
-				}
-			}.runTaskAsynchronously(plugin);
-		}
-	}
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aCreating new file in storage for &e" + player.getName()));
+                    try {
+                        playerFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    playerYaml.set("Information" + ".UUID", player.getUniqueId().toString());
+                    playerYaml.set("Information" + ".PlayerName", player.getName());
+                    playerYaml.createSection("Homes");
+                    try {
+                        playerYaml.save(playerFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSuccess!"));
+                }
+            }.runTaskAsynchronously(plugin);
+        }
+    }
 
-	public FileConfiguration getFile() {
+    public FileConfiguration getFile() {
 
-		if(playerFile == null)
-			reloadFile();
-		return playerYaml;
-	}
+        if (playerFile == null)
+            reloadFile();
+        return playerYaml;
+    }
 
-	public void reloadFile() {
+    public void reloadFile() {
 
-		playerYaml = YamlConfiguration.loadConfiguration(playerFile);
-		Reader stream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(File.separator + "storage" + File.separator + uuid + ".yml")), StandardCharsets.UTF_8);
-		YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
-		playerYaml.setDefaults(defStream);
-	}
+        playerYaml = YamlConfiguration.loadConfiguration(playerFile);
+        Reader stream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(File.separator + "storage" + File.separator + uuid + ".yml")), StandardCharsets.UTF_8);
+        YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
+        playerYaml.setDefaults(defStream);
+    }
 
-	public void saveFile() {
+    public void saveFile() {
 
-		try {
-			playerYaml.save(playerFile);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            playerYaml.save(playerFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

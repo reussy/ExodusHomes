@@ -13,137 +13,83 @@ import java.util.Objects;
 
 public class FileManager {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-	File configFile = new File(plugin.getDataFolder(), "config.yml");
-	File langFile = new File(plugin.getDataFolder(), "lang.yml");
-	public FileConfiguration langYaml = YamlConfiguration.loadConfiguration(langFile);
-	File guiFile = new File(plugin.getDataFolder(), "gui.yml");
-	public FileConfiguration guiYaml = YamlConfiguration.loadConfiguration(guiFile);
+    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+    File configFile = new File(plugin.getDataFolder(), "config.yml");
+    File langFile = new File(plugin.getDataFolder(), "lang.yml");
+    public FileConfiguration langYaml = YamlConfiguration.loadConfiguration(langFile);
 
-	public void generateFolder() {
+    public void pluginFolders() {
 
-		if("YAML".equalsIgnoreCase(plugin.getConfig().getString("Database-Type"))) {
-			File idFile = new File(plugin.getDataFolder() + File.separator + "storage");
-			if(!idFile.exists()) idFile.mkdirs();
-		}
-	}
+        if ("YAML".equalsIgnoreCase(plugin.getConfig().getString("Database-Type"))) {
+            File storage = new File(plugin.getDataFolder() + File.separator + "storage");
+            if (!storage.exists()) storage.mkdirs();
+        }
+        File menus = new File(plugin.getDataFolder() + File.separator + "menus");
+        if (!menus.exists()) menus.mkdirs();
 
-	public void generateConfig() {
+    }
 
-		if(!configFile.exists()) {
+    public void generateConfig() {
 
-			plugin.saveResource("config.yml", false);
-		}
-	}
+        if (!configFile.exists()) {
 
-	public void generateLang() {
+            plugin.saveResource("config.yml", false);
+        }
+    }
 
-		if(!langFile.exists()) {
+    public void generateLang() {
 
-			plugin.saveResource("lang.yml", false);
-		}
-	}
+        if (!langFile.exists()) {
 
-	public FileConfiguration getLang() {
+            plugin.saveResource("lang.yml", false);
+        }
+    }
 
-		if(langYaml == null)
-			reloadLang();
-		return langYaml;
-	}
+    public FileConfiguration getLang() {
 
-	public void reloadLang() {
+        if (langYaml == null)
+            reloadLang();
+        return langYaml;
+    }
 
-		if(langFile == null) {
+    public void reloadLang() {
 
-			langFile = new File(plugin.getDataFolder(), "lang.yml");
-		}
+        if (langFile == null) {
 
-		langYaml = YamlConfiguration.loadConfiguration(langFile);
-		Reader defConfigStream;
-		defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("lang.yml")), StandardCharsets.UTF_8);
-		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-		langYaml.setDefaults(defConfig);
+            langFile = new File(plugin.getDataFolder(), "lang.yml");
+        }
 
-	}
+        langYaml = YamlConfiguration.loadConfiguration(langFile);
+        Reader defConfigStream;
+        defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("lang.yml")), StandardCharsets.UTF_8);
+        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+        langYaml.setDefaults(defConfig);
 
-	public void registerLang() {
+    }
 
-		langFile = new File(plugin.getDataFolder(), "lang.yml");
-		if(!langFile.exists()) {
+    public void registerLang() {
 
-			getLang().options().copyDefaults(true);
-			plugin.saveDefaultConfig();
-			saveLang();
-		}
-	}
+        langFile = new File(plugin.getDataFolder(), "lang.yml");
+        if (!langFile.exists()) {
 
-	public void saveLang() {
+            getLang().options().copyDefaults(true);
+            plugin.saveDefaultConfig();
+            saveLang();
+        }
+    }
 
-		try {
-			langYaml.save(langFile);
-			plugin.saveDefaultConfig();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public void saveLang() {
 
-	public void generateGui() {
+        try {
+            langYaml.save(langFile);
+            plugin.saveDefaultConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		if(!guiFile.exists()) {
+    public String getMessage(String message) {
 
-			plugin.saveResource("gui.yml", false);
-		}
-	}
-
-	public FileConfiguration getGui() {
-		if(guiYaml == null)
-			reloadGui();
-		return guiYaml;
-	}
-
-	public void reloadGui() {
-
-		if(guiFile == null) {
-
-			guiFile = new File(plugin.getDataFolder(), "gui.yml");
-		}
-
-		guiYaml = YamlConfiguration.loadConfiguration(guiFile);
-		Reader defConfigStream;
-		defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("gui.yml")), StandardCharsets.UTF_8);
-		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-		guiYaml.setDefaults(defConfig);
-	}
-
-	public void registerGui() {
-
-		guiFile = new File(plugin.getDataFolder(), "gui.yml");
-		if(!guiFile.exists()) {
-
-			getGui().options().copyDefaults(true);
-			plugin.saveDefaultConfig();
-			saveGui();
-		}
-	}
-
-	public void saveGui() {
-
-		try {
-			guiYaml.save(guiFile);
-			plugin.saveDefaultConfig();
-
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public String getMessage(String message) {
-
-		return this.getLang().getString(message);
-	}
-
-	public String getText(String text) {
-
-		return plugin.setHexColor(this.getGui().getString(text));
-	}
+        return this.getLang().getString(message);
+    }
 }

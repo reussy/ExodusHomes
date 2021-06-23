@@ -12,244 +12,244 @@ import java.util.UUID;
 
 public class SQLData {
 
-	public boolean hasHomes(Connection connection, UUID uuid) {
+    public boolean hasHomes(Connection connection, UUID uuid) {
 
-		try {
+        try {
 
-			String hasHome = "SELECT * FROM homes WHERE (UUID=?)";
-			PreparedStatement statement = connection.prepareStatement(hasHome);
-			statement.setString(1, uuid.toString());
+            String hasHome = "SELECT * FROM homes WHERE (UUID=?)";
+            PreparedStatement statement = connection.prepareStatement(hasHome);
+            statement.setString(1, uuid.toString());
 
-			ResultSet set = statement.executeQuery();
+            ResultSet set = statement.executeQuery();
 
-			if(set.next()) return true;
+            if (set.next()) return true;
 
-		} catch(SQLException e) {
+        } catch (SQLException e) {
 
-			e.printStackTrace();
-		}
+            e.printStackTrace();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public void createHomes(Connection connection, UUID uuid, Player player, String world, String home, double x, double y, double z, float pitch, float yaw) {
+    public void createHomes(Connection connection, UUID uuid, Player player, String world, String home, double x, double y, double z, float pitch, float yaw) {
 
-		try {
+        try {
 
-			String setHome = "INSERT INTO homes (UUID, Player, World, Home, X, Y, Z, Pitch, Yaw) VALUE (?,?,?,?,?,?,?,?,?)";
-			PreparedStatement statement = connection.prepareStatement(setHome);
-			statement.setString(1, uuid.toString());
-			statement.setString(2, player.getName());
-			statement.setString(3, world);
-			statement.setString(4, home);
-			statement.setDouble(5, x);
-			statement.setDouble(6, y);
-			statement.setDouble(7, z);
-			statement.setFloat(8, pitch);
-			statement.setFloat(9, yaw);
-			statement.executeUpdate();
+            String setHome = "INSERT INTO homes (UUID, Player, World, Home, X, Y, Z, Pitch, Yaw) VALUE (?,?,?,?,?,?,?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(setHome);
+            statement.setString(1, uuid.toString());
+            statement.setString(2, player.getName());
+            statement.setString(3, world);
+            statement.setString(4, home);
+            statement.setDouble(5, x);
+            statement.setDouble(6, y);
+            statement.setDouble(7, z);
+            statement.setFloat(8, pitch);
+            statement.setFloat(9, yaw);
+            statement.executeUpdate();
 
-		} catch(SQLException e) {
+        } catch (SQLException e) {
 
-			e.printStackTrace();
-		}
-	}
+            e.printStackTrace();
+        }
+    }
 
-	public void setNewName(Connection connection, UUID uuid, String home, String newName) {
+    public void setNewName(Connection connection, UUID uuid, String home, String newName) {
 
-		try {
+        try {
 
-			String Name = "UPDATE homes SET Home=? WHERE UUID=? AND Home=?";
-			PreparedStatement statement = connection.prepareStatement(Name);
-			statement.setString(1, newName);
-			statement.setString(2, uuid.toString());
-			statement.setString(3, home);
-			statement.executeUpdate();
-			statement.close();
+            String Name = "UPDATE homes SET Home=? WHERE UUID=? AND Home=?";
+            PreparedStatement statement = connection.prepareStatement(Name);
+            statement.setString(1, newName);
+            statement.setString(2, uuid.toString());
+            statement.setString(3, home);
+            statement.executeUpdate();
+            statement.close();
 
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void deleteHomes(Connection connection, UUID uuid, String home) {
+    public void deleteHomes(Connection connection, UUID uuid, String home) {
 
-		try {
+        try {
 
-			String Home = "DELETE FROM homes WHERE UUID=? AND HOME=?";
-			PreparedStatement statement = connection.prepareStatement(Home);
-			statement.setString(1, uuid.toString());
-			statement.setString(2, home);
-			statement.executeUpdate();
-			statement.close();
+            String Home = "DELETE FROM homes WHERE UUID=? AND HOME=?";
+            PreparedStatement statement = connection.prepareStatement(Home);
+            statement.setString(1, uuid.toString());
+            statement.setString(2, home);
+            statement.executeUpdate();
+            statement.close();
 
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void deleteAll(Connection connection, UUID uuid) {
+    public void deleteAll(Connection connection, UUID uuid) {
 
-		try {
-			String homes = "DELETE FROM homes WHERE UUID=?";
-			PreparedStatement statement = connection.prepareStatement(homes);
-			statement.setString(1, uuid.toString());
-			statement.executeUpdate();
-			statement.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            String homes = "DELETE FROM homes WHERE UUID=?";
+            PreparedStatement statement = connection.prepareStatement(homes);
+            statement.setString(1, uuid.toString());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public List<String> getHomes(Connection connection, UUID uuid) {
+    public List<String> getHomes(Connection connection, UUID uuid) {
 
-		List<String> homes = new ArrayList<>();
-		String getHomes;
+        List<String> homes = new ArrayList<>();
+        String getHomes;
 
-		try {
+        try {
 
-			if(hasHomes(connection, uuid)) {
+            if (hasHomes(connection, uuid)) {
 
-				String Home = "SELECT * FROM homes WHERE (UUID=?)";
-				PreparedStatement statement = connection.prepareStatement(Home);
-				statement.setString(1, uuid.toString());
-				ResultSet set = statement.executeQuery();
+                String Home = "SELECT * FROM homes WHERE (UUID=?)";
+                PreparedStatement statement = connection.prepareStatement(Home);
+                statement.setString(1, uuid.toString());
+                ResultSet set = statement.executeQuery();
 
-				while(set.next()) {
+                while (set.next()) {
 
-					getHomes = set.getString("Home");
-					homes.add(getHomes);
+                    getHomes = set.getString("Home");
+                    homes.add(getHomes);
 
-				}
-			}
+                }
+            }
 
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		return homes;
-	}
+        return homes;
+    }
 
-	public String getWorld(Connection connection, UUID uuid, String home) {
+    public String getWorld(Connection connection, UUID uuid, String home) {
 
-		try {
+        try {
 
-			if(hasHomes(connection, uuid)) {
+            if (hasHomes(connection, uuid)) {
 
-				String World = "SELECT World FROM homes WHERE UUID=? AND HOME=?";
-				PreparedStatement statement = connection.prepareStatement(World);
-				statement.setString(1, uuid.toString());
-				statement.setString(2, home);
-				ResultSet set = statement.executeQuery();
-				if(set.next()) return set.getString("World");
-				set.close();
-			}
+                String World = "SELECT World FROM homes WHERE UUID=? AND HOME=?";
+                PreparedStatement statement = connection.prepareStatement(World);
+                statement.setString(1, uuid.toString());
+                statement.setString(2, home);
+                ResultSet set = statement.executeQuery();
+                if (set.next()) return set.getString("World");
+                set.close();
+            }
 
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	public double getX(Connection connection, UUID uuid, String home) {
+    public double getX(Connection connection, UUID uuid, String home) {
 
-		try {
+        try {
 
-			if(hasHomes(connection, uuid)) {
+            if (hasHomes(connection, uuid)) {
 
-				String X = "SELECT X FROM homes WHERE UUID=? AND HOME=?";
-				PreparedStatement statement = connection.prepareStatement(X);
-				statement.setString(1, uuid.toString());
-				statement.setString(2, home);
-				ResultSet set = statement.executeQuery();
-				if(set.next()) return set.getDouble("X");
-				set.close();
-			}
+                String X = "SELECT X FROM homes WHERE UUID=? AND HOME=?";
+                PreparedStatement statement = connection.prepareStatement(X);
+                statement.setString(1, uuid.toString());
+                statement.setString(2, home);
+                ResultSet set = statement.executeQuery();
+                if (set.next()) return set.getDouble("X");
+                set.close();
+            }
 
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	public double getY(Connection connection, UUID uuid, String home) {
+    public double getY(Connection connection, UUID uuid, String home) {
 
-		try {
+        try {
 
-			if(hasHomes(connection, uuid)) {
+            if (hasHomes(connection, uuid)) {
 
-				String Y = "SELECT Y FROM homes WHERE UUID=? AND HOME=?";
-				PreparedStatement statement = connection.prepareStatement(Y);
-				statement.setString(1, uuid.toString());
-				statement.setString(2, home);
-				ResultSet set = statement.executeQuery();
-				if(set.next()) return set.getDouble("Y");
-				set.close();
-			}
+                String Y = "SELECT Y FROM homes WHERE UUID=? AND HOME=?";
+                PreparedStatement statement = connection.prepareStatement(Y);
+                statement.setString(1, uuid.toString());
+                statement.setString(2, home);
+                ResultSet set = statement.executeQuery();
+                if (set.next()) return set.getDouble("Y");
+                set.close();
+            }
 
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	public double getZ(Connection connection, UUID uuid, String home) {
+    public double getZ(Connection connection, UUID uuid, String home) {
 
-		try {
+        try {
 
-			if(hasHomes(connection, uuid)) {
+            if (hasHomes(connection, uuid)) {
 
-				String Z = "SELECT Z FROM homes WHERE UUID=? AND HOME=?";
-				PreparedStatement statement = connection.prepareStatement(Z);
-				statement.setString(1, uuid.toString());
-				statement.setString(2, home);
-				ResultSet set = statement.executeQuery();
-				if(set.next()) return set.getDouble("Z");
-				set.close();
-			}
+                String Z = "SELECT Z FROM homes WHERE UUID=? AND HOME=?";
+                PreparedStatement statement = connection.prepareStatement(Z);
+                statement.setString(1, uuid.toString());
+                statement.setString(2, home);
+                ResultSet set = statement.executeQuery();
+                if (set.next()) return set.getDouble("Z");
+                set.close();
+            }
 
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	public float getPitch(Connection connection, UUID uuid, String home) {
+    public float getPitch(Connection connection, UUID uuid, String home) {
 
-		try {
-			String Pitch = "SELECT Pitch FROM homes WHERE UUID=? AND HOME=?";
-			PreparedStatement statement = connection.prepareStatement(Pitch);
-			statement.setString(1, uuid.toString());
-			statement.setString(2, home);
-			ResultSet set = statement.executeQuery();
-			if(set.next()) return set.getFloat("Pitch");
+        try {
+            String Pitch = "SELECT Pitch FROM homes WHERE UUID=? AND HOME=?";
+            PreparedStatement statement = connection.prepareStatement(Pitch);
+            statement.setString(1, uuid.toString());
+            statement.setString(2, home);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) return set.getFloat("Pitch");
 
-			set.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
+            set.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
 
-		}
-		return 0;
-	}
+        }
+        return 0;
+    }
 
-	public float getYaw(Connection connection, UUID uuid, String home) {
+    public float getYaw(Connection connection, UUID uuid, String home) {
 
-		try {
-			String Yaw = "SELECT Yaw FROM homes WHERE UUID=? AND HOME=?";
-			PreparedStatement statement = connection.prepareStatement(Yaw);
-			statement.setString(1, uuid.toString());
-			statement.setString(2, home);
-			ResultSet set = statement.executeQuery();
-			if(set.next()) return set.getFloat("Yaw");
+        try {
+            String Yaw = "SELECT Yaw FROM homes WHERE UUID=? AND HOME=?";
+            PreparedStatement statement = connection.prepareStatement(Yaw);
+            statement.setString(1, uuid.toString());
+            statement.setString(2, home);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) return set.getFloat("Yaw");
 
-			set.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
+            set.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
 
-		}
-		return 0;
-	}
+        }
+        return 0;
+    }
 }

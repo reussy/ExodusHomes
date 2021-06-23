@@ -11,19 +11,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerDataListener implements Listener {
 
-	private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
 
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e) {
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
 
-		Player player = e.getPlayer();
-		StorageManager storage = new StorageManager(player.getUniqueId(), plugin);
+        Player player = e.getPlayer();
+        StorageManager storage = new StorageManager(player.getUniqueId(), plugin);
 
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				storage.createPlayerFile(player);
-			}
-		}.runTaskAsynchronously(plugin);
-	}
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                storage.createPlayerFile(player);
+            }
+        }.runTaskAsynchronously(plugin);
+    }
 }

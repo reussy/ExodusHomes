@@ -8,9 +8,9 @@ import com.reussy.events.PlayerDataListener;
 import com.reussy.managers.DatabaseManager;
 import com.reussy.managers.FileManager;
 import com.reussy.managers.InventoryFileManager;
-import com.reussy.sql.SQLMain;
-import com.reussy.utils.SQLType;
-import com.reussy.utils.YamlType;
+import com.reussy.mysql.MySQLMain;
+import com.reussy.utils.MySQL;
+import com.reussy.utils.Yaml;
 import de.jeff_media.updatechecker.UpdateChecker;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -28,7 +28,7 @@ public final class ExodusHomes extends JavaPlugin {
     public ExodusHomes plugin;
     public DatabaseManager databaseManager;
     public ArrayList<String> playerCache = new ArrayList<>();
-    private SQLMain connect;
+    private MySQLMain connect;
 
     @Override
     public void onEnable() {
@@ -83,16 +83,16 @@ public final class ExodusHomes extends JavaPlugin {
         if (("MySQL".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bDatabase Type: &fMySQL"));
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to connect to the database..."));
-            connect = new SQLMain(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"));
+            connect = new MySQLMain(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"));
             connect.createTable();
-            databaseManager = new SQLType();
+            databaseManager = new MySQL();
 
         } else if (("YAML".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bDatabase Type: &fYAML"));
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eRegistering events..."));
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
             Bukkit.getPluginManager().registerEvents(new PlayerDataListener(), this);
-            databaseManager = new YamlType();
+            databaseManager = new Yaml();
 
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bDatabase Type: &f" + getConfig().getString("Database-Type")));
@@ -132,7 +132,7 @@ public final class ExodusHomes extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), this);
     }
 
-    public Connection getSQL() {
+    public Connection getConnection() {
 
         return connect.getConnection();
     }

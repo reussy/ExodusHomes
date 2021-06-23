@@ -221,10 +221,15 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
 
-        List<String> getHomes = plugin.databaseManager.getHomes((Player) sender);
+        Player player = (Player) sender;
+        List<String> getHomes = plugin.databaseManager.getHomes(player);
         if (command.getName().equalsIgnoreCase("home")) {
             if (args.length == 1) {
-                if (plugin.getConfig().getBoolean("Permissions-System") && sender.hasPermission("homes.command.player") || !plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.player") || sender.isOp()) {
+                if (plugin.getConfig().getBoolean("Permissions-System")
+                        && player.hasPermission("homes.command.player")
+                        || !plugin.getConfig().getBoolean("Permissions-System")
+                        && !player.hasPermission("homes.command.player")
+                        || player.isOp()) {
 
                     subcommands.add("help");
                     subcommands.add("gui");
@@ -234,8 +239,8 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                     subcommands.add("deleteall");
                     subcommands.add("go");
                     subcommands.add("list");
-                    return subcommands;
                 }
+                return subcommands;
             } else if (args.length == 2) {
                 return getHomes;
             } else if (args.length > 2) {

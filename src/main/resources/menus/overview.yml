@@ -1,3 +1,21 @@
+#############################################################################################
+#                                                                                           #
+#                                    EXODUS PROJECT                                         #
+#                                                                                           #
+#                                     EXODUS HOMES                                          #
+#                                     OVERVIEW FILE                                         #
+#                                                                                           #
+#                                                                                           #
+#############################################################################################
+
+#You can use normal color codes
+#https://www.colorschemer.com/minecraft-color-codes/
+#Also can use HEX colors (+1.16)
+#https://coolors.co
+#Example #55D6C2Exodus Homes
+
+#Support PlaceholderAPI for
+#all items created here!
 Title: '&0&l&oOverview'
 Size: 54
 
@@ -7,17 +25,10 @@ Static-Contents:
   Portal-Homes:
     Material: BOOKSHELF
     Amount: 1
-    Slot: 21
+    Slot: 22
     Name: '&aYour Homes'
     Lore:
       - '&7Open Portal GUI'
-  Import-Homes:
-    Material: BEACON
-    Amount: 1
-    Slot: 23
-    Name: '&bImport Homes'
-    Lore:
-      - '&7Import homes from Essentials'
 
 #Contents means that they are
 #modifiable items and can be deleted
@@ -30,9 +41,9 @@ Contents:
     Lore:
       - '&7Rank: &e%vault_rank%'
   1:
-    Material: BLUE_STAINED_GLASS_PANE
+    Material: PURPLE_STAINED_GLASS_PANE
     Amount: 1
-    Slot: 22
+    Slot: 31
     Name: '&r'
     Lore:
       - '&r'

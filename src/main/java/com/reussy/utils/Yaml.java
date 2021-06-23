@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class YamlType implements DatabaseManager {
+public class Yaml implements DatabaseManager {
 
     private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
     FileManager fileManager = new FileManager();

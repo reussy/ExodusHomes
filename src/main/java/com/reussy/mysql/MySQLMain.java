@@ -1,4 +1,4 @@
-package com.reussy.sql;
+package com.reussy.mysql;
 
 import com.reussy.ExodusHomes;
 import org.bukkit.Bukkit;
@@ -9,12 +9,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SQLMain {
+public class MySQLMain {
 
     private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
     private Connection connection;
 
-    public SQLMain(String host, int port, String database, String username, String password) {
+    public MySQLMain(String host, int port, String database, String username, String password) {
 
         try {
 

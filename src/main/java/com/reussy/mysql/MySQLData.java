@@ -1,4 +1,4 @@
-package com.reussy.sql;
+package com.reussy.mysql;
 
 import org.bukkit.entity.Player;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SQLData {
+public class MySQLData {
 
     public boolean hasHomes(Connection connection, UUID uuid) {
 

@@ -2,14 +2,12 @@ package com.reussy.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
-import com.reussy.managers.EssentialsStorageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,21 +30,6 @@ public class OverviewGUI implements HolderGUI {
 
         if (e.getSlot() == inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"))
             player.openInventory(new PortalGUI(plugin, player).getInventory());
-
-        if (e.getSlot() == inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Import-Homes.Slot")) {
-            player.closeInventory();
-            try {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        new EssentialsStorageManager(player.getUniqueId(), player, player);
-                    }
-                }.runTaskLaterAsynchronously(plugin, 20L);
-            } catch (NullPointerException error) {
-                player.sendMessage("Cannot import homes! Report this please.");
-                error.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -64,17 +47,6 @@ public class OverviewGUI implements HolderGUI {
                 inventoryFileManager.getString("Static-Contents.Portal-Homes.Name", inventoryFileManager.overviewYAML), portalLore);
 
         inventory.setItem(inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"), portalItem);
-
-        List<String> importLore = new ArrayList<>();
-        for (String getLore : inventoryFileManager.getOverviewYAML().getStringList("Static-Contents.Import-Homes.Lore")) {
-            importLore.add(plugin.setHexColor(getLore));
-        }
-
-        ItemStack importItem = itemBuilder.createItem(player, XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Import-Homes.Material", inventoryFileManager.overviewYAML)),
-                inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Import-Homes.Amount"),
-                inventoryFileManager.getString("Static-Contents.Import-Homes.Name", inventoryFileManager.overviewYAML), importLore);
-
-        inventory.setItem(inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Import-Homes.Slot"), importItem);
 
         ConfigurationSection getContents = inventoryFileManager.configurationSection("Contents", inventoryFileManager.overviewYAML);
         for (String getItem : getContents.getKeys(false)) {

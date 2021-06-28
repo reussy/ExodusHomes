@@ -1,10 +1,12 @@
-package com.reussy.utils;
+package com.reussy.managers.yaml;
 
 import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.DatabaseManager;
 import com.reussy.managers.FileManager;
 import com.reussy.managers.StorageManager;
+import com.reussy.utils.MessageUtils;
+import com.reussy.utils.TeleportTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,9 +20,13 @@ import java.util.Set;
 
 public class Yaml implements DatabaseManager {
 
-    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+    private final ExodusHomes plugin;
     FileManager fileManager = new FileManager();
     MessageUtils messageUtils = new MessageUtils();
+
+    public Yaml(ExodusHomes plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean hasHome(Player player) {
@@ -35,7 +41,6 @@ public class Yaml implements DatabaseManager {
     public void createHome(Player player, String home) {
 
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
-
         storageManager.getFile().set("Homes." + home + ".World", player.getWorld().getName());
         storageManager.getFile().set("Homes." + home + ".X", player.getLocation().getBlockX());
         storageManager.getFile().set("Homes." + home + ".Y", player.getLocation().getBlockY());
@@ -43,6 +48,7 @@ public class Yaml implements DatabaseManager {
         storageManager.getFile().set("Homes." + home + ".Pitch", player.getLocation().getPitch());
         storageManager.getFile().set("Homes." + home + ".Yaw", player.getLocation().getYaw());
         storageManager.saveFile();
+
         messageUtils.sendMessage(player, fileManager.getMessage("Home-Created").replace("%home_name%", home));
         player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Create-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 

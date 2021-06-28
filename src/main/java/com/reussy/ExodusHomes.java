@@ -4,13 +4,15 @@ import com.reussy.commands.MainCommand;
 import com.reussy.commands.ManageCommand;
 import com.reussy.commands.PlayerCommand;
 import com.reussy.events.InventoryClickListener;
+import com.reussy.events.PlayerCommandPreListener;
 import com.reussy.events.PlayerDataListener;
 import com.reussy.managers.DatabaseManager;
 import com.reussy.managers.FileManager;
 import com.reussy.managers.InventoryFileManager;
+import com.reussy.managers.yaml.Yaml;
+import com.reussy.mysql.MySQL;
 import com.reussy.mysql.MySQLMain;
-import com.reussy.utils.MySQL;
-import com.reussy.utils.Yaml;
+import com.reussy.utils.PlaceholdersBuilder;
 import de.jeff_media.updatechecker.UpdateChecker;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -20,14 +22,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ExodusHomes extends JavaPlugin {
 
     public ExodusHomes plugin;
+
+    public void setPlugin(ExodusHomes plugin) {
+        this.plugin = plugin;
+    }
+
     public DatabaseManager databaseManager;
     public ArrayList<String> playerCache = new ArrayList<>();
+    public List<String> adminCommands = new ArrayList<>();
+    public List<String> manageCommands = new ArrayList<>();
+    public List<String> playerCommands = new ArrayList<>();
     private MySQLMain connect;
 
     @Override
@@ -42,7 +53,6 @@ public final class ExodusHomes extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&fPlugin Version: &a" + this.getDescription().getVersion()));
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
 
-        plugin = this;
         Files();
         getDatabaseType();
         registerHooks();
@@ -92,7 +102,7 @@ public final class ExodusHomes extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eRegistering events..."));
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
             Bukkit.getPluginManager().registerEvents(new PlayerDataListener(), this);
-            databaseManager = new Yaml();
+            databaseManager = new Yaml(this);
 
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bDatabase Type: &f" + getConfig().getString("Database-Type")));
@@ -105,14 +115,13 @@ public final class ExodusHomes extends JavaPlugin {
     public void registerHooks() {
 
         if (Bukkit.getPluginManager().getPlugin("Essentials") != null) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6EssentialsX"));
-        } else {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Import Essentials Homes feature no registered because EssentialsX is not installed!"));
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aHooked into &fEssentialsX"));
         }
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bHooked into &6PlaceholderAPI"));
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholdersBuilder(this).register();
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aHooked into &fPlaceholderAPI"));
+        }
 
     }
 
@@ -130,6 +139,7 @@ public final class ExodusHomes extends JavaPlugin {
     public void Events() {
 
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerCommandPreListener(this), this);
     }
 
     public Connection getConnection() {

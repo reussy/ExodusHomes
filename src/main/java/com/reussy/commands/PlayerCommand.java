@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerCommand implements CommandExecutor, TabCompleter {
@@ -21,7 +20,6 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
     private final ExodusHomes plugin;
     FileManager fileManager = new FileManager();
     MessageUtils messageUtils = new MessageUtils();
-    List<String> subcommands = new ArrayList<>();
 
     public PlayerCommand(ExodusHomes plugin) {
         this.plugin = plugin;
@@ -47,7 +45,9 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
 
-        if (!plugin.getConfig().getStringList("Whitelist-Worlds").contains(player.getWorld().getName())) {
+        if (plugin.getConfig().getBoolean("World-System.Enabled")
+                && plugin.getConfig().getString("World-System.Type").equalsIgnoreCase("WHITELIST")
+                && !plugin.getConfig().getStringList("World-System.Worlds").contains(player.getWorld().getName())) {
 
             messageUtils.sendMessage(sender, fileManager.getMessage("Deny-World"));
             return false;
@@ -107,7 +107,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
             case "create":
 
-                if (plugin.databaseManager.getHomes(player).contains(args[1])) {
+                if (plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
 
                     messageUtils.sendMessage(player, fileManager.getMessage("Has-Home"));
                     return false;
@@ -122,7 +122,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        plugin.databaseManager.createHome(player, args[1]);
+                        plugin.getDatabaseManager().createHome(player, args[1]);
                     }
                 }.runTaskAsynchronously(plugin);
 
@@ -130,25 +130,25 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
             case "rename":
 
-                if (!plugin.databaseManager.getHomes(player).contains(args[1])) {
+                if (!plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
 
                     messageUtils.sendMessage(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
                     return false;
                 }
 
-                plugin.databaseManager.setNewName(player, args[1], args[2]);
+                plugin.getDatabaseManager().setNewName(player, args[1], args[2]);
 
                 break;
 
             case "delete":
 
-                if (!plugin.databaseManager.hasHome(player)) {
+                if (!plugin.getDatabaseManager().hasHome(player)) {
 
                     messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
                     return false;
                 }
 
-                if (!plugin.databaseManager.getHomes(player).contains(args[1])) {
+                if (!plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
 
                     messageUtils.sendMessage(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
                     return false;
@@ -157,7 +157,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        plugin.databaseManager.deleteHome(player, args[1]);
+                        plugin.getDatabaseManager().deleteHome(player, args[1]);
                     }
                 }.runTaskAsynchronously(plugin);
                 break;
@@ -173,39 +173,39 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        plugin.databaseManager.deleteAll(player);
+                        plugin.getDatabaseManager().deleteAll(player);
                     }
                 }.runTaskAsynchronously(plugin);
                 break;
 
             case "go":
 
-                if (!plugin.databaseManager.hasHome(player)) {
+                if (!plugin.getDatabaseManager().hasHome(player)) {
 
                     messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
 
                     return false;
                 }
 
-                if (!plugin.databaseManager.getHomes(player).contains(args[1])) {
+                if (!plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
 
                     messageUtils.sendMessage(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
                     return false;
                 }
 
-                plugin.databaseManager.goHome(player, args[1]);
+                plugin.getDatabaseManager().goHome(player, args[1]);
                 break;
 
             case "list":
 
-                if (!plugin.databaseManager.hasHome(player)) {
+                if (!plugin.getDatabaseManager().hasHome(player)) {
 
                     messageUtils.sendMessage(player, fileManager.getMessage("Homes-Empty"));
 
                     return false;
                 }
 
-                plugin.databaseManager.listHomes(player);
+                plugin.getDatabaseManager().listHomes(player);
                 break;
 
             default:
@@ -231,16 +231,16 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                         && !player.hasPermission("homes.command.player")
                         || player.isOp()) {
 
-                    subcommands.add("help");
-                    subcommands.add("gui");
-                    subcommands.add("create");
-                    subcommands.add("rename");
-                    subcommands.add("delete");
-                    subcommands.add("deleteall");
-                    subcommands.add("go");
-                    subcommands.add("list");
+                    plugin.playerCommands.add("help");
+                    plugin.playerCommands.add("gui");
+                    plugin.playerCommands.add("create");
+                    plugin.playerCommands.add("rename");
+                    plugin.playerCommands.add("delete");
+                    plugin.playerCommands.add("deleteall");
+                    plugin.playerCommands.add("go");
+                    plugin.playerCommands.add("list");
                 }
-                return subcommands;
+                return plugin.playerCommands;
             } else if (args.length == 2) {
                 return getHomes;
             } else if (args.length > 2) {

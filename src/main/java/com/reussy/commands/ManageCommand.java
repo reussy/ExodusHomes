@@ -21,7 +21,6 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
     private final ExodusHomes plugin;
     FileManager fileManager = new FileManager();
     MessageUtils messageUtils = new MessageUtils();
-    List<String> subcommands = new ArrayList<>();
 
     public ManageCommand(ExodusHomes plugin) {
         this.plugin = plugin;
@@ -102,7 +101,8 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            EssentialsStorageManager essentialsStorage = new EssentialsStorageManager(player.getUniqueId(), player, sender);
+                            EssentialsStorageManager essentialsStorageManager = new EssentialsStorageManager(plugin, player, player.getUniqueId());
+                            essentialsStorageManager.importPerPlayer();
                         }
                     }.runTaskLaterAsynchronously(plugin, 20L);
                 } catch (NullPointerException e) {
@@ -202,14 +202,14 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
             if (plugin.getConfig().getBoolean("Permissions-System") && sender.hasPermission("homes.command.manage") || !plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
                 if (args.length == 1) {
 
-                    subcommands.add("help");
-                    subcommands.add("import");
-                    subcommands.add("go");
-                    subcommands.add("list");
-                    subcommands.add("delete");
-                    subcommands.add("deleteall");
+                    plugin.manageCommands.add("help");
+                    plugin.manageCommands.add("import");
+                    plugin.manageCommands.add("go");
+                    plugin.manageCommands.add("list");
+                    plugin.manageCommands.add("delete");
+                    plugin.manageCommands.add("deleteall");
 
-                    return subcommands;
+                    return plugin.manageCommands;
                 } else if (args.length == 2) {
                     List<String> onlinePlayers = new ArrayList<>();
 

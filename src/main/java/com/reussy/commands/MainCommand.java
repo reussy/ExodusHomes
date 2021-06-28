@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabCompleter {
@@ -20,7 +19,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     FileManager fileManager = new FileManager();
     InventoryFileManager inventoryFileManager = new InventoryFileManager();
     MessageUtils messageUtils = new MessageUtils();
-    List<String> subcommands = new ArrayList<>();
 
     public MainCommand(ExodusHomes plugin) {
         this.plugin = plugin;
@@ -90,12 +88,12 @@ public class MainCommand implements CommandExecutor, TabCompleter {
             if (args.length == 1) {
                 if (plugin.getConfig().getBoolean("Permissions-System") && sender.hasPermission("homes.command.admin") || !plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
-                    subcommands.add("help");
-                    subcommands.add("reload");
-                    subcommands.add("update");
+                    plugin.adminCommands.add("help");
+                    plugin.adminCommands.add("reload");
+                    plugin.adminCommands.add("update");
                 }
             }
-            return subcommands;
+            return plugin.adminCommands;
         }
         return null;
     }

@@ -29,7 +29,7 @@ public class PortalGUI implements HolderGUI {
     public void onClick(InventoryClickEvent e) {
 
         Player player = (Player) e.getWhoClicked();
-        List<String> getHome = plugin.databaseManager.getHomes(player);
+        List<String> getHome = plugin.getDatabaseManager().getHomes(player);
 
         if (Objects.requireNonNull(e.getCurrentItem()).getType() ==
                 XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Homes.Material", inventoryFileManager.portalYAML)).parseMaterial()) {
@@ -37,7 +37,7 @@ public class PortalGUI implements HolderGUI {
             switch (e.getClick()) {
 
                 case LEFT:
-                    plugin.databaseManager.goHome(player, getHome.get(e.getSlot()));
+                    plugin.getDatabaseManager().goHome(player, getHome.get(e.getSlot()));
                     player.closeInventory();
                     break;
 
@@ -46,7 +46,7 @@ public class PortalGUI implements HolderGUI {
                         @Override
                         public void run() {
                             player.getOpenInventory().close();
-                            plugin.databaseManager.deleteHome(player, getHome.get(e.getSlot()));
+                            plugin.getDatabaseManager().deleteHome(player, getHome.get(e.getSlot()));
                             player.openInventory(new PortalGUI(plugin, player).getInventory());
                         }
                     }.runTaskLater(plugin, 20L);
@@ -78,10 +78,10 @@ public class PortalGUI implements HolderGUI {
 
         for (String getHome : getHomes) {
 
-            String homeWorld = plugin.databaseManager.getWorld(player, getHome);
-            double homeX = plugin.databaseManager.getX(player, getHome);
-            double homeY = plugin.databaseManager.getY(player, getHome);
-            double homeZ = plugin.databaseManager.getZ(player, getHome);
+            String homeWorld = plugin.getDatabaseManager().getWorld(player, getHome);
+            double homeX = plugin.getDatabaseManager().getX(player, getHome);
+            double homeY = plugin.getDatabaseManager().getY(player, getHome);
+            double homeZ = plugin.getDatabaseManager().getZ(player, getHome);
 
             List<String> homeLore = new ArrayList<>();
             for (String getLore : inventoryFileManager.portalYAML.getStringList("Static-Contents.Homes.Lore")) {

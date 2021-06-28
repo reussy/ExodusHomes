@@ -1,10 +1,11 @@
-package com.reussy.utils;
+package com.reussy.mysql;
 
 import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.DatabaseManager;
 import com.reussy.managers.FileManager;
-import com.reussy.mysql.MySQLData;
+import com.reussy.utils.MessageUtils;
+import com.reussy.utils.TeleportTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;

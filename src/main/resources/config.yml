@@ -29,9 +29,24 @@ Plugin-Prefix: '&8[&b&lHomes&8] '
 #to access all the commands
 Permissions-System: true #default true
 
-#Worlds where homes are allowed!
-Whitelist-Worlds:
-  - world
+#World system verifies the commands
+#that can be executed on certain worlds!
+World-System:
+  #If false completely disable the feature!
+  Enabled: true
+  #If true, op's pass the check
+  Op-Bypass: true
+  #Avaible Types: WHITELIST or BLACKLIST
+  #If it is blacklist it will deny all the action
+  #below in the worlds on the list!
+  #If it is whitelist, it will ignore the actions
+  #and only allow /homes ... to be used on the worlds in the list.
+  Type: BLACKLIST
+  Worlds:
+    - example_world
+  Actions:
+    - 'home create'
+    - 'homes create' #If you have another initial command that calls the "home" command you can add it here!
 
 #Words not allowed for names
 #Check name in /homes create <name>

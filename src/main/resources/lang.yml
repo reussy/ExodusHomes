@@ -20,6 +20,7 @@ Many-Arguments: '&7Maybe you exceeded the number of arguments for this command!'
 Few-Arguments: '&7More arguments are needed use the &6&l/%cmd% help &7for help!'
 Deny-Command-In-World: '&7You &ccannot &7use the &e%parameter% &7parameter in this world!'
 Deny-World: '&7You &ccannot &7use the homes in this world!'
+Not-Same-World: '&7You &care not &7in the same world as home &e&o%home_name%&7!'
 In-Cooldown: '&7Hey! Wait &c%cooldown% &7seconds to create another home again!'
 Reload-Message: '&7Configuration reloaded &asuccessfully&7!'
 Unknown-Command: '&7This command does not exist!'
@@ -37,6 +38,8 @@ Home-Teleport: '&7Teleported &asuccessfully &7to &e&o%home_name%&7!'
 Teleport-Delay: '&7&oTeleporting in &a%seconds% &7&oseconds...'
 Already-Teleporting: '&7You are &aalready &7being teleported!'
 Homes-Format: '&a%home_name%'
+Not-Enough-Money: '&7You dont &chave &7enough money!'
+Satisfactory-Payment: '&a$%money_paid% &7was &cwithdrawn &7from your balance. Now you have &a$%player_balance%&7!'
 
 Help:
   Administrator:

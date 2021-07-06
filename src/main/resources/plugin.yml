@@ -7,10 +7,9 @@ description: Set your homes easily!
 softdepend:
   - PlaceholderAPI
   - EssentialsX
-  - TitleManager
+  - Vault
 loadbefore:
   - EssentialsX
-
 commands:
   eh:
     description: Main Command for ExodusHomes.

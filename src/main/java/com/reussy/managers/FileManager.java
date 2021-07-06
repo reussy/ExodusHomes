@@ -13,10 +13,14 @@ import java.util.Objects;
 
 public class FileManager {
 
-    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-    File configFile = new File(plugin.getDataFolder(), "config.yml");
-    File langFile = new File(plugin.getDataFolder(), "lang.yml");
-    public FileConfiguration langYaml = YamlConfiguration.loadConfiguration(langFile);
+    private final ExodusHomes plugin;
+    File configFile;
+    File langFile;
+    FileConfiguration langYaml;
+
+    public FileManager(ExodusHomes plugin) {
+        this.plugin = plugin;
+    }
 
     public void pluginFolders() {
 
@@ -31,6 +35,7 @@ public class FileManager {
 
     public void generateConfig() {
 
+        configFile = new File(plugin.getDataFolder(), "config.yml");
         if (!configFile.exists()) {
 
             plugin.saveResource("config.yml", false);
@@ -39,6 +44,7 @@ public class FileManager {
 
     public void generateLang() {
 
+        langFile = new File(plugin.getDataFolder(), "lang.yml");
         if (!langFile.exists()) {
 
             plugin.saveResource("lang.yml", false);
@@ -47,8 +53,8 @@ public class FileManager {
 
     public FileConfiguration getLang() {
 
-        if (langYaml == null)
-            reloadLang();
+        langFile = new File(plugin.getDataFolder(), "lang.yml");
+        langYaml = YamlConfiguration.loadConfiguration(langFile);
         return langYaml;
     }
 
@@ -59,6 +65,7 @@ public class FileManager {
             langFile = new File(plugin.getDataFolder(), "lang.yml");
         }
 
+        langFile = new File(plugin.getDataFolder(), "lang.yml");
         langYaml = YamlConfiguration.loadConfiguration(langFile);
         Reader defConfigStream;
         defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("lang.yml")), StandardCharsets.UTF_8);
@@ -80,6 +87,7 @@ public class FileManager {
 
     public void saveLang() {
 
+        langFile = new File(plugin.getDataFolder(), "lang.yml");
         try {
             langYaml.save(langFile);
             plugin.saveDefaultConfig();

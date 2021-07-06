@@ -3,7 +3,7 @@ package com.reussy.commands;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.EssentialsStorageManager;
 import com.reussy.managers.FileManager;
-import com.reussy.utils.MessageUtils;
+import com.reussy.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,8 +19,7 @@ import java.util.List;
 public class ManageCommand implements CommandExecutor, TabCompleter {
 
     private final ExodusHomes plugin;
-    FileManager fileManager = new FileManager();
-    MessageUtils messageUtils = new MessageUtils();
+    PlayerUtils playerUtils = new PlayerUtils();
 
     public ManageCommand(ExodusHomes plugin) {
         this.plugin = plugin;
@@ -29,16 +28,17 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
+        FileManager fileManager = new FileManager(plugin);
         if (!(sender instanceof Player)) {
 
-            messageUtils.sendMessage(sender, fileManager.getMessage("No-Console"));
+            playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("No-Console"));
 
             return false;
         }
 
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
 
-            messageUtils.sendMessage(sender, fileManager.getMessage("Insufficient-Permission"));
+            playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Insufficient-Permission"));
 
             return false;
         }
@@ -56,21 +56,21 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
             if (args.length == 1 && !args[0].equalsIgnoreCase("help")) {
 
-                messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+                playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
                 return false;
             }
 
             if (args.length == 2 && args[0].equalsIgnoreCase("go") || args.length == 2 && args[0].equalsIgnoreCase("delete")) {
 
-                messageUtils.sendMessage(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+                playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
                 return false;
             }
             if (!args[0].equalsIgnoreCase("help")) {
                 if (Bukkit.getPlayer(args[1]) == null) {
 
-                    messageUtils.sendMessage(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
+                    playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Unknown-Player").replace("%target%", args[1]));
                     return false;
                 }
             }
@@ -115,7 +115,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                    playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
                     return false;
                 }
@@ -127,14 +127,14 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                    playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
                     return false;
                 }
 
                 if (!plugin.databaseManager.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
 
-                    messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
+                    playerUtils.sendMessageWithPrefix(sender, fileManager.getLang().getString("Manage.No-Home")
                             .replace("%home_name%", args[2])
                             .replace("%target%", Bukkit.getPlayer(args[1]).getName()));
                     return false;
@@ -147,14 +147,14 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                    playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
                     return false;
                 }
 
                 if (!plugin.databaseManager.getHomes(Bukkit.getPlayer(args[1])).contains(args[2])) {
 
-                    messageUtils.sendMessage(sender, fileManager.getLang().getString("Manage.No-Home")
+                    playerUtils.sendMessageWithPrefix(sender, fileManager.getLang().getString("Manage.No-Home")
                             .replace("%home_name%", args[2])
                             .replace("%target%", Bukkit.getPlayer(args[1]).getName()));
                     return false;
@@ -172,7 +172,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.databaseManager.hasHome(Bukkit.getPlayer(args[1]))) {
 
-                    messageUtils.sendMessage(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
+                    playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", Bukkit.getPlayer(args[1]).getName()));
 
                     return false;
                 }

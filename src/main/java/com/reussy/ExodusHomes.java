@@ -11,13 +11,15 @@ import com.reussy.managers.FileManager;
 import com.reussy.managers.InventoryFileManager;
 import com.reussy.managers.yaml.Yaml;
 import com.reussy.mysql.MySQL;
-import com.reussy.mysql.MySQLMain;
+import com.reussy.mysql.MySQLConnector;
 import com.reussy.utils.PlaceholdersBuilder;
 import de.jeff_media.updatechecker.UpdateChecker;
 import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
@@ -29,17 +31,13 @@ import java.util.regex.Pattern;
 public final class ExodusHomes extends JavaPlugin {
 
     public ExodusHomes plugin;
-
-    public void setPlugin(ExodusHomes plugin) {
-        this.plugin = plugin;
-    }
-
-    public DatabaseManager databaseManager;
     public ArrayList<String> playerCache = new ArrayList<>();
     public List<String> adminCommands = new ArrayList<>();
     public List<String> manageCommands = new ArrayList<>();
     public List<String> playerCommands = new ArrayList<>();
-    private MySQLMain connect;
+    public DatabaseManager databaseManager;
+    public Economy economy;
+    private MySQLConnector mySQLConnector;
 
     @Override
     public void onEnable() {
@@ -79,8 +77,8 @@ public final class ExodusHomes extends JavaPlugin {
 
     public void Files() {
 
-        FileManager fileManager = new FileManager();
-        InventoryFileManager inventoryFileManager = new InventoryFileManager();
+        FileManager fileManager = new FileManager(this);
+        InventoryFileManager inventoryFileManager = new InventoryFileManager(this);
         fileManager.pluginFolders();
         fileManager.generateConfig();
         fileManager.generateLang();
@@ -93,8 +91,7 @@ public final class ExodusHomes extends JavaPlugin {
         if (("MySQL".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bDatabase Type: &fMySQL"));
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to connect to the database..."));
-            connect = new MySQLMain(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"));
-            connect.createTable();
+            mySQLConnector = new MySQLConnector(getConfig().getString("MySQL.host"), getConfig().getInt("MySQL.port"), getConfig().getString("MySQL.database"), getConfig().getString("MySQL.username"), getConfig().getString("MySQL.password"), this.getConfig().getBoolean("MySQL.autoReconnect"));
             databaseManager = new MySQL();
 
         } else if (("YAML".equalsIgnoreCase(getConfig().getString("Database-Type")))) {
@@ -123,6 +120,9 @@ public final class ExodusHomes extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aHooked into &fPlaceholderAPI"));
         }
 
+        if (setupEconomy()) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aHooked into &fVault"));
+        }
     }
 
     public void Commands() {
@@ -142,9 +142,24 @@ public final class ExodusHomes extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerCommandPreListener(this), this);
     }
 
+    private boolean setupEconomy() {
+
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed to register Vault\n" +
+                    "Some economy manager is needed, such as Essentials"));
+            return false;
+        }
+        economy = rsp.getProvider();
+        return true;
+    }
+
     public Connection getConnection() {
 
-        return connect.getConnection();
+        return mySQLConnector.getConnection();
     }
 
     public DatabaseManager getDatabaseManager() {

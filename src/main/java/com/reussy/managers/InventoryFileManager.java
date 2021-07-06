@@ -13,14 +13,19 @@ import java.util.Objects;
 
 public class InventoryFileManager {
 
-    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
-    File overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
-    public FileConfiguration overviewYAML = YamlConfiguration.loadConfiguration(overviewGUI);
-    File portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
-    public FileConfiguration portalYAML = YamlConfiguration.loadConfiguration(portalGUI);
+    private final ExodusHomes plugin;
+    FileConfiguration overviewYAML;
+    FileConfiguration portalYAML;
+    File overviewGUI;
+    File portalGUI;
+
+    public InventoryFileManager(ExodusHomes plugin) {
+        this.plugin = plugin;
+    }
 
     public void generateOverview() {
 
+        overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
         if (!overviewGUI.exists()) {
 
             plugin.saveResource("menus/overview.yml", false);
@@ -30,6 +35,8 @@ public class InventoryFileManager {
 
     public FileConfiguration getOverviewYAML() {
 
+        overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
+        overviewYAML = YamlConfiguration.loadConfiguration(overviewGUI);
         if (overviewGUI == null)
             reloadOverview();
         return overviewYAML;
@@ -41,6 +48,7 @@ public class InventoryFileManager {
             overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
         }
 
+        overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
         overviewYAML = YamlConfiguration.loadConfiguration(overviewGUI);
         Reader defConfigStream;
         defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("menus/overview.yml")), StandardCharsets.UTF_8);
@@ -51,6 +59,7 @@ public class InventoryFileManager {
 
     public void generatePortal() {
 
+        portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
         if (!portalGUI.exists()) {
 
             plugin.saveResource("menus/portal.yml", false);
@@ -60,6 +69,8 @@ public class InventoryFileManager {
 
     public FileConfiguration getPortalYAML() {
 
+        portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
+        portalYAML = YamlConfiguration.loadConfiguration(portalGUI);
         if (portalGUI == null)
             reloadPortal();
         return portalYAML;
@@ -71,6 +82,7 @@ public class InventoryFileManager {
             portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
         }
 
+        portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
         portalYAML = YamlConfiguration.loadConfiguration(portalGUI);
         Reader defConfigStream;
         defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("menus/portal.yml")), StandardCharsets.UTF_8);

@@ -1,6 +1,5 @@
 package com.reussy.mysql;
 
-import com.reussy.ExodusHomes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -9,12 +8,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class MySQLMain {
+public class MySQLConnector {
 
-    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
     private Connection connection;
 
-    public MySQLMain(String host, int port, String database, String username, String password) {
+    public MySQLConnector(String host, int port, String database, String username, String password, Boolean autoReconnect) {
 
         try {
 
@@ -27,10 +25,11 @@ public class MySQLMain {
 
                 Class.forName("com.mysql.cj.jdbc.Driver");
 
-                this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+                this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=" + autoReconnect, username, password);
 
                 Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aConnected to your database!"));
                 Bukkit.getConsoleSender().sendMessage(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&7"));
+                createTable();
             }
 
         } catch (SQLException | ClassNotFoundException e) {
@@ -42,7 +41,6 @@ public class MySQLMain {
     }
 
     public void createTable() {
-
         try {
 
             PreparedStatement statement = getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS homes (`UUID` VARCHAR(80) NOT NULL , `Player` VARCHAR(60) NOT NULL , `Home` VARCHAR(60) NOT NULL , `World` VARCHAR(80) NOT NULL , `X` INT(10) NOT NULL , `Y` INT(10) NOT NULL , `Z` INT(10) NOT NULL , `Pitch` FLOAT(15) , `Yaw` FLOAT(15) ) ENGINE = InnoDB");

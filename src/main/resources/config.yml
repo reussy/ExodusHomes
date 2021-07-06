@@ -12,6 +12,7 @@
 #MySQL does not have support for importing homes from EssentialsX!
 Database-Type: YAML
 MySQL:
+  autoReconnect: true
   host: localhost
   port: 3306
   database: exodus_homes
@@ -27,13 +28,16 @@ Plugin-Prefix: '&8[&b&lHomes&8] '
 #If set false the plugin will work without
 #permissions and everyone will be able
 #to access all the commands
-Permissions-System: true #default true
+Permissions-System: true
 
 #World system verifies the commands
 #that can be executed on certain worlds!
 World-System:
   #If false completely disable the feature!
-  Enabled: true
+  Enabled: false
+  #This feature means that they can only come
+  #to their home if the worlds are equals
+  Per-World-Home: false
   #If true, op's pass the check
   Op-Bypass: true
   #Avaible Types: WHITELIST or BLACKLIST
@@ -48,16 +52,26 @@ World-System:
     - 'home create'
     - 'homes create' #If you have another initial command that calls the "home" command you can add it here!
 
+#Economy system will take the money from each action below
+#Set to -1 to make it free
+Economy-System:
+  Enabled: false
+  Create-Home: 10.0
+  Delete-Home: 5.0
+  Delete-All-Homes: 15.0
+  Teleport-Home: 15.0
+  Rename-Home: 5.0
+
 #Words not allowed for names
 #Check name in /homes create <name>
 Blacklist-Names:
   - fuck
   - bitch
 
-#Delay for teleport to home
+#Delay in seconds for teleport to home
 #Set 0 for disable
 Teleport-Delay:
-  Time: 5 #in seconds
+  Time: 5
 
 #Feature for fill inventory
 #with items
@@ -79,3 +93,4 @@ Sounds:
   Teleport-Home: ENTITY_ENDERMAN_TELEPORT
   Waiting-Teleport: UI_BUTTON_CLICK
   Open-GUI: BLOCK_CHEST_OPEN
+  Not-Enough-Money: ENTITY_VILLAGER_NO

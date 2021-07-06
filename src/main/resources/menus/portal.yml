@@ -50,6 +50,7 @@ Contents:
     Name: '&a%player_name%'
     Lore:
       - '&7Rank: &e%vault_rank%'
+      - '&7Homes: &e%exodushomes_player_homes%'
   1:
     Material: BLACK_STAINED_GLASS_PANE
     Amount: 1

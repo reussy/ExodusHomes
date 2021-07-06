@@ -2,6 +2,7 @@ package com.reussy.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
+import com.reussy.managers.InventoryFileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -13,12 +14,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class PortalGUI implements HolderGUI {
 
     private final ExodusHomes plugin;
     private final Player player;
+    private final List<String> itemLore = new ArrayList<>();
 
     public PortalGUI(ExodusHomes plugin, Player player) {
         this.plugin = plugin;
@@ -28,11 +29,14 @@ public class PortalGUI implements HolderGUI {
     @Override
     public void onClick(InventoryClickEvent e) {
 
+        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
         Player player = (Player) e.getWhoClicked();
         List<String> getHome = plugin.getDatabaseManager().getHomes(player);
 
-        if (Objects.requireNonNull(e.getCurrentItem()).getType() ==
-                XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Homes.Material", inventoryFileManager.portalYAML)).parseMaterial()) {
+        assert e.getCurrentItem() != null;
+
+        if (e.getCurrentItem().getType() ==
+                XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Homes.Material", inventoryFileManager.getPortalYAML())).parseMaterial()) {
 
             switch (e.getClick()) {
 
@@ -58,6 +62,7 @@ public class PortalGUI implements HolderGUI {
     @Override
     public void setItems(Player player, Inventory inventory) {
 
+        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
         List<String> getHomes = plugin.databaseManager.getHomes(player);
         boolean hasHome = plugin.databaseManager.hasHome(player);
         int slot = 0;
@@ -68,9 +73,9 @@ public class PortalGUI implements HolderGUI {
                 emptyLore.add(plugin.setHexColor(getLore));
             }
 
-            ItemStack emptyItem = itemBuilder.createItem(player, XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Empty-Homes.Material", inventoryFileManager.portalYAML)),
+            ItemStack emptyItem = itemBuilder.createItem(player, XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Empty-Homes.Material", inventoryFileManager.getPortalYAML())),
                     inventoryFileManager.getPortalYAML().getInt("Static-Contents.Empty-Homes.Amount"),
-                    inventoryFileManager.getString("Static-Contents.Empty-Homes.Name", inventoryFileManager.portalYAML), emptyLore);
+                    inventoryFileManager.getString("Static-Contents.Empty-Homes.Name", inventoryFileManager.getPortalYAML()), emptyLore);
 
             inventory.setItem(22, emptyItem);
 
@@ -84,7 +89,7 @@ public class PortalGUI implements HolderGUI {
             double homeZ = plugin.getDatabaseManager().getZ(player, getHome);
 
             List<String> homeLore = new ArrayList<>();
-            for (String getLore : inventoryFileManager.portalYAML.getStringList("Static-Contents.Homes.Lore")) {
+            for (String getLore : inventoryFileManager.getPortalYAML().getStringList("Static-Contents.Homes.Lore")) {
                 homeLore.add(plugin.setHexColor(getLore)
                         .replace("%home_x%", String.valueOf(homeX))
                         .replace("%home_y%", String.valueOf(homeY))
@@ -94,14 +99,13 @@ public class PortalGUI implements HolderGUI {
             }
 
             ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Homes.Material", inventoryFileManager.getPortalYAML())), slot + 1,
-                    inventoryFileManager.getString("Static-Contents.Homes.Name", inventoryFileManager.portalYAML).replace("%home_x%", String.valueOf(homeX))
+                    inventoryFileManager.getString("Static-Contents.Homes.Name", inventoryFileManager.getPortalYAML()).replace("%home_x%", String.valueOf(homeX))
                             .replace("%home_y%", String.valueOf(homeY))
                             .replace("%home_z%", String.valueOf(homeZ))
                             .replace("%home_world%", homeWorld)
                             .replace("%home_name%", getHome), homeLore);
 
             inventory.setItem(slot, home);
-
             slot++;
 
             if (slot > 45) break;
@@ -114,11 +118,19 @@ public class PortalGUI implements HolderGUI {
             int itemAmount = getContents.getInt(getItem + ".Amount");
             int itemSlot = getContents.getInt(getItem + ".Slot");
             String itemName = getContents.getString(getItem + ".Name");
-            List<String> itemLore = getContents.getStringList(getItem + ".Lore");
+            for (String lore : getContents.getStringList(getItem + ".Lore")) {
+                itemLore.add(plugin.setHexColor(lore));
+            }
 
             ItemStack newItem = itemBuilder.createItem(player, itemMaterial, itemAmount, itemName, itemLore);
 
-            inventory.setItem(itemSlot, newItem);
+            if (XMaterial.valueOf(getContents.getString(getItem + ".Material")).isSupported()
+                    || XMaterial.valueOf(getContents.getString(getItem + ".Material")).parseMaterial().isItem()) {
+                inventory.setItem(itemSlot, newItem);
+            } else {
+                inventory.setItem(itemSlot, XMaterial.STONE.parseItem());
+                Bukkit.getConsoleSender().sendMessage(plugin.setHexColor("&4[ExodusHomesDEBUG] &e" + itemMaterial + " &cis invalid material for your server version or is invalid!"));
+            }
         }
     }
 
@@ -126,7 +138,8 @@ public class PortalGUI implements HolderGUI {
     @Override
     public Inventory getInventory() {
 
-        Inventory inventory = Bukkit.createInventory(this, 54, inventoryFileManager.getString("Title", inventoryFileManager.portalYAML));
+        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
+        Inventory inventory = Bukkit.createInventory(this, 54, inventoryFileManager.getString("Title", inventoryFileManager.getOverviewYAML()));
         setItems(player, inventory);
 
         return inventory;

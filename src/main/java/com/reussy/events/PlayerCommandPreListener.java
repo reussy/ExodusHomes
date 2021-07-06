@@ -2,7 +2,7 @@ package com.reussy.events;
 
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
-import com.reussy.utils.MessageUtils;
+import com.reussy.utils.PlayerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,8 +14,7 @@ import java.util.List;
 public class PlayerCommandPreListener implements Listener {
 
     private final ExodusHomes plugin;
-    MessageUtils messageUtils = new MessageUtils();
-    FileManager fileManager = new FileManager();
+    PlayerUtils playerUtils = new PlayerUtils();
 
     public PlayerCommandPreListener(ExodusHomes plugin) {
         this.plugin = plugin;
@@ -24,6 +23,7 @@ public class PlayerCommandPreListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPreProcess(PlayerCommandPreprocessEvent e) {
 
+        FileManager fileManager = new FileManager(plugin);
         Player player = e.getPlayer();
         String message = e.getMessage();
         boolean enabledSystemWorld = plugin.getConfig().getBoolean("World-System.Enabled");
@@ -33,6 +33,9 @@ public class PlayerCommandPreListener implements Listener {
 
         if (opBypass) return;
 
+        if (plugin.getConfig().getString("World-System.Type").equalsIgnoreCase("BLACKLIST") || plugin.getConfig().getString("World-System.Type").equalsIgnoreCase("WHITELIST"))
+            return;
+
         List<String> worlds = plugin.getConfig().getStringList("World-System.Worlds");
 
         if (plugin.getConfig().getString("World-System.Type").equalsIgnoreCase("BLACKLIST") && worlds.contains(player.getWorld().getName())) {
@@ -40,7 +43,7 @@ public class PlayerCommandPreListener implements Listener {
             for (String action : plugin.getConfig().getStringList("World-System.Actions")) {
 
                 if (message.contains("/" + action)) {
-                    messageUtils.sendMessage(player, fileManager.getMessage("Deny-Command-In-World").replace("%parameter%", message));
+                    playerUtils.sendMessageWithPrefix(player, fileManager.getMessage("Deny-Command-In-World").replace("%parameter%", message));
                     e.setCancelled(true);
                 }
             }

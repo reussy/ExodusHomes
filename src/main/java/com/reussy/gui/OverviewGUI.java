@@ -2,7 +2,7 @@ package com.reussy.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
-import com.reussy.managers.InventoryFileManager;
+import com.reussy.managers.MenusFileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -29,31 +29,31 @@ public class OverviewGUI implements HolderGUI {
     @Override
     public void onClick(InventoryClickEvent e) {
 
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
+        MenusFileManager menusFileManager = new MenusFileManager(plugin);
         Player player = (Player) e.getWhoClicked();
 
-        if (e.getSlot() == inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"))
+        if (e.getSlot() == menusFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"))
             player.openInventory(new PortalGUI(plugin, player).getInventory());
     }
 
     @Override
     public void setItems(Player player, Inventory inventory) {
 
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
-        itemBuilder.setBackground(player, inventory, 0, inventoryFileManager.getOverviewYAML().getInt("Size"));
+        MenusFileManager menusFileManager = new MenusFileManager(plugin);
+        itemBuilder.setBackground(player, inventory, 0, menusFileManager.getOverviewYAML().getInt("Size"));
 
         List<String> portalLore = new ArrayList<>();
-        for (String getLore : inventoryFileManager.getOverviewYAML().getStringList("Static-Contents.Portal-Homes.Lore")) {
+        for (String getLore : menusFileManager.getOverviewYAML().getStringList("Static-Contents.Portal-Homes.Lore")) {
             portalLore.add(plugin.setHexColor(getLore));
         }
 
-        ItemStack portalItem = itemBuilder.createItem(player, XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Portal-Homes.Material", inventoryFileManager.getOverviewYAML())),
-                inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Amount"),
-                inventoryFileManager.getString("Static-Contents.Portal-Homes.Name", inventoryFileManager.getOverviewYAML()), portalLore);
+        ItemStack portalItem = itemBuilder.createItem(player, XMaterial.valueOf(menusFileManager.getString("Static-Contents.Portal-Homes.Material", menusFileManager.getOverviewYAML())),
+                menusFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Amount"),
+                menusFileManager.getString("Static-Contents.Portal-Homes.Name", menusFileManager.getOverviewYAML()), portalLore);
 
-        inventory.setItem(inventoryFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"), portalItem);
+        inventory.setItem(menusFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"), portalItem);
 
-        ConfigurationSection getContents = inventoryFileManager.configurationSection("Contents", inventoryFileManager.getOverviewYAML());
+        ConfigurationSection getContents = menusFileManager.configurationSection("Contents", menusFileManager.getOverviewYAML());
         for (String getItem : getContents.getKeys(false)) {
 
             XMaterial itemMaterial = XMaterial.valueOf(getContents.getString(getItem + ".Material"));
@@ -81,9 +81,9 @@ public class OverviewGUI implements HolderGUI {
     @Override
     public Inventory getInventory() {
 
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
-        Inventory inventory = Bukkit.createInventory(this, inventoryFileManager.getOverviewYAML().getInt("Size"),
-                inventoryFileManager.getString("Title", inventoryFileManager.getOverviewYAML()));
+        MenusFileManager menusFileManager = new MenusFileManager(plugin);
+        Inventory inventory = Bukkit.createInventory(this, menusFileManager.getOverviewYAML().getInt("Size"),
+                menusFileManager.getString("Title", menusFileManager.getOverviewYAML()));
         setItems(player, inventory);
 
         return inventory;

@@ -8,7 +8,7 @@ import com.reussy.events.PlayerCommandPreListener;
 import com.reussy.events.PlayerDataListener;
 import com.reussy.managers.DatabaseManager;
 import com.reussy.managers.FileManager;
-import com.reussy.managers.InventoryFileManager;
+import com.reussy.managers.MenusFileManager;
 import com.reussy.managers.yaml.Yaml;
 import com.reussy.mysql.MySQL;
 import com.reussy.mysql.MySQLConnector;
@@ -78,12 +78,12 @@ public final class ExodusHomes extends JavaPlugin {
     public void Files() {
 
         FileManager fileManager = new FileManager(this);
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(this);
+        MenusFileManager menusFileManager = new MenusFileManager(this);
         fileManager.pluginFolders();
         fileManager.generateConfig();
         fileManager.generateLang();
-        inventoryFileManager.generateOverview();
-        inventoryFileManager.generatePortal();
+        menusFileManager.generateOverview();
+        menusFileManager.generatePortal();
     }
 
     public void getDatabaseType() {

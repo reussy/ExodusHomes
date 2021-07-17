@@ -2,7 +2,7 @@ package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
-import com.reussy.managers.InventoryFileManager;
+import com.reussy.managers.MenusFileManager;
 import com.reussy.utils.PlayerUtils;
 import de.jeff_media.updatechecker.UpdateChecker;
 import org.bukkit.command.Command;
@@ -26,7 +26,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
         FileManager fileManager = new FileManager(plugin);
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
+        MenusFileManager menusFileManager = new MenusFileManager(plugin);
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
             playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Insufficient-Permission"));
@@ -61,8 +61,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
                 plugin.reloadConfig();
                 fileManager.reloadLang();
-                inventoryFileManager.reloadOverview();
-                inventoryFileManager.reloadPortal();
+                menusFileManager.reloadOverview();
+                menusFileManager.reloadPortal();
                 playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Reload-Message"));
 
                 return false;

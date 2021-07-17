@@ -19,10 +19,9 @@ public class MySQLData {
             String hasHome = "SELECT * FROM homes WHERE (UUID=?)";
             PreparedStatement statement = connection.prepareStatement(hasHome);
             statement.setString(1, uuid.toString());
-
             ResultSet set = statement.executeQuery();
-
             if (set.next()) return true;
+            statement.close();
 
         } catch (SQLException e) {
 
@@ -48,6 +47,7 @@ public class MySQLData {
             statement.setFloat(8, pitch);
             statement.setFloat(9, yaw);
             statement.executeUpdate();
+            statement.close();
 
         } catch (SQLException e) {
 
@@ -116,11 +116,10 @@ public class MySQLData {
                 ResultSet set = statement.executeQuery();
 
                 while (set.next()) {
-
                     getHomes = set.getString("Home");
                     homes.add(getHomes);
-
                 }
+                statement.close();
             }
 
         } catch (SQLException e) {

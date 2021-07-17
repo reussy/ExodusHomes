@@ -11,7 +11,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class InventoryFileManager {
+public class MenusFileManager {
 
     private final ExodusHomes plugin;
     FileConfiguration overviewYAML;
@@ -19,7 +19,7 @@ public class InventoryFileManager {
     File overviewGUI;
     File portalGUI;
 
-    public InventoryFileManager(ExodusHomes plugin) {
+    public MenusFileManager(ExodusHomes plugin) {
         this.plugin = plugin;
     }
 
@@ -44,17 +44,17 @@ public class InventoryFileManager {
 
     public void reloadOverview() {
 
-        if (overviewGUI == null) {
-            overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
-        }
-
         overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
         overviewYAML = YamlConfiguration.loadConfiguration(overviewGUI);
-        Reader defConfigStream;
-        defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("menus/overview.yml")), StandardCharsets.UTF_8);
-        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-        overviewYAML.setDefaults(defConfig);
-
+        try {
+            Reader defConfigStream;
+            defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("menus/overview.yml")), StandardCharsets.UTF_8);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            overviewYAML.setDefaults(defConfig);
+            defConfigStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void generatePortal() {
@@ -78,16 +78,18 @@ public class InventoryFileManager {
 
     public void reloadPortal() {
 
-        if (portalGUI == null) {
-            portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
-        }
-
         portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
+
         portalYAML = YamlConfiguration.loadConfiguration(portalGUI);
-        Reader defConfigStream;
-        defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("menus/portal.yml")), StandardCharsets.UTF_8);
-        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-        portalYAML.setDefaults(defConfig);
+        try {
+            Reader defConfigStream;
+            defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("menus/portal.yml")), StandardCharsets.UTF_8);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            portalYAML.setDefaults(defConfig);
+            defConfigStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

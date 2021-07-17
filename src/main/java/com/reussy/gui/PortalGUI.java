@@ -2,7 +2,7 @@ package com.reussy.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
-import com.reussy.managers.InventoryFileManager;
+import com.reussy.managers.MenusFileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -29,14 +29,14 @@ public class PortalGUI implements HolderGUI {
     @Override
     public void onClick(InventoryClickEvent e) {
 
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
+        MenusFileManager menusFileManager = new MenusFileManager(plugin);
         Player player = (Player) e.getWhoClicked();
         List<String> getHome = plugin.getDatabaseManager().getHomes(player);
 
         assert e.getCurrentItem() != null;
 
         if (e.getCurrentItem().getType() ==
-                XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Homes.Material", inventoryFileManager.getPortalYAML())).parseMaterial()) {
+                XMaterial.valueOf(menusFileManager.getString("Static-Contents.Homes.Material", menusFileManager.getPortalYAML())).parseMaterial()) {
 
             switch (e.getClick()) {
 
@@ -62,20 +62,20 @@ public class PortalGUI implements HolderGUI {
     @Override
     public void setItems(Player player, Inventory inventory) {
 
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
+        MenusFileManager menusFileManager = new MenusFileManager(plugin);
         List<String> getHomes = plugin.databaseManager.getHomes(player);
         boolean hasHome = plugin.databaseManager.hasHome(player);
         int slot = 0;
 
         if (!hasHome) {
             List<String> emptyLore = new ArrayList<>();
-            for (String getLore : inventoryFileManager.getPortalYAML().getStringList("Static-Contents.Empty-Homes.Lore")) {
+            for (String getLore : menusFileManager.getPortalYAML().getStringList("Static-Contents.Empty-Homes.Lore")) {
                 emptyLore.add(plugin.setHexColor(getLore));
             }
 
-            ItemStack emptyItem = itemBuilder.createItem(player, XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Empty-Homes.Material", inventoryFileManager.getPortalYAML())),
-                    inventoryFileManager.getPortalYAML().getInt("Static-Contents.Empty-Homes.Amount"),
-                    inventoryFileManager.getString("Static-Contents.Empty-Homes.Name", inventoryFileManager.getPortalYAML()), emptyLore);
+            ItemStack emptyItem = itemBuilder.createItem(player, XMaterial.valueOf(menusFileManager.getString("Static-Contents.Empty-Homes.Material", menusFileManager.getPortalYAML())),
+                    menusFileManager.getPortalYAML().getInt("Static-Contents.Empty-Homes.Amount"),
+                    menusFileManager.getString("Static-Contents.Empty-Homes.Name", menusFileManager.getPortalYAML()), emptyLore);
 
             inventory.setItem(22, emptyItem);
 
@@ -89,7 +89,7 @@ public class PortalGUI implements HolderGUI {
             double homeZ = plugin.getDatabaseManager().getZ(player, getHome);
 
             List<String> homeLore = new ArrayList<>();
-            for (String getLore : inventoryFileManager.getPortalYAML().getStringList("Static-Contents.Homes.Lore")) {
+            for (String getLore : menusFileManager.getPortalYAML().getStringList("Static-Contents.Homes.Lore")) {
                 homeLore.add(plugin.setHexColor(getLore)
                         .replace("%home_x%", String.valueOf(homeX))
                         .replace("%home_y%", String.valueOf(homeY))
@@ -98,8 +98,8 @@ public class PortalGUI implements HolderGUI {
                         .replace("%home_name%", getHome));
             }
 
-            ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(inventoryFileManager.getString("Static-Contents.Homes.Material", inventoryFileManager.getPortalYAML())), slot + 1,
-                    inventoryFileManager.getString("Static-Contents.Homes.Name", inventoryFileManager.getPortalYAML()).replace("%home_x%", String.valueOf(homeX))
+            ItemStack home = itemBuilder.createItem(player, XMaterial.valueOf(menusFileManager.getString("Static-Contents.Homes.Material", menusFileManager.getPortalYAML())), slot + 1,
+                    menusFileManager.getString("Static-Contents.Homes.Name", menusFileManager.getPortalYAML()).replace("%home_x%", String.valueOf(homeX))
                             .replace("%home_y%", String.valueOf(homeY))
                             .replace("%home_z%", String.valueOf(homeZ))
                             .replace("%home_world%", homeWorld)
@@ -111,7 +111,7 @@ public class PortalGUI implements HolderGUI {
             if (slot > 45) break;
         }
 
-        ConfigurationSection getContents = inventoryFileManager.configurationSection("Contents", inventoryFileManager.getPortalYAML());
+        ConfigurationSection getContents = menusFileManager.configurationSection("Contents", menusFileManager.getPortalYAML());
         for (String getItem : getContents.getKeys(false)) {
 
             XMaterial itemMaterial = XMaterial.valueOf(getContents.getString(getItem + ".Material"));
@@ -138,8 +138,8 @@ public class PortalGUI implements HolderGUI {
     @Override
     public Inventory getInventory() {
 
-        InventoryFileManager inventoryFileManager = new InventoryFileManager(plugin);
-        Inventory inventory = Bukkit.createInventory(this, 54, inventoryFileManager.getString("Title", inventoryFileManager.getOverviewYAML()));
+        MenusFileManager menusFileManager = new MenusFileManager(plugin);
+        Inventory inventory = Bukkit.createInventory(this, 54, menusFileManager.getString("Title", menusFileManager.getOverviewYAML()));
         setItems(player, inventory);
 
         return inventory;

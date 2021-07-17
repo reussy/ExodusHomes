@@ -67,10 +67,15 @@ public class StorageManager {
 
     public void reloadFile() {
 
-        playerYaml = YamlConfiguration.loadConfiguration(playerFile);
-        Reader stream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(File.separator + "storage" + File.separator + uuid + ".yml")), StandardCharsets.UTF_8);
-        YamlConfiguration defStream = YamlConfiguration.loadConfiguration(stream);
-        playerYaml.setDefaults(defStream);
+        try {
+            playerYaml = YamlConfiguration.loadConfiguration(playerFile);
+            Reader defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(File.separator + "storage" + File.separator + uuid + ".yml")), StandardCharsets.UTF_8);
+            YamlConfiguration defStream = YamlConfiguration.loadConfiguration(defConfigStream);
+            playerYaml.setDefaults(defStream);
+            defConfigStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveFile() {

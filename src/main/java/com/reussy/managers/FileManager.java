@@ -60,18 +60,18 @@ public class FileManager {
 
     public void reloadLang() {
 
-        if (langFile == null) {
-
-            langFile = new File(plugin.getDataFolder(), "lang.yml");
-        }
 
         langFile = new File(plugin.getDataFolder(), "lang.yml");
-        langYaml = YamlConfiguration.loadConfiguration(langFile);
-        Reader defConfigStream;
-        defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("lang.yml")), StandardCharsets.UTF_8);
-        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-        langYaml.setDefaults(defConfig);
-
+        try {
+            langYaml = YamlConfiguration.loadConfiguration(langFile);
+            Reader defConfigStream;
+            defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource("lang.yml")), StandardCharsets.UTF_8);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            langYaml.setDefaults(defConfig);
+            defConfigStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void registerLang() {

@@ -8,8 +8,6 @@ softdepend:
   - PlaceholderAPI
   - EssentialsX
   - Vault
-loadbefore:
-  - EssentialsX
 commands:
   eh:
     description: Main Command for ExodusHomes.

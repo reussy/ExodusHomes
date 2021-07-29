@@ -3,9 +3,7 @@ package com.reussy.managers.yaml;
 import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.DatabaseManager;
-import com.reussy.managers.FileManager;
 import com.reussy.managers.StorageManager;
-import com.reussy.utils.PlayerUtils;
 import com.reussy.utils.TeleportTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,13 +15,16 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class Yaml implements DatabaseManager {
 
     private final ExodusHomes plugin;
-    PlayerUtils playerUtils = new PlayerUtils();
 
+    /**
+     * @param plugin main class
+     */
     public Yaml(ExodusHomes plugin) {
         this.plugin = plugin;
     }
@@ -40,7 +41,7 @@ public class Yaml implements DatabaseManager {
     @Override
     public void createHome(Player player, String home) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
         storageManager.getFile().set("Homes." + home + ".World", player.getWorld().getName());
         storageManager.getFile().set("Homes." + home + ".X", player.getLocation().getBlockX());
@@ -50,45 +51,43 @@ public class Yaml implements DatabaseManager {
         storageManager.getFile().set("Homes." + home + ".Yaw", player.getLocation().getYaw());
         storageManager.saveFile();
 
-        playerUtils.sendMessageWithPrefix(player, fileManager.getMessage("Home-Created").replace("%home_name%", home));
-        playerUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Create-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Created").replace("%home_name%", home));
+        plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Create-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
 
     @Override
     public void deleteHome(Player player, String home) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 
         storageManager.getFile().set("Homes." + home, null);
         storageManager.getFile().set(home, null);
         storageManager.saveFile();
-        playerUtils.sendMessageWithPrefix(player, fileManager.getMessage("Home-Deleted").replace("%home_name%", home));
-        playerUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-        ;
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Deleted").replace("%home_name%", home));
+        plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
 
     @Override
     public void deleteHomeByAdmin(Player player, CommandSender sender, String home) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 
         storageManager.getFile().set("Homes." + home, null);
         storageManager.getFile().set(home, null);
         storageManager.saveFile();
-        playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Admin-Delete").replace("%home_name%", home).replace("%target%", player.getName()));
-        playerUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-        ;
+        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Admin-Delete").replace("%home_name%", home).replace("%target%", player.getName()));
+        plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
 
     @Override
     public void deleteAll(Player player) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
         ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
 
@@ -99,33 +98,32 @@ public class Yaml implements DatabaseManager {
             storageManager.getFile().set(home, null);
             storageManager.saveFile();
         }
-        playerUtils.sendMessageWithPrefix(player, fileManager.getMessage("Homes-Deleted"));
-        playerUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-        ;
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Deleted"));
+        plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 
     @Override
     public void deleteAllByAdmin(Player player, CommandSender sender) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
         ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
 
+        assert section != null;
         for (String home : section.getKeys(false)) {
 
             storageManager.getFile().set("Homes." + home, null);
             storageManager.getFile().set(home, null);
             storageManager.saveFile();
         }
-        playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Admin-Delete").replace("%target%", player.getName()));
-        playerUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-        ;
+        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Admin-Delete").replace("%target%", player.getName()));
+        plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 
     @Override
     public void goHome(Player player, String home) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         if (plugin.getConfig().getBoolean("World-System.Enabled") && plugin.getConfig().getBoolean("World-System.Per-World-Home")) {
 
             String worldName = plugin.getDatabaseManager().getWorld(player, home);
@@ -133,7 +131,7 @@ public class Yaml implements DatabaseManager {
             World playerHome = player.getWorld();
 
             if (playerHome != worldHome) {
-                playerUtils.sendMessageWithPrefix(player, fileManager.getMessage("Not-Same-World").replace("%home_name%", home));
+                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Not-Same-World").replace("%home_name%", home));
                 return;
             }
         }
@@ -149,33 +147,33 @@ public class Yaml implements DatabaseManager {
     @Override
     public void goHomeByAdmin(Player player, CommandSender sender, String home) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         Location homeLocation = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
         homeLocation.add(0.5D, 0.0D, 0.5D);
         ((Player) sender).teleport(homeLocation);
-        playerUtils.sendMessageWithPrefix(sender, fileManager.getLang().getString("Manage.Home-Teleport")
+        plugin.pluginUtils.sendMessageWithPrefix(sender, Objects.requireNonNull(plugin.fileManager.getLang().getString("Manage.Home-Teleport"))
                 .replace("%home_name%", home).replace("%target%", player.getName()));
     }
 
     @Override
     public void listHomes(Player player) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         List<String> getHomes = (this.getHomes(player));
 
         for (String homeList : getHomes)
-            player.sendMessage(plugin.setHexColor(fileManager.getMessage("Homes-Format").replace("%home_name%", homeList)));
+            player.sendMessage(plugin.setHexColor(plugin.fileManager.getMessage("Homes-Format").replace("%home_name%", homeList)));
 
     }
 
     @Override
     public void listHomesByAdmin(Player player, CommandSender sender) {
 
-        FileManager fileManager = new FileManager(plugin);
+
         List<String> getHomes = (this.getHomes(player));
 
         for (String homeList : getHomes)
-            sender.sendMessage(plugin.setHexColor(fileManager.getMessage("Manage.Homes-Format").replace("%home_name%", homeList)));
+            sender.sendMessage(plugin.setHexColor(plugin.fileManager.getMessage("Manage.Homes-Format").replace("%home_name%", homeList)));
     }
 
     @Override
@@ -193,7 +191,7 @@ public class Yaml implements DatabaseManager {
 
 		getHome.set("Homes.", name);
 		storageManager.saveFile();
-		playerUtils.sendMessageWithPrefix(player, fileManager.getMessage("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
+		plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
 		player.playSound(player.getLocation(), XSound.valueOf(plugin.getConfig().getString("Sounds.Renamed-Home")).parseSound(), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 		 */
     }

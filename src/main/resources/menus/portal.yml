@@ -17,34 +17,38 @@
 #Support PlaceholderAPI for
 #all items created here!
 
-Title: '&0&l&oPortal'
+Title: '&8Portal'
 
-#Don't delete this!
-#Static Contents means that
-#they are permanent items and
-#cannot be deleted!
+#The items in this section can be modified
+#but, you can't add more or remove them!
 Static-Contents:
   Homes:
-    Material: BOOK
-    Name: '&f%home_name%'
+    Material: PLAYER_HEAD
+    Value: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Y3Y2RlZWZjNmQzN2ZlY2FiNjc2YzU4NGJmNjIwODMyYWFhYzg1Mzc1ZTlmY2JmZjI3MzcyNDkyZDY5ZiJ9fX0='
+    Name: '&e%home_name%'
     Lore:
+      - ''
       - '&7X: &b%home_x% &7Y: &b%home_y% &7Z: &b%home_z%'
       - '&7World: &b%home_world%'
       - ''
       - '&a&oLeft click to teleport!'
       - '&c&oLeft click to delete!'
   Empty-Homes:
-    Material: BARRIER
+    Material: PLAYER_HEAD
+    Value: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19'
     Amount: 1
-    Name: '&c&lEMPTY'
+    Name: '&c&lEmpty'
     Lore:
+      - ''
       - '&7&oYou have no homes to show!'
+      - '&7Create your home with /home create'
 
-#Contents means that they are
-#modifiable items and can be deleted
+#The items in this section can be modified / deleted
+#and if you want to add
 Contents:
   Player-Head:
     Material: PLAYER_HEAD
+    Value: '%player'
     Amount: 1
     Slot: 49
     Name: '&a%player_name%'

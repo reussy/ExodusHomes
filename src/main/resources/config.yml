@@ -21,7 +21,7 @@ MySQL:
 
 #Prefix for messages
 #Set '' if you don't want to use it!
-Plugin-Prefix: '&8[&b&lHomes&8] '
+Plugin-Prefix: '&b&lHomes &8» '
 
 #If set true you must set the plugin
 #permissions for your players
@@ -29,6 +29,9 @@ Plugin-Prefix: '&8[&b&lHomes&8] '
 #permissions and everyone will be able
 #to access all the commands
 Permissions-System: true
+
+#Open Portal GUI instead of Overview GUI
+Portal-GUI-Instead: true
 
 #World system verifies the commands
 #that can be executed on certain worlds!

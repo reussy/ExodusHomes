@@ -9,10 +9,13 @@ import com.reussy.events.PlayerDataListener;
 import com.reussy.managers.DatabaseManager;
 import com.reussy.managers.FileManager;
 import com.reussy.managers.MenusFileManager;
+import com.reussy.managers.StorageManager;
 import com.reussy.managers.yaml.Yaml;
 import com.reussy.mysql.MySQL;
 import com.reussy.mysql.MySQLConnector;
+import com.reussy.utils.ItemBuilder;
 import com.reussy.utils.PlaceholdersBuilder;
+import com.reussy.utils.PluginUtils;
 import de.jeff_media.updatechecker.UpdateChecker;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
@@ -25,16 +28,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ExodusHomes extends JavaPlugin {
 
-    public ExodusHomes plugin;
-    public ArrayList<String> playerCache = new ArrayList<>();
-    public List<String> adminCommands = new ArrayList<>();
-    public List<String> manageCommands = new ArrayList<>();
-    public List<String> playerCommands = new ArrayList<>();
+    public FileManager fileManager;
+    public MenusFileManager menusFileManager;
+    public StorageManager storageManager;
+    public ItemBuilder itemBuilder;
+    public PluginUtils pluginUtils;
+    public MySQL mySQL;
+    public Yaml yaml;
+    public List<String> playerCache;
+    public List<String> adminCommands;
+    public List<String> manageCommands;
+    public List<String> playerCommands;
     public DatabaseManager databaseManager;
     public Economy economy;
     private MySQLConnector mySQLConnector;
@@ -42,14 +52,14 @@ public final class ExodusHomes extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m+------------------------------------------------+"));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&r"));
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&bExodus Homes &8| &aEnabled "));
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&fAuthor: &a" + this.getDescription().getAuthors()));
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&fServer Version: &a" + Bukkit.getBukkitVersion()));
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&fPlugin Version: &a" + this.getDescription().getVersion()));
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&r"));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(this.getDescription().getAuthors())));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Bukkit.getBukkitVersion()));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', this.getDescription().getVersion()));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&r"));
 
         Files();
         getDatabaseType();
@@ -64,8 +74,19 @@ public final class ExodusHomes extends JavaPlugin {
                 .setNotifyOpsOnJoin(true)
                 .checkNow();
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7"));
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m------------------------------------------------"));
+        fileManager = new FileManager(this);
+        menusFileManager = new MenusFileManager(this);
+        itemBuilder = new ItemBuilder(this);
+        pluginUtils = new PluginUtils();
+        mySQL = new MySQL();
+        yaml = new Yaml(this);
+        playerCache = new ArrayList<>();
+        adminCommands = new ArrayList<>();
+        manageCommands = new ArrayList<>();
+        playerCommands = new ArrayList<>();
+
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&r"));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m+------------------------------------------------+"));
 
     }
 
@@ -112,27 +133,27 @@ public final class ExodusHomes extends JavaPlugin {
     public void registerHooks() {
 
         if (Bukkit.getPluginManager().getPlugin("Essentials") != null) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aHooked into &fEssentialsX"));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&a+&8] &fEssentialsX"));
         }
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholdersBuilder(this).register();
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aHooked into &fPlaceholderAPI"));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&a+&8] &fPlaceholderAPI"));
         }
 
         if (setupEconomy()) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aHooked into &fVault"));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&a+&8] &fVault"));
         }
     }
 
     public void Commands() {
 
-        this.getCommand("eh").setExecutor(new MainCommand(this));
-        this.getCommand("ehm").setExecutor(new ManageCommand(this));
-        this.getCommand("home").setExecutor(new PlayerCommand(this));
-        this.getCommand("eh").setTabCompleter(new MainCommand(this));
-        this.getCommand("ehm").setTabCompleter(new ManageCommand(this));
-        this.getCommand("home").setTabCompleter(new PlayerCommand(this));
+        Objects.requireNonNull(this.getCommand("eh")).setExecutor(new MainCommand(this));
+        Objects.requireNonNull(this.getCommand("ehm")).setExecutor(new ManageCommand(this));
+        Objects.requireNonNull(this.getCommand("home")).setExecutor(new PlayerCommand(this));
+        Objects.requireNonNull(this.getCommand("eh")).setTabCompleter(new MainCommand(this));
+        Objects.requireNonNull(this.getCommand("ehm")).setTabCompleter(new ManageCommand(this));
+        Objects.requireNonNull(this.getCommand("home")).setTabCompleter(new PlayerCommand(this));
 
     }
 

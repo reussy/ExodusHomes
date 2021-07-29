@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PlaceholdersBuilder extends PlaceholderExpansion {
 
-    private ExodusHomes plugin;
+    private final ExodusHomes plugin;
 
     /**
      * Since we register the expansion inside our own plugin, we

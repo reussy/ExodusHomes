@@ -3,7 +3,7 @@ package com.reussy.commands;
 import com.reussy.ExodusHomes;
 import com.reussy.managers.FileManager;
 import com.reussy.managers.MenusFileManager;
-import com.reussy.utils.PlayerUtils;
+import com.reussy.utils.PluginUtils;
 import de.jeff_media.updatechecker.UpdateChecker;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,7 +16,7 @@ import java.util.List;
 public class MainCommand implements CommandExecutor, TabCompleter {
 
     private final ExodusHomes plugin;
-    PlayerUtils playerUtils = new PlayerUtils();
+    PluginUtils pluginUtils = new PluginUtils();
 
     public MainCommand(ExodusHomes plugin) {
         this.plugin = plugin;
@@ -29,7 +29,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         MenusFileManager menusFileManager = new MenusFileManager(plugin);
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
-            playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Insufficient-Permission"));
+            pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Insufficient-Permission"));
 
             return false;
         }
@@ -63,7 +63,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 fileManager.reloadLang();
                 menusFileManager.reloadOverview();
                 menusFileManager.reloadPortal();
-                playerUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Reload-Message"));
+                pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Reload-Message"));
 
                 return false;
 

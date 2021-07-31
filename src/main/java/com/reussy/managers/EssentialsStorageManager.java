@@ -21,66 +21,16 @@ public class EssentialsStorageManager {
     File playerFile;
     FileConfiguration playerYaml;
 
+    /**
+     * @param plugin main class
+     * @param player player for import
+     * @param uuid   uuid player for import
+     */
     public EssentialsStorageManager(ExodusHomes plugin, Player player, UUID uuid) {
         this.plugin = plugin;
         this.player = player;
         this.uuid = uuid;
     }
-
-    /*
-    public EssentialsStorageManager() {
-
-        if (Bukkit.getPluginManager().getPlugin("Essentials") == null) {
-
-            player.sendMessage(plugin.setHexColor("&c&nEssentialsX is not installed..."));
-            return;
-        }
-
-        if (!("YAML").equalsIgnoreCase(plugin.getConfig().getString("Database-Type"))) {
-
-            player.sendMessage(plugin.setHexColor("&c&nMySQL database not support this feature!"));
-            return;
-        }
-
-        if (!playerFile.exists()) {
-
-            player.sendMessage(plugin.setHexColor("&cThere is no file created for " + player.getName()));
-            return;
-        }
-
-        StorageManager storageManager = new StorageManager(uuid, plugin);
-        ConfigurationSection essentialsSection = getPlayerYaml().getConfigurationSection("homes");
-
-        if (essentialsSection.getKeys(false).isEmpty()) {
-
-            player.sendMessage(plugin.setHexColor("&cThere is no home to import from " + player.getName()));
-            return;
-        }
-
-        player.sendMessage(plugin.setHexColor("&e&oStarting to import EssentialsX into ExodusHomes..."));
-        for (String essentialsHome : essentialsSection.getKeys(false)) {
-
-            String world = essentialsSection.getString(essentialsHome + ".world");
-            double x = essentialsSection.getDouble(essentialsHome + ".x");
-            double y = essentialsSection.getDouble(essentialsHome + ".y");
-            double z = essentialsSection.getDouble(essentialsHome + ".z");
-            float yaw = essentialsSection.getInt(essentialsHome + ".yaw");
-            float pitch = essentialsSection.getInt(essentialsHome + ".pitch");
-
-            storageManager.getFile().set("Homes." + essentialsHome + ".World", world);
-            storageManager.getFile().set("Homes." + essentialsHome + ".X", x);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Y", y);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Z", z);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Pitch", pitch);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Yaw", yaw);
-            storageManager.saveFile();
-
-            (player).playSound(player.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1.5F, 1);
-        }
-        player.sendMessage(plugin.setHexColor("&aImport completed successfully!"));
-        player.sendMessage(plugin.setHexColor("&b&l" + essentialsSection.getKeys(false).size() + " &ahomes have been imported for " + player.getName()));
-    }
-     */
 
     boolean isEssentials() {
         return Bukkit.getPluginManager().getPlugin("Essentials") != null;
@@ -109,32 +59,33 @@ public class EssentialsStorageManager {
 
         if (!isEssentials()) {
 
-            player.sendMessage(plugin.setHexColor("&cEssentials is not installed..."));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cEssentials is not installed..."));
             return;
         }
 
         if (!databaseType()) {
 
-            player.sendMessage(plugin.setHexColor("&cMySQL database not support this feature!"));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cMySQL database not support this feature!"));
             return;
         }
 
         if (!hasFile()) {
 
-            player.sendMessage(plugin.setHexColor("&cThere is no file created for &e" + player.getName()));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no file created for &e" + player.getName()));
             return;
         }
 
         if (!noHomes()) {
 
-            player.sendMessage(plugin.setHexColor("&cThere is no home to import from &e" + player.getName()));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no home to import from &e" + player.getName()));
             return;
         }
 
         StorageManager storageManager = new StorageManager(uuid, plugin);
         ConfigurationSection essentialsSection = getPlayerYaml().getConfigurationSection("homes");
 
-        player.sendMessage(plugin.setHexColor("&7&oStarting to import &6Essentials &7&ointo &bExodusHomes &7&ofor &e" + player.getName()));
+        player.sendMessage(plugin.pluginUtils.setHexColor("&7&oStarting to import &6Essentials &7&ointo &bExodusHomes &7&ofor &e" + player.getName()));
+        assert essentialsSection != null;
         for (String essentialsHome : essentialsSection.getKeys(false)) {
 
             String world = essentialsSection.getString(essentialsHome + ".world");
@@ -156,8 +107,8 @@ public class EssentialsStorageManager {
             player.playSound(player.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1.5F, 1);
         }
 
-        player.sendMessage(plugin.setHexColor("&aImport completed successfully!"));
-        player.sendMessage(plugin.setHexColor("&b" + essentialsSection.getKeys(false).size() + " &7homes have been imported for &e" + player.getName()));
+        player.sendMessage(plugin.pluginUtils.setHexColor("&aImport completed successfully!"));
+        player.sendMessage(plugin.pluginUtils.setHexColor("&b" + essentialsSection.getKeys(false).size() + " &7homes have been imported for &e" + player.getName()));
 
     }
 
@@ -171,25 +122,25 @@ public class EssentialsStorageManager {
 
         if (!isEssentials()) {
 
-            player.sendMessage(plugin.setHexColor("&cEssentials is not installed..."));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cEssentials is not installed..."));
             return;
         }
 
         if (!databaseType()) {
 
-            player.sendMessage(plugin.setHexColor("&cMySQL database not support this feature!"));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cMySQL database not support this feature!"));
             return;
         }
 
         if (!hasFile()) {
 
-            player.sendMessage(plugin.setHexColor("&cThere is no file created for &e" + player.getName()));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no file created for &e" + player.getName()));
             return;
         }
 
         if (!noHomes()) {
 
-            player.sendMessage(plugin.setHexColor("&cThere is no home to import from &e" + player.getName()));
+            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no home to import from &e" + player.getName()));
             return;
         }
 
@@ -199,7 +150,7 @@ public class EssentialsStorageManager {
         assert storageFile != null;
         int storageLength = storageFile.length;
 
-        player.sendMessage(plugin.setHexColor("&7&oStarting to import &6Essentials &7&ointo &bExodusHomes &7&ofor &eeach player..."));
+        player.sendMessage(plugin.pluginUtils.setHexColor("&7&oStarting to import &6Essentials &7&ointo &bExodusHomes &7&ofor &eeach player..."));
 
         for (File file : Objects.requireNonNull(essentialsFolder.listFiles())) {
             assert essentialsSection != null;

@@ -2,7 +2,6 @@ package com.reussy.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
-import com.reussy.managers.MenusFileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -39,9 +38,6 @@ public class OverviewGUI implements HolderGUI {
     @Override
     public void setItems(Player player, Inventory inventory) {
 
-        MenusFileManager menusFileManager = new MenusFileManager(plugin);
-        plugin.itemBuilder.setBackground(player, inventory, 0, menusFileManager.getOverviewYAML().getInt("Size"));
-
         XMaterial material = XMaterial.valueOf(plugin.menusFileManager.getOverviewYAML().getString("Static-Contents.Portal-Homes.Material"));
         String headValue = plugin.menusFileManager.getOverviewYAML().getString("Static-Contents.Portal-Homes.Value");
         String displayName = plugin.menusFileManager.getOverviewYAML().getString("Static-Contents.Portal-Homes.Name");
@@ -50,7 +46,7 @@ public class OverviewGUI implements HolderGUI {
 
         ItemStack portalItem = plugin.itemBuilder.createItem(player, false, material, amount, displayName, portalLore, headValue);
 
-        inventory.setItem(menusFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"), portalItem);
+        inventory.setItem(plugin.menusFileManager.getOverviewYAML().getInt("Static-Contents.Portal-Homes.Slot"), portalItem);
 
         plugin.itemBuilder.setContents(inventory, player, plugin.menusFileManager.getOverviewYAML());
     }
@@ -59,11 +55,9 @@ public class OverviewGUI implements HolderGUI {
     @Override
     public Inventory getInventory() {
 
-        MenusFileManager menusFileManager = new MenusFileManager(plugin);
-        Inventory inventory = Bukkit.createInventory(this, menusFileManager.getOverviewYAML().getInt("Size"),
-                menusFileManager.getString("Title", menusFileManager.getOverviewYAML()));
-        setItems(player, inventory);
+        Inventory overview = Bukkit.createInventory(this, plugin.menusFileManager.getOverviewYAML().getInt("Size"), plugin.pluginUtils.setHexColor(plugin.menusFileManager.getOverviewYAML().getString("Title")));
+        setItems(player, overview);
 
-        return inventory;
+        return overview;
     }
 }

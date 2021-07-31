@@ -74,17 +74,6 @@ public class FileManager {
         }
     }
 
-    public void registerLang() {
-
-        langFile = new File(plugin.getDataFolder(), "lang.yml");
-        if (!langFile.exists()) {
-
-            getLang().options().copyDefaults(true);
-            plugin.saveDefaultConfig();
-            saveLang();
-        }
-    }
-
     public void saveLang() {
 
         langFile = new File(plugin.getDataFolder(), "lang.yml");

@@ -1,7 +1,6 @@
 package com.reussy.managers;
 
 import com.reussy.ExodusHomes;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -95,11 +94,6 @@ public class MenusFileManager {
 
     public String getString(String string, FileConfiguration fileConfiguration) {
 
-        return plugin.setHexColor(fileConfiguration.getString(string));
-    }
-
-    public ConfigurationSection configurationSection(String section, FileConfiguration fileConfiguration) {
-
-        return fileConfiguration.getConfigurationSection(section);
+        return plugin.pluginUtils.setHexColor(fileConfiguration.getString(string));
     }
 }

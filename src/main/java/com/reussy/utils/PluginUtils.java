@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -13,12 +14,19 @@ import java.util.regex.Pattern;
 
 public class PluginUtils {
 
-    private final ExodusHomes plugin = ExodusHomes.getPlugin(ExodusHomes.class);
+    private final ExodusHomes plugin;
+
+    /**
+     * @param plugin main class
+     */
+    public PluginUtils(ExodusHomes plugin) {
+        this.plugin = plugin;
+    }
 
     public void sendMessageWithPrefix(CommandSender player, String text) {
-        String messagePrefix = plugin.setHexColor(plugin.getConfig().getString("Plugin-Prefix"));
+        String messagePrefix = this.setHexColor(plugin.getConfig().getString("Plugin-Prefix"));
         try {
-            player.sendMessage(plugin.setHexColor(messagePrefix + text));
+            player.sendMessage(this.setHexColor(messagePrefix + text));
         } catch (NullPointerException e) {
             e.getCause();
         }
@@ -26,7 +34,7 @@ public class PluginUtils {
 
     public void sendMessageWithoutPrefix(CommandSender player, String text) {
         try {
-            player.sendMessage(plugin.setHexColor(text));
+            player.sendMessage(this.setHexColor(text));
         } catch (NullPointerException e) {
             e.getCause();
         }
@@ -36,7 +44,7 @@ public class PluginUtils {
         if (XSound.valueOf(xSound).isSupported()) {
             player.playSound(location, Objects.requireNonNull(XSound.valueOf(xSound).parseSound()), volume, pitch);
         } else {
-            Bukkit.getConsoleSender().sendMessage(plugin.setHexColor("&4[ExodusHomesDEBUG] &e" + xSound + " &cis invalid sound for your server version!"));
+            Bukkit.getConsoleSender().sendMessage(this.setHexColor("&4[ExodusHomesDEBUG] &e" + xSound + " &cis invalid sound for your server version!"));
         }
     }
 
@@ -55,5 +63,27 @@ public class PluginUtils {
             return org.bukkit.ChatColor.translateAlternateColorCodes('&', text);
         }
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    public boolean getPerm(Player player) {
+
+        for (PermissionAttachmentInfo permissionAttachmentInfo : player.getEffectivePermissions()) {
+
+            String getPermission = permissionAttachmentInfo.getPermission();
+
+            if (player.isOp()) return true;
+
+            if (!plugin.getConfig().getBoolean("Permissions-System")) return true;
+
+            if (getPermission.equalsIgnoreCase("homes.limit.*")) return true;
+
+            if (getPermission.startsWith("homes.limit.")) {
+
+                int homesLimit = Integer.parseInt(getPermission.substring(getPermission.lastIndexOf(".") + 1));
+
+                if (plugin.databaseManager.getHomes(player).size() < homesLimit) return true;
+            }
+        }
+        return false;
     }
 }

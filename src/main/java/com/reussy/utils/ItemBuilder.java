@@ -103,7 +103,7 @@ public class ItemBuilder {
         if (plugin.getConfig().getBoolean("Background.Enable")) {
 
             ItemStack itemFill = this.createItem(player, false, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
-                    , plugin.setHexColor(plugin.getConfig().getString("Background.Name")), null, null);
+                    , plugin.pluginUtils.setHexColor(plugin.getConfig().getString("Background.Name")), null, null);
 
             if (plugin.getConfig().getBoolean("Background.Enable")) while (minSlot < maxSlot) {
 

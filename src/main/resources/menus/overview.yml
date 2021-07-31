@@ -16,35 +16,128 @@
 
 #Support PlaceholderAPI for
 #all items created here!
-Title: '&0&l&oOverview'
-Size: 54
+Title: '&8Overview'
+Size: 45
 
-#Contents means that they are
-#modifiable items and can be deleted
+#The items in this section can be modified
+#but, you can't add more or remove them!
 Static-Contents:
   Portal-Homes:
     Material: BOOKSHELF
+    Value: ''
     Amount: 1
     Slot: 22
     Name: '&aYour Homes'
     Lore:
+      - ''
       - '&7Open Portal GUI'
 
-#Contents means that they are
-#modifiable items and can be deleted
+#The items in this section can be modified / deleted
+#and if you want to add
 Contents:
   Player-Head:
     Material: PLAYER_HEAD
+    Value: '%player%'
     Amount: 1
-    Slot: 49
+    Slot: 40
     Name: '&a%player_name%'
     Lore:
+      - ''
       - '&7Rank: &e%vault_rank%'
       - '&7Homes: &e%exodushomes_player_homes%'
   1:
-    Material: PURPLE_STAINED_GLASS_PANE
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
     Amount: 1
-    Slot: 31
+    Slot: 0
+    Name: '&r'
+    Lore:
+      - '&r'
+  2:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 1
+    Name: '&r'
+    Lore:
+      - '&r'
+  3:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 9
+    Name: '&r'
+    Lore:
+      - '&r'
+  4:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 7
+    Name: '&r'
+    Lore:
+      - '&r'
+  5:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 8
+    Name: '&r'
+    Lore:
+      - '&r'
+  6:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 17
+    Name: '&r'
+    Lore:
+      - '&r'
+  7:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 27
+    Name: '&r'
+    Lore:
+      - '&r'
+  8:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 36
+    Name: '&r'
+    Lore:
+      - '&r'
+  9:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 37
+    Name: '&r'
+    Lore:
+      - '&r'
+  10:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 43
+    Name: '&r'
+    Lore:
+      - '&r'
+  11:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 44
+    Name: '&r'
+    Lore:
+      - '&r'
+  12:
+    Material: GRAY_STAINED_GLASS_PANE
+    Value: ''
+    Amount: 1
+    Slot: 35
     Name: '&r'
     Lore:
       - '&r'

@@ -38,6 +38,8 @@ public class PortalGUI implements HolderGUI {
 
         assert e.getCurrentItem() != null;
 
+        if (!plugin.databaseManager.hasHome(player)) return;
+
         if (e.getCurrentItem().getType() ==
                 XMaterial.valueOf(menusFileManager.getString("Static-Contents.Homes.Material", menusFileManager.getPortalYAML())).parseMaterial()) {
 
@@ -90,18 +92,21 @@ public class PortalGUI implements HolderGUI {
             double homeZ = plugin.getDatabaseManager().getZ(player, getHome);
             XMaterial material = XMaterial.valueOf(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Homes.Material"));
             String headValue = plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Homes.Value");
-            String displayName = Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Homes.Name"))
+            String displayName = Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Homes.Name")
                     .replace("%home_x%", String.valueOf(homeX))
                     .replace("%home_y%", String.valueOf(homeY))
                     .replace("%home_z%", String.valueOf(homeZ))
                     .replace("%home_world%", homeWorld)
-                    .replace("%home_name%", getHome);
-            List<String> homeLore = new ArrayList<>(plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Homes.Lore"
-                    .replace("%home_x%", String.valueOf(homeX))
-                    .replace("%home_y%", String.valueOf(homeY))
-                    .replace("%home_z%", String.valueOf(homeZ))
-                    .replace("%home_world%", homeWorld)
-                    .replace("%home_name%", getHome)));
+                    .replace("%home_name%", getHome));
+            List<String> homeLore = new ArrayList<>();
+            for (String lore : plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Homes.Lore")) {
+                homeLore.add(plugin.pluginUtils.setHexColor(lore)
+                        .replace("%home_x%", String.valueOf(homeX))
+                        .replace("%home_y%", String.valueOf(homeY))
+                        .replace("%home_z%", String.valueOf(homeZ))
+                        .replace("%home_world%", homeWorld)
+                        .replace("%home_name%", getHome));
+            }
             ItemStack home = plugin.itemBuilder.createItem(player, false, material, slot + 1,
                     displayName, homeLore, headValue);
 
@@ -118,7 +123,7 @@ public class PortalGUI implements HolderGUI {
     @Override
     public Inventory getInventory() {
 
-        Inventory inventory = Bukkit.createInventory(this, 54, Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Title")));
+        Inventory inventory = Bukkit.createInventory(this, 54, plugin.pluginUtils.setHexColor(Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Title"))));
         setItems(player, inventory);
 
         return inventory;

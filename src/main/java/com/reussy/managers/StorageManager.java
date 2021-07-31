@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class StorageManager {
 
@@ -23,6 +22,10 @@ public class StorageManager {
     File playerFile;
     FileConfiguration playerYaml;
 
+    /**
+     * @param uuid   uuid for the file
+     * @param plugin main class
+     */
     public StorageManager(UUID uuid, ExodusHomes plugin) {
 
         this.plugin = plugin;
@@ -87,4 +90,13 @@ public class StorageManager {
         }
     }
 
+    public List<File> getFiles() {
+
+        playerFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + uuid + ".yml");
+
+        if (playerFile.listFiles() == null || !Arrays.stream(Objects.requireNonNull(playerFile.listFiles())).iterator().hasNext())
+            return null;
+
+        return new ArrayList<>(Arrays.asList(Objects.requireNonNull(playerFile.listFiles())));
+    }
 }

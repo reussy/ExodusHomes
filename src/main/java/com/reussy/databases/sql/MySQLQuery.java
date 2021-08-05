@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SQLManager {
+public class MySQLQuery {
 
     private final ExodusHomes plugin;
     private final ConnectionPool connectionPool;
 
-    public SQLManager(ExodusHomes plugin) {
+    public MySQLQuery(ExodusHomes plugin) {
         this.plugin = plugin;
         connectionPool = new ConnectionPool(plugin);
         makeTable();

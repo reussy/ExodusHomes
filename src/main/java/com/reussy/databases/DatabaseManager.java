@@ -33,7 +33,7 @@ public interface DatabaseManager {
 
     String getPlayer(String offlinePlayer);
 
-    UUID getUUID(String offlinePlayer);
+    UUID getUUID(String offlinePlayerUUID);
 
     String getWorld(OfflinePlayer offlinePlayer, String home);
 

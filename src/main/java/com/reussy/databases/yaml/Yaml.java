@@ -177,12 +177,13 @@ public class Yaml implements DatabaseManager {
     @Override
     public String getPlayer(String offlinePlayer) {
 
-        return null;
+        return offlinePlayer;
     }
 
     @Override
-    public UUID getUUID(String offlinePlayer) {
-        return null;
+    public UUID getUUID(String offlinePlayerUUID) {
+
+        return UUID.fromString(offlinePlayerUUID);
     }
 
     @Override

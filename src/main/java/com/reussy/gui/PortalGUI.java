@@ -40,8 +40,8 @@ public class PortalGUI implements HolderGUI {
 
         if (!plugin.databaseManager.hasHome(player)) return;
 
-        if (e.getCurrentItem().getType() ==
-                XMaterial.valueOf(menusFileManager.getString("Static-Contents.Homes.Material", menusFileManager.getPortalYAML())).parseMaterial()) {
+        if (e.getCurrentItem().getType() == XMaterial.valueOf(menusFileManager.getString("Static-Contents.Homes.Material", menusFileManager.getPortalYAML())).parseMaterial()
+                && !(e.getSlot() > getHome.size())) {
 
             switch (e.getClick()) {
 
@@ -66,6 +66,8 @@ public class PortalGUI implements HolderGUI {
 
     @Override
     public void setItems(Player player, Inventory inventory) {
+
+        plugin.itemBuilder.setContents(inventory, player, plugin.menusFileManager.getPortalYAML());
 
         List<String> getHomes = plugin.databaseManager.getHomes(player);
         boolean hasHome = plugin.databaseManager.hasHome(player);
@@ -116,7 +118,25 @@ public class PortalGUI implements HolderGUI {
             if (slot > 45) break;
         }
 
-        plugin.itemBuilder.setContents(inventory, player, plugin.menusFileManager.getPortalYAML());
+        /*
+        * Paginated System Buttons for future update
+        *
+        XMaterial material = XMaterial.valueOf(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Next-Page.Material"));
+        String headValue = plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Next-Page.Value");
+        String displayName = Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Next-Page.Name"));
+        List<String> nextLore = new ArrayList<>(plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Next-Page.Lore"));
+
+        ItemStack nextPage = plugin.itemBuilder.createItem(player, false, material, 1, displayName, nextLore, headValue);
+        inventory.setItem(plugin.menusFileManager.getPortalYAML().getInt("Static-Contents.Next-Page.Slot"), nextPage);
+
+        XMaterial material1 = XMaterial.valueOf(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Previous-Page.Material"));
+        String headValue1 = plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Previous-Page.Value");
+        String displayName1 = Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Previous-Page.Name"));
+        List<String> nextLore1 = new ArrayList<>(plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Previous-Page.Lore"));
+
+        ItemStack previousPage = plugin.itemBuilder.createItem(player, false, material1, 1, displayName1, nextLore1, headValue1);
+        inventory.setItem(plugin.menusFileManager.getPortalYAML().getInt("Static-Contents.Previous-Page.Slot"), previousPage);
+         */
     }
 
     @NotNull

@@ -26,9 +26,7 @@ public class MenusFileManager {
 
         overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
         if (!overviewGUI.exists()) {
-
             plugin.saveResource("menus/overview.yml", false);
-
         }
     }
 
@@ -60,9 +58,7 @@ public class MenusFileManager {
 
         portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
         if (!portalGUI.exists()) {
-
             plugin.saveResource("menus/portal.yml", false);
-
         }
     }
 
@@ -78,7 +74,6 @@ public class MenusFileManager {
     public void reloadPortal() {
 
         portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
-
         portalYAML = YamlConfiguration.loadConfiguration(portalGUI);
         try {
             Reader defConfigStream;

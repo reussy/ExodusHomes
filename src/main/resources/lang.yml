@@ -43,8 +43,8 @@ Satisfactory-Payment: '&a$%money_paid% &7was &cwithdrawn &7from your balance. No
 
 Manage:
   Home-Teleport: '&7Teleported successfully to &e&o%home_name% &7of &6&o%target%&7!'
-  No-Home: '&7The player &6&o%target% &7has no &e&o%home_name% &7home!'
-  Homes-Empty: '&7The player &6&o%target% &7has no homes!'
+  No-Home: '&7The player/UUID &6&o%target% &7has no &e&o%home_name% &7home!'
+  Homes-Empty: '&7The player/UUID &6&o%target% &7has no homes!'
   Home-Admin-Deleted: '&7The home &e&o%home_name% &7has been &cdeleted &7for &6&o%target%&7!'
   Homes-Admin-Deleted: '&7All homes of &6&o%target% &7has been &cdeleted&7!'
   Homes-Format: '&a%home_name%'

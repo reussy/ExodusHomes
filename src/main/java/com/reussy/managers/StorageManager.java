@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 
 public class StorageManager {
 
@@ -88,15 +89,5 @@ public class StorageManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public List<File> getFiles() {
-
-        playerFile = new File(plugin.getDataFolder() + File.separator + "storage" + File.separator + uuid + ".yml");
-
-        if (playerFile.listFiles() == null || !Arrays.stream(Objects.requireNonNull(playerFile.listFiles())).iterator().hasNext())
-            return null;
-
-        return new ArrayList<>(Arrays.asList(Objects.requireNonNull(playerFile.listFiles())));
     }
 }

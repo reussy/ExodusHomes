@@ -1,8 +1,6 @@
 package com.reussy.commands;
 
 import com.reussy.ExodusHomes;
-import com.reussy.managers.FileManager;
-import com.reussy.managers.MenusFileManager;
 import de.jeff_media.updatechecker.UpdateChecker;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,11 +24,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-        FileManager fileManager = new FileManager(plugin);
-        MenusFileManager menusFileManager = new MenusFileManager(plugin);
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
-            plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Insufficient-Permission"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
 
             return false;
         }
@@ -38,11 +34,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         if (cmd.getName().equalsIgnoreCase("eh")) {
 
             if (args.length == 0) {
-
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&eCreated by &breussy"));
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&eUse &6/eh help &efor commands!"));
-
+                sender.sendMessage(plugin.pluginUtils.setHexColor("&bExodus Homes &8- &a&o" + plugin.getDescription().getVersion()));
+                sender.sendMessage(plugin.pluginUtils.setHexColor("&7Use &6/eh help &7for commands!"));
                 return false;
             }
         }
@@ -51,7 +44,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
             case "help":
 
-                for (String adminHelp : fileManager.getLang().getStringList("Help.Administrator")) {
+                for (String adminHelp : plugin.fileManager.getLang().getStringList("Help.Administrator")) {
 
                     sender.sendMessage(plugin.pluginUtils.setHexColor(adminHelp));
                 }
@@ -61,10 +54,10 @@ public class MainCommand implements CommandExecutor, TabCompleter {
             case "reload":
 
                 plugin.reloadConfig();
-                fileManager.reloadLang();
-                menusFileManager.reloadOverview();
-                menusFileManager.reloadPortal();
-                plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Reload-Message"));
+                plugin.fileManager.reloadLang();
+                plugin.menusFileManager.reloadOverview();
+                plugin.menusFileManager.reloadPortal();
+                plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Reload-Message"));
 
                 return false;
 
@@ -74,9 +67,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 break;
 
             default:
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&eCreated by &breussy"));
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&eUse &6/eh help &efor commands!"));
+                sender.sendMessage(plugin.pluginUtils.setHexColor("&bExodus Homes &8- &a&o" + plugin.getDescription().getVersion()));
+                sender.sendMessage(plugin.pluginUtils.setHexColor("&7Use &6/eh help &7for commands!"));
                 break;
         }
         return false;

@@ -1,21 +1,19 @@
 package com.reussy.managers;
 
-import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 
 public class EssentialsStorageManager {
 
     private final ExodusHomes plugin;
-    private final Player player;
-    private final UUID uuid;
     File essentialsFolder;
     File storageFolder;
     File playerFile;
@@ -23,193 +21,129 @@ public class EssentialsStorageManager {
 
     /**
      * @param plugin main class
-     * @param player player for import
-     * @param uuid   uuid player for import
      */
-    public EssentialsStorageManager(ExodusHomes plugin, Player player, UUID uuid) {
+    public EssentialsStorageManager(ExodusHomes plugin) {
         this.plugin = plugin;
-        this.player = player;
-        this.uuid = uuid;
     }
 
-    boolean isEssentials() {
-        return Bukkit.getPluginManager().getPlugin("Essentials") != null;
-    }
+    boolean checksImport(UUID uuid) {
 
-    boolean databaseType() {
-        return ("YAML").equalsIgnoreCase(plugin.getConfig().getString("Database-Type"));
-    }
+        if (!playerFile.exists()) {
 
-    boolean hasFile() {
-        return playerFile.exists();
-    }
-
-    boolean noHomes() {
-        ConfigurationSection essentialsSection = getPlayerYaml().getConfigurationSection("homes");
-        assert essentialsSection != null;
-        Set<String> getHome = essentialsSection.getKeys(false);
-        return !getHome.isEmpty();
-    }
-
-    public void importPerPlayer() {
-
-        essentialsFolder = new File("plugins/Essentials/userdata");
-        playerFile = new File(essentialsFolder + File.separator + uuid + ".yml");
-        playerYaml = YamlConfiguration.loadConfiguration(playerFile);
-
-        if (!isEssentials()) {
-
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cEssentials is not installed..."));
-            return;
+            Bukkit.getConsoleSender().sendMessage("[ExodusHomes] There is no file created for " + uuid);
+            Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Skipping...");
+            return true;
         }
 
-        if (!databaseType()) {
-
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cMySQL database not support this feature!"));
-            return;
+        ConfigurationSection essentialsSection = getPlayerYaml(uuid).getConfigurationSection("homes");
+        if (essentialsSection == null || essentialsSection.getKeys(false).isEmpty()) {
+            Bukkit.getConsoleSender().sendMessage("[ExodusHomes] There is no home to import from " + uuid);
+            Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Skipping...");
+            return true;
         }
 
-        if (!hasFile()) {
+        return false;
+    }
 
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no file created for &e" + player.getName()));
-            return;
-        }
+    public void importPerPlayer(UUID uuid) {
 
-        if (!noHomes()) {
+        if (!("YAML").equalsIgnoreCase(plugin.getConfig().getString("Database-Type"))) {
 
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no home to import from &e" + player.getName()));
+            Bukkit.getConsoleSender().sendMessage("[ExodusHomes] MySQL database not support this feature!");
             return;
         }
 
         StorageManager storageManager = new StorageManager(uuid, plugin);
-        ConfigurationSection essentialsSection = getPlayerYaml().getConfigurationSection("homes");
+        essentialsFolder = new File("plugins/Essentials/userdata");
+        playerFile = new File(essentialsFolder + File.separator + uuid + ".yml");
+        playerYaml = YamlConfiguration.loadConfiguration(playerFile);
+        ConfigurationSection essentialsSection = playerYaml.getConfigurationSection("homes");
 
-        player.sendMessage(plugin.pluginUtils.setHexColor("&7&oStarting to import &6Essentials &7&ointo &bExodusHomes &7&ofor &e" + player.getName()));
+        if (checksImport(uuid)) return;
+
+        Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Starting to import Essentials into Exodus Homes for " + uuid);
         assert essentialsSection != null;
-        for (String essentialsHome : essentialsSection.getKeys(false)) {
-
-            String world = essentialsSection.getString(essentialsHome + ".world");
-            double x = essentialsSection.getDouble(essentialsHome + ".x");
-            double y = essentialsSection.getDouble(essentialsHome + ".y");
-            double z = essentialsSection.getDouble(essentialsHome + ".z");
-            float yaw = essentialsSection.getInt(essentialsHome + ".yaw");
-            float pitch = essentialsSection.getInt(essentialsHome + ".pitch");
-
-            storageManager.getFile().set("Homes." + essentialsHome + ".World", world);
-            storageManager.getFile().set("Homes." + essentialsHome + ".X", x);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Y", y);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Z", z);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Pitch", pitch);
-            storageManager.getFile().set("Homes." + essentialsHome + ".Yaw", yaw);
-            storageManager.saveFile();
-
-            assert XSound.UI_BUTTON_CLICK.parseSound() != null;
-            player.playSound(player.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1.5F, 1);
-        }
-
-        player.sendMessage(plugin.pluginUtils.setHexColor("&aImport completed successfully!"));
-        player.sendMessage(plugin.pluginUtils.setHexColor("&b" + essentialsSection.getKeys(false).size() + " &7homes have been imported for &e" + player.getName()));
+        initImport(uuid, storageManager, essentialsSection);
 
     }
 
     public void importEachPlayer() {
 
+        if (!("YAML").equalsIgnoreCase(plugin.getConfig().getString("Database-Type"))) {
+
+            Bukkit.getConsoleSender().sendMessage("[ExodusHomes] MySQL database not support this feature!");
+            return;
+        }
+
         essentialsFolder = new File("plugins/Essentials/userdata");
         storageFolder = new File("plugins/ExodusHomes/storage");
+        File[] storageFiles = Objects.requireNonNull(storageFolder.listFiles());
+
+        for (File storageFile : storageFiles) {
+
+            Bukkit.getConsoleSender().sendMessage(storageFile.getName().replace(".yml", ""));
+            UUID uuid = UUID.fromString(storageFile.getName().replace(".yml", ""));
+            StorageManager storageManager = new StorageManager(uuid, plugin);
+            playerFile = new File(essentialsFolder + File.separator + storageFile.getName());
+            playerYaml = YamlConfiguration.loadConfiguration(playerFile);
+
+            if (checksImport(uuid)) continue;
+
+            Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Starting to import Essentials Homes into Exodus Homes for " + uuid);
+            ConfigurationSection essentialsSection = getPlayerYaml(uuid).getConfigurationSection("homes");
+            assert essentialsSection != null;
+            initImport(uuid, storageManager, essentialsSection);
+
+        }
+    }
+
+    private void initImport(UUID uuid, StorageManager storageManager, ConfigurationSection essentialsSection) {
+
+        assert essentialsSection != null;
+        new BukkitRunnable() {
+            /**
+             * When an object implementing interface {@code Runnable} is used
+             * to create a thread, starting the thread causes the object's
+             * {@code run} method to be called in that separately executing
+             * thread.
+             * <p>
+             * The general contract of the method {@code run} is that it may
+             * take any action whatsoever.
+             *
+             * @see Thread#run()
+             */
+            @Override
+            public void run() {
+                for (String essentialsHome : essentialsSection.getKeys(false)) {
+
+                    String world = essentialsSection.getString(essentialsHome + ".world");
+                    double x = essentialsSection.getDouble(essentialsHome + ".x");
+                    double y = essentialsSection.getDouble(essentialsHome + ".y");
+                    double z = essentialsSection.getDouble(essentialsHome + ".z");
+                    float yaw = essentialsSection.getInt(essentialsHome + ".yaw");
+                    float pitch = essentialsSection.getInt(essentialsHome + ".pitch");
+
+                    storageManager.getFile().set("Homes." + essentialsHome + ".World", world);
+                    storageManager.getFile().set("Homes." + essentialsHome + ".X", x);
+                    storageManager.getFile().set("Homes." + essentialsHome + ".Y", y);
+                    storageManager.getFile().set("Homes." + essentialsHome + ".Z", z);
+                    storageManager.getFile().set("Homes." + essentialsHome + ".Pitch", pitch);
+                    storageManager.getFile().set("Homes." + essentialsHome + ".Yaw", yaw);
+                    storageManager.saveFile();
+
+                    if (plugin.getConfig().getBoolean("Debug.On-Import")) {
+                        Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Essentials Home: " + essentialsHome + " imported into " + uuid);
+                    }
+                }
+                Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Finished!");
+            }
+        }.runTaskLaterAsynchronously(plugin, 40);
+    }
+
+    public FileConfiguration getPlayerYaml(UUID uuid) {
 
         playerFile = new File(essentialsFolder + File.separator + uuid + ".yml");
         playerYaml = YamlConfiguration.loadConfiguration(playerFile);
-
-        if (!isEssentials()) {
-
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cEssentials is not installed..."));
-            return;
-        }
-
-        if (!databaseType()) {
-
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cMySQL database not support this feature!"));
-            return;
-        }
-
-        if (!hasFile()) {
-
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no file created for &e" + player.getName()));
-            return;
-        }
-
-        if (!noHomes()) {
-
-            player.sendMessage(plugin.pluginUtils.setHexColor("&cThere is no home to import from &e" + player.getName()));
-            return;
-        }
-
-        StorageManager storageManager = new StorageManager(uuid, plugin);
-        ConfigurationSection essentialsSection = getPlayerYaml().getConfigurationSection("homes");
-        File[] storageFile = storageFolder.listFiles();
-        assert storageFile != null;
-        int storageLength = storageFile.length;
-
-        player.sendMessage(plugin.pluginUtils.setHexColor("&7&oStarting to import &6Essentials &7&ointo &bExodusHomes &7&ofor &eeach player..."));
-
-        for (File file : Objects.requireNonNull(essentialsFolder.listFiles())) {
-            assert essentialsSection != null;
-            for (String essentialsHome : essentialsSection.getKeys(false)) {
-
-                String world = essentialsSection.getString(essentialsHome + ".world");
-                double x = essentialsSection.getDouble(essentialsHome + ".x");
-                double y = essentialsSection.getDouble(essentialsHome + ".y");
-                double z = essentialsSection.getDouble(essentialsHome + ".z");
-                float yaw = essentialsSection.getInt(essentialsHome + ".yaw");
-                float pitch = essentialsSection.getInt(essentialsHome + ".pitch");
-
-                storageManager.getFile().set("Homes." + essentialsHome + ".World", world);
-                storageManager.getFile().set("Homes." + essentialsHome + ".X", x);
-                storageManager.getFile().set("Homes." + essentialsHome + ".Y", y);
-                storageManager.getFile().set("Homes." + essentialsHome + ".Z", z);
-                storageManager.getFile().set("Homes." + essentialsHome + ".Pitch", pitch);
-                storageManager.getFile().set("Homes." + essentialsHome + ".Yaw", yaw);
-                storageManager.saveFile();
-
-                assert XSound.UI_BUTTON_CLICK.parseSound() != null;
-                player.playSound(player.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1.5F, 1);
-                storageLength++;
-            }
-        }
-    }
-
-    public File getFiles() {
-
-        essentialsFolder = new File("plugins/Essentials/userdata");
-
-        for (File file : Objects.requireNonNull(essentialsFolder.listFiles())) {
-
-            if (file.getName().endsWith(".yml")) {
-
-                if (file.getName().equalsIgnoreCase(uuid + ".yml")) {
-                    return file;
-                }
-            }
-        }
-        return null;
-    }
-
-    public List<String> getUUID() {
-
-        List<String> playerUUID = new ArrayList<>();
-
-        for (File file : Objects.requireNonNull(essentialsFolder.listFiles())) {
-
-            if (file.getName().endsWith(".yml")) {
-
-                playerUUID.add(file.getName().replace(".yml", ""));
-            }
-        }
-        return playerUUID;
-    }
-
-    public FileConfiguration getPlayerYaml() {
-
         return playerYaml;
     }
 }

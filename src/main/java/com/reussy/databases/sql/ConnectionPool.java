@@ -3,6 +3,8 @@ package com.reussy.databases.sql;
 import com.reussy.ExodusHomes;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -65,9 +67,14 @@ public class ConnectionPool {
         }
     }
 
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
 
-        return hikariDataSource.getConnection();
+        try {
+            return hikariDataSource.getConnection();
+        } catch (SQLException e) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ExodusHomes] &eThere is no communication between your server and the database... "));
+        }
+        return null;
     }
 
     public void closeConnection(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet) {

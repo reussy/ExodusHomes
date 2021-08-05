@@ -9,18 +9,23 @@
 #############################################################################################
 
 #Avaible Types: YAML or MySQL
-#MySQL does not have support for importing homes from EssentialsX!
 Database-Type: YAML
 Database-Properties:
-  Table: 'exodus_homes'
-  Host: ''
+  Table: 'homes'
+  Host: 'localhost'
   Port: 3306
-  Database: ''
-  Username: ''
+  Database: 'exodus_homes'
+  Username: 'root'
   Password: ''
   Max-Connections: 12
   Min-Connections: 6
   Connection-Timeout: 600
+
+#Info messages to check for errors
+Debug:
+  #Use debug when using import feature
+  #WARNING: This can fill your console with messages!
+  On-Import: true
 
 #Prefix for messages
 #Set '' if you don't want to use it!

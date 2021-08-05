@@ -5,7 +5,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -60,7 +59,6 @@ public class FileManager {
 
     public void reloadLang() {
 
-
         langFile = new File(plugin.getDataFolder(), "lang.yml");
         try {
             langYaml = YamlConfiguration.loadConfiguration(langFile);
@@ -70,17 +68,6 @@ public class FileManager {
             langYaml.setDefaults(defConfig);
             defConfigStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveLang() {
-
-        langFile = new File(plugin.getDataFolder(), "lang.yml");
-        try {
-            langYaml.save(langFile);
-            plugin.saveDefaultConfig();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }

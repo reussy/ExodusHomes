@@ -3,8 +3,6 @@ package com.reussy.commands;
 import com.reussy.ExodusHomes;
 import com.reussy.gui.OverviewGUI;
 import com.reussy.gui.PortalGUI;
-import com.reussy.managers.EconomyManager;
-import com.reussy.managers.FileManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,15 +25,13 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-        EconomyManager economyManager = new EconomyManager(plugin);
-        FileManager fileManager = new FileManager(plugin);
         if (!(sender instanceof Player)) {
-            plugin.pluginUtils.sendMessageWithoutPrefix(sender, fileManager.getMessage("No-Console"));
+            plugin.pluginUtils.sendMessageWithoutPrefix(sender, plugin.fileManager.getMessage("No-Console"));
             return false;
         }
 
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.player")) {
-            plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Insufficient-Permission"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
             return false;
         }
 
@@ -45,16 +41,14 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                 && Objects.requireNonNull(plugin.getConfig().getString("World-System.Type")).equalsIgnoreCase("WHITELIST")
                 && !plugin.getConfig().getStringList("World-System.Worlds").contains(player.getWorld().getName())) {
 
-            plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Deny-World"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Deny-World"));
             return false;
         }
 
         if (cmd.getName().equalsIgnoreCase("home")) {
 
             if (args.length == 0) {
-
                 if (plugin.getConfig().getBoolean("Portal-GUI-Instead")) {
-
                     player.openInventory(new PortalGUI(plugin, player).getInventory());
                 } else {
                     player.openInventory(new OverviewGUI(plugin, player).getInventory());
@@ -64,15 +58,12 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
             }
 
             if (args.length == 1 && !args[0].equalsIgnoreCase("list") && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("deleteall") && !args[0].equalsIgnoreCase("gui")) {
-
-                plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Few-Arguments").replace("%cmd%", "home"));
-
+                plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "home"));
                 return false;
             }
 
             if (args.length > 2 && !args[0].equalsIgnoreCase("rename")) {
-
-                plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Many-Arguments"));
+                plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Many-Arguments"));
                 return false;
             }
         }
@@ -81,7 +72,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
             if (args[0].equalsIgnoreCase("create")) {
                 if (args[1].contains(disallowedNames)) {
-                    plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Name-Not-Allowed"));
+                    plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Name-Not-Allowed"));
                     return false;
                 }
             }
@@ -91,7 +82,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
             case "help":
 
-                for (String helpPlayer : fileManager.getLang().getStringList("Help.Player")) {
+                for (String helpPlayer : plugin.fileManager.getLang().getStringList("Help.Player")) {
 
                     plugin.pluginUtils.sendMessageWithoutPrefix(sender, helpPlayer);
                 }
@@ -111,20 +102,17 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "create":
-
                 if (plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
-
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Has-Home"));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Has-Home"));
                     return false;
                 }
 
                 if (!plugin.pluginUtils.getPerm(player)) {
-
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Limit-Reached"));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Limit-Reached"));
                     return false;
                 }
 
-                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Create-Home")))
+                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && plugin.economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Create-Home")))
                     return false;
 
                 new BukkitRunnable() {
@@ -140,12 +128,14 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
 
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
                     return false;
                 }
 
-                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Rename-Home")))
+                if (plugin.getConfig().getBoolean("Economy-System.Enabled")
+                        && plugin.economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Rename-Home"))) {
                     return false;
+                }
 
                 plugin.getDatabaseManager().setNewName(player, args[1], args[2]);
 
@@ -155,17 +145,17 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.getDatabaseManager().hasHome(player)) {
 
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Homes-Empty"));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Empty"));
                     return false;
                 }
 
                 if (!plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
 
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
                     return false;
                 }
 
-                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Delete-Home")))
+                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && plugin.economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Delete-Home")))
                     return false;
 
                 new BukkitRunnable() {
@@ -180,11 +170,11 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.databaseManager.hasHome(player)) {
 
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Homes-Empty"));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Empty"));
                     return false;
                 }
 
-                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Delete-All-Homes")))
+                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && plugin.economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Delete-All-Homes")))
                     return false;
 
                 new BukkitRunnable() {
@@ -199,18 +189,18 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.getDatabaseManager().hasHome(player)) {
 
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Homes-Empty"));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Empty"));
 
                     return false;
                 }
 
                 if (!plugin.getDatabaseManager().getHomes(player).contains(args[1])) {
 
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("No-Home").replace("%home_name%", args[1]));
                     return false;
                 }
 
-                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Teleport-Home")))
+                if (plugin.getConfig().getBoolean("Economy-System.Enabled") && plugin.economyManager.isEnoughMoney(player, plugin.getConfig().getInt("Economy-System.Teleport-Home")))
                     return false;
 
                 plugin.getDatabaseManager().goHome(player, args[1]);
@@ -220,7 +210,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
 
                 if (!plugin.getDatabaseManager().hasHome(player)) {
 
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Homes-Empty"));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Empty"));
 
                     return false;
                 }
@@ -229,9 +219,8 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                 break;
 
             default:
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&bExodus Homes &8&l- &7" + plugin.getDescription().getVersion()));
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&eCreated by &breussy"));
-                sender.sendMessage(plugin.pluginUtils.setHexColor("&eUse &6/home help &efor commands!"));
+                sender.sendMessage(plugin.pluginUtils.setHexColor("&bExodus Homes &8- &a&o" + plugin.getDescription().getVersion()));
+                sender.sendMessage(plugin.pluginUtils.setHexColor("&7Use &6/home help &7for commands!"));
                 break;
         }
 

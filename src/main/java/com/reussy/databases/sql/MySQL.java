@@ -21,7 +21,7 @@ public class MySQL implements DatabaseManager {
     @Override
     public boolean hasHome(OfflinePlayer offlinePlayer) {
 
-        return plugin.sqlManager.hasHomes(offlinePlayer);
+        return plugin.mySQLQuery.hasHomes(offlinePlayer);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MySQL implements DatabaseManager {
         float pitch = player.getLocation().getPitch();
         float yaw = player.getLocation().getYaw();
 
-        plugin.sqlManager.createHomes(player.getUniqueId(), player, world, home, x, y, z, pitch, yaw);
+        plugin.mySQLQuery.createHomes(player.getUniqueId(), player, world, home, x, y, z, pitch, yaw);
         plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Created").replace("%home_name%", home));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Create-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
@@ -42,7 +42,7 @@ public class MySQL implements DatabaseManager {
     @Override
     public void deleteHome(Player player, String home) {
 
-        plugin.sqlManager.deleteHomes(player.getUniqueId(), home);
+        plugin.mySQLQuery.deleteHomes(player.getUniqueId(), home);
         plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Deleted").replace("%home_name%", home));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
@@ -51,7 +51,7 @@ public class MySQL implements DatabaseManager {
     @Override
     public void deleteHomeByAdmin(OfflinePlayer player, CommandSender sender, String home) {
 
-        plugin.sqlManager.deleteHomes(player.getUniqueId(), home);
+        plugin.mySQLQuery.deleteHomes(player.getUniqueId(), home);
         plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Home-Admin-Deleted").replace("%home_name%", home)
                 .replace("%target%", player.getName()));
         plugin.pluginUtils.sendSound(((Player) sender), ((Player) sender).getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
@@ -61,8 +61,7 @@ public class MySQL implements DatabaseManager {
     @Override
     public void deleteAll(Player player) {
 
-
-        plugin.sqlManager.deleteAll(player.getUniqueId());
+        plugin.mySQLQuery.deleteAll(player.getUniqueId());
         plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Deleted"));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
@@ -70,8 +69,7 @@ public class MySQL implements DatabaseManager {
     @Override
     public void deleteAllByAdmin(OfflinePlayer offlinePlayer, CommandSender sender) {
 
-
-        plugin.sqlManager.deleteAll(offlinePlayer.getUniqueId());
+        plugin.mySQLQuery.deleteAll(offlinePlayer.getUniqueId());
         plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Admin-Deleted").replace("%target%", offlinePlayer.getName()));
         plugin.pluginUtils.sendSound(((Player) sender), ((Player) sender).getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
@@ -79,7 +77,6 @@ public class MySQL implements DatabaseManager {
 
     @Override
     public void goHome(Player player, String home) {
-
 
         if (plugin.getConfig().getBoolean("World-System.Enabled") && plugin.getConfig().getBoolean("World-System.Per-World-Home")) {
 
@@ -105,7 +102,6 @@ public class MySQL implements DatabaseManager {
     @Override
     public void goHomeByAdmin(OfflinePlayer offlinePlayer, CommandSender sender, String home) {
 
-
         Location Home = new Location(Bukkit.getWorld(this.getWorld(offlinePlayer, home)), this.getX(offlinePlayer, home), this.getY(offlinePlayer, home), this.getZ(offlinePlayer, home), this.getYaw(offlinePlayer, home), this.getPitch(offlinePlayer, home));
         Home.add(0.5D, 0.0D, 0.5D);
         ((Player) sender).teleport(Home);
@@ -117,7 +113,6 @@ public class MySQL implements DatabaseManager {
     @Override
     public void listHomes(Player player) {
 
-
         for (String homeList : this.getHomes(player)) {
             player.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getMessage("Homes-Format").replace("%home_name%", homeList)));
         }
@@ -126,8 +121,7 @@ public class MySQL implements DatabaseManager {
     @Override
     public void listHomesByAdmin(OfflinePlayer offlinePlayer, CommandSender sender) {
 
-        List<String> getHomes = (plugin.sqlManager.getHomes(offlinePlayer));
-
+        List<String> getHomes = (plugin.mySQLQuery.getHomes(offlinePlayer));
 
         for (String homeList : getHomes) {
             sender.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getMessage("Manage.Homes-Format").replace("%home_name%", homeList)));
@@ -138,57 +132,54 @@ public class MySQL implements DatabaseManager {
     @Override
     public void setNewName(Player player, String home, String name) {
 
-
-        plugin.sqlManager.setNewName(player.getUniqueId(), home, name);
+        plugin.mySQLQuery.setNewName(player.getUniqueId(), home, name);
         plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Renamed-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 
     @Override
     public String getPlayer(String offlinePlayer) {
-
-        return plugin.sqlManager.getPlayer(offlinePlayer);
+        return plugin.mySQLQuery.getPlayer(offlinePlayer);
     }
 
     @Override
-    public UUID getUUID(String offlinePlayer) {
-
-        return plugin.sqlManager.getUUID(offlinePlayer);
+    public UUID getUUID(String offlinePlayerUUID) {
+        return plugin.mySQLQuery.getUUID(offlinePlayerUUID);
     }
 
     @Override
     public String getWorld(OfflinePlayer offlinePlayer, String home) {
-        return plugin.sqlManager.getWorld(offlinePlayer, home);
+        return plugin.mySQLQuery.getWorld(offlinePlayer, home);
     }
 
     @Override
     public double getX(OfflinePlayer offlinePlayer, String home) {
-        return plugin.sqlManager.getX(offlinePlayer, home);
+        return plugin.mySQLQuery.getX(offlinePlayer, home);
     }
 
     @Override
     public double getY(OfflinePlayer offlinePlayer, String home) {
-        return plugin.sqlManager.getY(offlinePlayer, home);
+        return plugin.mySQLQuery.getY(offlinePlayer, home);
     }
 
     @Override
     public double getZ(OfflinePlayer offlinePlayer, String home) {
-        return plugin.sqlManager.getZ(offlinePlayer, home);
+        return plugin.mySQLQuery.getZ(offlinePlayer, home);
     }
 
     @Override
     public float getPitch(OfflinePlayer offlinePlayer, String home) {
-        return plugin.sqlManager.getPitch(offlinePlayer, home);
+        return plugin.mySQLQuery.getPitch(offlinePlayer, home);
     }
 
     @Override
     public float getYaw(OfflinePlayer offlinePlayer, String home) {
-        return plugin.sqlManager.getYaw(offlinePlayer, home);
+        return plugin.mySQLQuery.getYaw(offlinePlayer, home);
     }
 
     @Override
     public List<String> getHomes(@Nullable OfflinePlayer offlinePlayer) {
 
-        return plugin.sqlManager.getHomes(offlinePlayer);
+        return plugin.mySQLQuery.getHomes(offlinePlayer);
     }
 }

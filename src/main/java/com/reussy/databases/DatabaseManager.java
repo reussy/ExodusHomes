@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface DatabaseManager {
 
@@ -31,9 +30,7 @@ public interface DatabaseManager {
 
     void setNewName(Player offlinePlayer, String home, String name);
 
-    String getPlayer(String offlinePlayer);
-
-    UUID getUUID(String offlinePlayerUUID);
+    OfflinePlayer getOfflinePlayer(String offlineName, CommandSender sender);
 
     String getWorld(OfflinePlayer offlinePlayer, String home);
 

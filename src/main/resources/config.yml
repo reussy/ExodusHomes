@@ -27,6 +27,14 @@ Debug:
   #WARNING: This can fill your console with messages!
   On-Import: true
 
+#Options for tab complete features
+Tab-Complete:
+  #Fetch only online players
+  #If true return online players
+  #If false return offline players
+  #WARNING I recommend using in true!
+  Fetch-Online-Players: true
+
 #Prefix for messages
 #Set '' if you don't want to use it!
 Plugin-Prefix: '&b&lHomes &8» '

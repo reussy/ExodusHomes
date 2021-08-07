@@ -1,4 +1,4 @@
-package com.reussy.databases.sql;
+package com.reussy.databases.mysql;
 
 import com.reussy.ExodusHomes;
 import com.reussy.databases.DatabaseManager;
@@ -9,10 +9,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.UUID;
 
 public class MySQL implements DatabaseManager {
 
@@ -138,13 +136,18 @@ public class MySQL implements DatabaseManager {
     }
 
     @Override
-    public String getPlayer(String offlinePlayer) {
-        return plugin.mySQLQuery.getPlayer(offlinePlayer);
-    }
+    public OfflinePlayer getOfflinePlayer(String offlineName, CommandSender sender) {
 
-    @Override
-    public UUID getUUID(String offlinePlayerUUID) {
-        return plugin.mySQLQuery.getUUID(offlinePlayerUUID);
+        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+
+            try {
+                if (offlinePlayer.getName().equalsIgnoreCase(offlineName)) return offlinePlayer;
+            } catch (NullPointerException e) {
+                plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Unknown-Player"));
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -178,7 +181,7 @@ public class MySQL implements DatabaseManager {
     }
 
     @Override
-    public List<String> getHomes(@Nullable OfflinePlayer offlinePlayer) {
+    public List<String> getHomes(OfflinePlayer offlinePlayer) {
 
         return plugin.mySQLQuery.getHomes(offlinePlayer);
     }

@@ -1,6 +1,7 @@
-package com.reussy.databases.sql;
+package com.reussy.databases.mysql;
 
 import com.reussy.ExodusHomes;
+import com.reussy.databases.ConnectionPool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -126,45 +127,31 @@ public class MySQLQuery {
         }
     }
 
-    public UUID getUUID(String offlinePlayer) {
+    public List<String> getPlayers() {
 
+        List<String> playerNames = new ArrayList<>();
+        String getName = "";
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+
         try {
+
             connection = connectionPool.getConnection();
-            preparedStatement = connection.prepareStatement("SELECT UUID FROM " + plugin.getConfig().getString("Database-Properties.Table") + " WHERE Player=?");
-            preparedStatement.setString(1, offlinePlayer);
+            preparedStatement = connection.prepareStatement("SELECT Player FROM " + plugin.getConfig().getString("Database-Properties.Table") + "");
             resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) return UUID.fromString(resultSet.getString("UUID"));
+            while (resultSet.next()) {
+                getName = resultSet.getString("Player");
+                playerNames.add(getName);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             connectionPool.closeConnection(connection, preparedStatement, resultSet);
         }
-        return null;
-    }
 
-    public String getPlayer(String offlinePlayer) {
-
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-
-            connection = connectionPool.getConnection();
-            preparedStatement = connection.prepareStatement("SELECT Player FROM " + plugin.getConfig().getString("Database-Properties.Table") + " WHERE Player=?");
-            preparedStatement.setString(1, offlinePlayer);
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) return resultSet.getString("Player");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            connectionPool.closeConnection(connection, preparedStatement, resultSet);
-        }
-        return null;
+        return playerNames;
     }
 
     public List<String> getHomes(OfflinePlayer offlinePlayer) {
@@ -178,7 +165,6 @@ public class MySQLQuery {
         try {
 
             if (hasHomes(offlinePlayer)) {
-
                 connection = connectionPool.getConnection();
                 preparedStatement = connection.prepareStatement("SELECT * FROM " + plugin.getConfig().getString("Database-Properties.Table") + " WHERE (UUID=?)");
                 preparedStatement.setString(1, offlinePlayer.getUniqueId().toString());

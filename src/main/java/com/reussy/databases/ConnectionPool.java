@@ -1,4 +1,4 @@
-package com.reussy.databases.sql;
+package com.reussy.databases;
 
 import com.reussy.ExodusHomes;
 import com.zaxxer.hikari.HikariConfig;
@@ -43,14 +43,18 @@ public class ConnectionPool {
         HikariConfig hikariConfig = new HikariConfig();
 
         hikariConfig.setJdbcUrl("jdbc:mysql://" + hostName + ":" + port + "/" + databaseName);
-        hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
         hikariConfig.setUsername(userName);
         hikariConfig.setPassword(password);
         hikariConfig.setMinimumIdle(minimumConnections);
         hikariConfig.setMaximumPoolSize(maximumConnections);
         hikariConfig.setMaxLifetime(connectionTime);
         hikariConfig.setConnectionTestQuery("SELECT 1;");
-        hikariDataSource = new HikariDataSource(hikariConfig);
+        try {
+            hikariDataSource = new HikariDataSource(hikariConfig);
+        } catch (Exception e) {
+            Bukkit.getConsoleSender().sendMessage("Cannot connect to MySQL. Verify your properties in config.yml");
+        }
     }
 
     private void makeTable() {

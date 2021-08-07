@@ -81,7 +81,6 @@ public class EssentialsStorageManager {
 
         for (File storageFile : storageFiles) {
 
-            Bukkit.getConsoleSender().sendMessage(storageFile.getName().replace(".yml", ""));
             UUID uuid = UUID.fromString(storageFile.getName().replace(".yml", ""));
             StorageManager storageManager = new StorageManager(uuid, plugin);
             playerFile = new File(essentialsFolder + File.separator + storageFile.getName());
@@ -98,6 +97,7 @@ public class EssentialsStorageManager {
     }
 
     private void initImport(UUID uuid, StorageManager storageManager, ConfigurationSection essentialsSection) {
+
 
         assert essentialsSection != null;
         new BukkitRunnable() {
@@ -135,9 +135,10 @@ public class EssentialsStorageManager {
                         Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Essentials Home: " + essentialsHome + " imported into " + uuid);
                     }
                 }
+
                 Bukkit.getConsoleSender().sendMessage("[ExodusHomes] Finished!");
             }
-        }.runTaskLaterAsynchronously(plugin, 40);
+        }.runTaskAsynchronously(plugin);
     }
 
     public FileConfiguration getPlayerYaml(UUID uuid) {

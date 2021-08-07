@@ -103,19 +103,16 @@ public class PlaceholdersBuilder extends PlaceholderExpansion {
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String identifier) {
 
-        //if player is null
         if (player == null) {
             return "";
         }
 
         switch (identifier) {
 
-            //number of house
             case "player_homes":
 
                 return String.valueOf(plugin.getDatabaseManager().getHomes(player).size());
 
-            //if he has a home or not
             case "has_home":
 
                 return String.valueOf(plugin.getDatabaseManager().hasHome(player));

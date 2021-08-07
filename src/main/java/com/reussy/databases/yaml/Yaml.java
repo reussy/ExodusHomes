@@ -9,9 +9,11 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class Yaml implements DatabaseManager {
 
@@ -175,15 +177,18 @@ public class Yaml implements DatabaseManager {
     }
 
     @Override
-    public String getPlayer(String offlinePlayer) {
+    public OfflinePlayer getOfflinePlayer(String offlineName, CommandSender sender) {
 
-        return offlinePlayer;
-    }
+        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
 
-    @Override
-    public UUID getUUID(String offlinePlayerUUID) {
+            try {
+                if (offlinePlayer.getName().equalsIgnoreCase(offlineName)) return offlinePlayer;
+            } catch (NullPointerException e) {
+                plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Unknown-Player"));
+            }
+        }
 
-        return UUID.fromString(offlinePlayerUUID);
+        return null;
     }
 
     @Override
@@ -235,7 +240,7 @@ public class Yaml implements DatabaseManager {
     }
 
     @Override
-    public List<String> getHomes(@Nullable OfflinePlayer offlinePlayer) {
+    public List<String> getHomes(OfflinePlayer offlinePlayer) {
         StorageManager storageManager = new StorageManager(offlinePlayer.getUniqueId(), plugin);
         ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
 
@@ -246,4 +251,5 @@ public class Yaml implements DatabaseManager {
             return new ArrayList<>(section.getKeys(false));
         }
     }
+
 }

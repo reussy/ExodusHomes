@@ -1,8 +1,10 @@
 package com.reussy.commands;
 
+import com.cryptomorin.xseries.messages.ActionBar;
 import com.reussy.ExodusHomes;
-import com.reussy.managers.FileManager;
+import com.reussy.managers.EssentialsStorageManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class ManageCommand implements CommandExecutor, TabCompleter {
 
@@ -31,17 +32,17 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-        FileManager fileManager = new FileManager(plugin);
+        EssentialsStorageManager essentialsStorageManager = new EssentialsStorageManager(plugin);
         if (!(sender instanceof Player)) {
 
-            plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("No-Console"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("No-Console"));
 
             return false;
         }
 
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
 
-            plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Insufficient-Permission"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
 
             return false;
         }
@@ -58,86 +59,113 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
             if (args.length == 1 && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("importall")) {
 
-                plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
                 return false;
             }
 
             if (args.length == 2 && args[0].equalsIgnoreCase("go") || args.length == 2 && args[0].equalsIgnoreCase("delete")) {
 
-                plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
 
                 return false;
             }
-
-            String offlinePlayerName = plugin.databaseManager.getPlayer(args[1]);
-            UUID offlineUUID = plugin.databaseManager.getUUID(offlinePlayerName);
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(offlineUUID);
-
             switch (args[0]) {
 
                 case "help":
 
-                    for (String manageHelp : fileManager.getLang().getStringList("Help.Manage")) {
+                    for (String manageHelp : plugin.fileManager.getLang().getStringList("Help.Manage")) {
                         sender.sendMessage(plugin.pluginUtils.setHexColor(manageHelp));
                     }
                     break;
 
                 case "import":
 
-                    plugin.essentialsStorageManager.importPerPlayer(offlinePlayer.getUniqueId());
+                    if (plugin.databaseManager.getOfflinePlayer(args[1], sender) == null) {
+
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Unknown-Player")
+                                .replace("%target%", args[1]));
+                        return false;
+                    }
+
+                    ActionBar.sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&c&lSee the console"));
+                    plugin.pluginUtils.sendSound(player, player.getLocation(), "ENTITY_ARROW_HIT", 2, 4);
+                    essentialsStorageManager.importPerPlayer(plugin.databaseManager.getOfflinePlayer(args[1], sender).getUniqueId());
                     break;
 
                 case "importall":
 
-                    plugin.essentialsStorageManager.importEachPlayer();
+                    ActionBar.sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&c&lSee the console"));
+                    plugin.pluginUtils.sendSound(player, player.getLocation(), "ENTITY_ARROW_HIT", 2, 4);
+                    essentialsStorageManager.importEachPlayer();
                     break;
 
                 case "list":
 
-                    if (!plugin.databaseManager.hasHome(offlinePlayer)) {
+                    if (plugin.databaseManager.getOfflinePlayer(args[1], sender) == null) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Unknown-Player")
+                                .replace("%target%", args[1]));
+                        return false;
+                    }
+
+                    if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
+
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
 
                         return false;
                     }
 
-                    plugin.databaseManager.listHomesByAdmin(offlinePlayer, sender);
+                    plugin.databaseManager.listHomesByAdmin(plugin.databaseManager.getOfflinePlayer(args[1], sender), sender);
                     break;
 
                 case "go":
 
-                    if (!plugin.databaseManager.hasHome(offlinePlayer)) {
+                    if (plugin.databaseManager.getOfflinePlayer(args[1], sender) == null) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Unknown-Player")
+                                .replace("%target%", args[1]));
+                        return false;
+                    }
+
+                    if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
+
+                        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
 
                         return false;
                     }
 
-                    if (!plugin.databaseManager.getHomes(offlinePlayer).contains(args[2])) {
+                    if (!plugin.databaseManager.getHomes(plugin.databaseManager.getOfflinePlayer(args[1], sender)).contains(args[2])) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(player, Objects.requireNonNull(fileManager.getLang().getString("Manage.No-Home"))
+                        plugin.pluginUtils.sendMessageWithPrefix(player, Objects.requireNonNull(plugin.fileManager.getLang().getString("Manage.No-Home"))
                                 .replace("%home_name%", args[2])
                                 .replace("%target%", args[1]));
                         return false;
                     }
 
-                    plugin.databaseManager.goHomeByAdmin(offlinePlayer, player, args[2]);
+                    plugin.databaseManager.goHomeByAdmin(plugin.databaseManager.getOfflinePlayer(args[1], sender), player, args[2]);
                     break;
 
                 case "delete":
 
-                    if (!plugin.databaseManager.hasHome(offlinePlayer)) {
+                    if (plugin.databaseManager.getOfflinePlayer(args[1], sender) == null) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Empty")
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Unknown-Player")
+                                .replace("%target%", args[1]));
+                        return false;
+                    }
+
+                    if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
+
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Empty")
                                 .replace("%target%", args[1]));
 
                         return false;
                     }
 
-                    if (!plugin.databaseManager.getHomes(offlinePlayer).contains(args[2])) {
+                    if (!plugin.databaseManager.getHomes(plugin.databaseManager.getOfflinePlayer(args[1], sender)).contains(args[2])) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(sender, Objects.requireNonNull(fileManager.getLang().getString("Manage.No-Home"))
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, Objects.requireNonNull(plugin.fileManager.getLang().getString("Manage.No-Home"))
                                 .replace("%home_name%", args[2])
                                 .replace("%target%", args[1]));
                         return false;
@@ -146,16 +174,16 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            plugin.databaseManager.deleteHomeByAdmin(Bukkit.getPlayer(args[1]), sender, args[2]);
+                            plugin.databaseManager.deleteHomeByAdmin(plugin.databaseManager.getOfflinePlayer(args[1], sender), sender, args[2]);
                         }
                     }.runTaskAsynchronously(plugin);
                     break;
 
                 case "deleteall":
 
-                    if (!plugin.databaseManager.hasHome(offlinePlayer)) {
+                    if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(sender, fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
 
                         return false;
                     }
@@ -163,7 +191,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            plugin.databaseManager.deleteAllByAdmin(offlinePlayer, sender);
+                            plugin.databaseManager.deleteAllByAdmin(plugin.databaseManager.getOfflinePlayer(args[1], sender), sender);
                         }
                     }.runTaskAsynchronously(plugin);
                     break;
@@ -195,24 +223,39 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                     return plugin.manageCommands;
                 } else if (args.length == 2) {
-                    List<String> onlinePlayers = new ArrayList<>();
 
-                    for (Player p : Bukkit.getOnlinePlayers()) {
+                    List<String> playerNames = new ArrayList<>();
 
-                        if (p == null) return null;
+                    if (plugin.getConfig().getBoolean("Tab-Complete.Fetch-Online-Players")) {
 
-                        onlinePlayers.add(p.getName());
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+
+                            playerNames.add(player.getName());
+                        }
+                    } else {
+                        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+
+                            if (player.isOnline()) continue;
+                            playerNames.add(player.getName());
+                        }
                     }
-                    return onlinePlayers;
+                    return playerNames;
+
                 } else if (args.length == 3) {
 
-                    String offlinePlayerName = plugin.databaseManager.getPlayer(args[1]);
-                    UUID offlineUUID = plugin.databaseManager.getUUID(offlinePlayerName);
-                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(offlineUUID);
+                    try {
 
-                    if (!plugin.databaseManager.hasHome(offlinePlayer)) return null;
+                        OfflinePlayer offlinePlayer = plugin.databaseManager.getOfflinePlayer(args[1], sender);
 
-                    return plugin.databaseManager.getHomes(offlinePlayer);
+                        if (offlinePlayer == null) return null;
+
+                        if (!plugin.databaseManager.hasHome(offlinePlayer)) return null;
+
+                        return plugin.databaseManager.getHomes(offlinePlayer);
+
+                    } catch (IllegalArgumentException e) {
+                        e.getCause();
+                    }
                 }
             }
         }

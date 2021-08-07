@@ -58,7 +58,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 plugin.menusFileManager.reloadOverview();
                 plugin.menusFileManager.reloadPortal();
                 plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Reload-Message"));
-
                 return false;
 
             case "update":

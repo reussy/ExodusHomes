@@ -31,11 +31,11 @@ public class EconomyManager {
 
         if (playerBalance >= amount) {
             plugin.economy.withdrawPlayer(player, amount);
-            plugin.pluginUtils.sendMessageWithPrefix(player.getPlayer(), fileManager.getMessage("Satisfactory-Payment")
+            plugin.pluginUtils.sendMessageWithPrefix(player.getPlayer(), fileManager.getLang().getString("Satisfactory-Payment")
                     .replace("%money_paid%", String.valueOf(amount)).replace("%player_balance%", String.valueOf(playerBalance - amount)));
             return false;
         } else {
-            plugin.pluginUtils.sendMessageWithPrefix(player.getPlayer(), fileManager.getMessage("Not-Enough-Money"));
+            plugin.pluginUtils.sendMessageWithPrefix(player.getPlayer(), fileManager.getLang().getString("Not-Enough-Money"));
             plugin.pluginUtils.sendSound((Player) player, Objects.requireNonNull(player.getPlayer()).getLocation(), plugin.getConfig().getString("Sounds.Not-Enough-Money"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
             return true;
         }

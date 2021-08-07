@@ -46,7 +46,7 @@ public class PlayerCommandPreListener implements Listener {
             for (String action : plugin.getConfig().getStringList("World-System.Actions")) {
 
                 if (message.contains("/" + action)) {
-                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Deny-Command-In-World").replace("%parameter%", message));
+                    plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getLang().getString("Deny-Command-In-World").replace("%parameter%", message));
                     e.setCancelled(true);
                 }
             }

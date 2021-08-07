@@ -8,7 +8,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
-public class TeleportTask {
+public class PlayerTeleport {
 
     private final ExodusHomes plugin;
     private final Player player;
@@ -17,7 +17,7 @@ public class TeleportTask {
     int teleportTask;
     int time;
 
-    public TeleportTask(ExodusHomes plugin, int time, Player player, Location location, String home) {
+    public PlayerTeleport(ExodusHomes plugin, int time, Player player, Location location, String home) {
         this.plugin = plugin;
         this.time = time;
         this.player = player;
@@ -31,7 +31,7 @@ public class TeleportTask {
         if (!plugin.playerCache.contains(player.getName())) {
             plugin.playerCache.add(player.getName());
         } else {
-            plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Already-Teleporting"));
+            plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getLang().getString("Already-Teleporting"));
             return;
         }
 
@@ -48,7 +48,7 @@ public class TeleportTask {
                     if (playerHome != worldHome) {
 
                         Bukkit.getScheduler().cancelTask(teleportTask);
-                        plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Not-Same-World").replace("%home_name%", home));
+                        plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getLang().getString("Not-Same-World").replace("%home_name%", home));
                         return;
                     }
                 }
@@ -56,13 +56,13 @@ public class TeleportTask {
                 Bukkit.getScheduler().cancelTask(teleportTask);
                 player.teleport(location);
                 plugin.playerCache.remove(player.getName());
-                plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Home-Teleport").replace("%home_name%", home));
+                plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getLang().getString("Home-Teleport").replace("%home_name%", home));
                 plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Teleport-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
             } else {
 
                 plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Waiting-Teleport"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
-                plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getMessage("Teleport-Delay")
+                plugin.pluginUtils.sendMessageWithPrefix(player, fileManager.getLang().getString("Teleport-Delay")
                         .replace("%seconds%", String.valueOf(time)));
                 time--;
             }

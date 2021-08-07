@@ -26,7 +26,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.admin")) {
 
-            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Insufficient-Permission"));
 
             return false;
         }
@@ -57,7 +57,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 plugin.fileManager.reloadLang();
                 plugin.menusFileManager.reloadOverview();
                 plugin.menusFileManager.reloadPortal();
-                plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Reload-Message"));
+                plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Reload-Message"));
                 return false;
 
             case "update":

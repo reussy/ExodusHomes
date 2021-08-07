@@ -71,9 +71,4 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-
-    public String getMessage(String message) {
-
-        return this.getLang().getString(message);
-    }
 }

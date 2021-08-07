@@ -2,7 +2,6 @@ package com.reussy.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.reussy.ExodusHomes;
-import com.reussy.managers.MenusFileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,21 +31,19 @@ public class PortalGUI implements HolderGUI {
     @Override
     public void onClick(InventoryClickEvent e) {
 
-        MenusFileManager menusFileManager = new MenusFileManager(plugin);
         Player player = (Player) e.getWhoClicked();
-        List<String> getHome = plugin.getDatabaseManager().getHomes(player);
 
         assert e.getCurrentItem() != null;
 
         if (!plugin.databaseManager.hasHome(player)) return;
 
-        if (e.getCurrentItem().getType() == XMaterial.valueOf(menusFileManager.getString("Static-Contents.Homes.Material", menusFileManager.getPortalYAML())).parseMaterial()
-                && !(e.getSlot() > getHome.size())) {
+        if (e.getCurrentItem().getType() == XMaterial.valueOf(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Homes.Material")).parseMaterial()
+                && !(e.getSlot() > plugin.getDatabaseManager().getHomes(player).size())) {
 
             switch (e.getClick()) {
 
                 case LEFT:
-                    plugin.getDatabaseManager().goHome(player, getHome.get(e.getSlot()));
+                    plugin.getDatabaseManager().goHome(player, plugin.getDatabaseManager().getHomes(player).get(e.getSlot()));
                     player.closeInventory();
                     break;
 
@@ -55,7 +52,7 @@ public class PortalGUI implements HolderGUI {
                         @Override
                         public void run() {
                             player.getOpenInventory().close();
-                            plugin.getDatabaseManager().deleteHome(player, getHome.get(e.getSlot()));
+                            plugin.getDatabaseManager().deleteHome(player, plugin.getDatabaseManager().getHomes(player).get(e.getSlot()));
                             player.openInventory(new PortalGUI(plugin, player).getInventory());
                         }
                     }.runTaskLater(plugin, 20L);
@@ -69,11 +66,7 @@ public class PortalGUI implements HolderGUI {
 
         plugin.itemBuilder.setContents(inventory, player, plugin.menusFileManager.getPortalYAML());
 
-        List<String> getHomes = plugin.databaseManager.getHomes(player);
-        boolean hasHome = plugin.databaseManager.hasHome(player);
-        int slot = 0;
-
-        if (!hasHome) {
+        if (!plugin.databaseManager.hasHome(player)) {
 
             XMaterial material = XMaterial.valueOf(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Empty-Homes.Material"));
             String headValue = plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Empty-Homes.Value");
@@ -86,7 +79,8 @@ public class PortalGUI implements HolderGUI {
 
         }
 
-        for (String getHome : getHomes) {
+        int slot = 0;
+        for (String getHome : plugin.databaseManager.getHomes(player)) {
 
             String homeWorld = plugin.getDatabaseManager().getWorld(player, getHome);
             double homeX = plugin.getDatabaseManager().getX(player, getHome);
@@ -101,42 +95,22 @@ public class PortalGUI implements HolderGUI {
                     .replace("%home_world%", homeWorld)
                     .replace("%home_name%", getHome));
             List<String> homeLore = new ArrayList<>();
-            for (String lore : plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Homes.Lore")) {
-                homeLore.add(plugin.pluginUtils.setHexColor(lore)
+            for (String itemLore : plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Homes.Lore")) {
+                homeLore.add(plugin.pluginUtils.setHexColor(itemLore)
                         .replace("%home_x%", String.valueOf(homeX))
                         .replace("%home_y%", String.valueOf(homeY))
                         .replace("%home_z%", String.valueOf(homeZ))
                         .replace("%home_world%", homeWorld)
                         .replace("%home_name%", getHome));
             }
-            ItemStack home = plugin.itemBuilder.createItem(player, false, material, slot + 1,
+            ItemStack homeItem = plugin.itemBuilder.createItem(player, false, material, slot + 1,
                     displayName, homeLore, headValue);
 
-            inventory.setItem(slot, home);
+            inventory.setItem(slot, homeItem);
             slot++;
 
             if (slot > 45) break;
         }
-
-        /*
-        * Paginated System Buttons for future update
-        *
-        XMaterial material = XMaterial.valueOf(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Next-Page.Material"));
-        String headValue = plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Next-Page.Value");
-        String displayName = Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Next-Page.Name"));
-        List<String> nextLore = new ArrayList<>(plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Next-Page.Lore"));
-
-        ItemStack nextPage = plugin.itemBuilder.createItem(player, false, material, 1, displayName, nextLore, headValue);
-        inventory.setItem(plugin.menusFileManager.getPortalYAML().getInt("Static-Contents.Next-Page.Slot"), nextPage);
-
-        XMaterial material1 = XMaterial.valueOf(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Previous-Page.Material"));
-        String headValue1 = plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Previous-Page.Value");
-        String displayName1 = Objects.requireNonNull(plugin.menusFileManager.getPortalYAML().getString("Static-Contents.Previous-Page.Name"));
-        List<String> nextLore1 = new ArrayList<>(plugin.menusFileManager.getPortalYAML().getStringList("Static-Contents.Previous-Page.Lore"));
-
-        ItemStack previousPage = plugin.itemBuilder.createItem(player, false, material1, 1, displayName1, nextLore1, headValue1);
-        inventory.setItem(plugin.menusFileManager.getPortalYAML().getInt("Static-Contents.Previous-Page.Slot"), previousPage);
-         */
     }
 
     @NotNull

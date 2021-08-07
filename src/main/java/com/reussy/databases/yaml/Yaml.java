@@ -4,7 +4,7 @@ import com.cryptomorin.xseries.XSound;
 import com.reussy.ExodusHomes;
 import com.reussy.databases.DatabaseManager;
 import com.reussy.managers.StorageManager;
-import com.reussy.utils.TeleportTask;
+import com.reussy.utils.PlayerTeleport;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -38,7 +38,6 @@ public class Yaml implements DatabaseManager {
     @Override
     public void createHome(Player player, String home) {
 
-
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
         storageManager.getFile().set("Homes." + home + ".World", player.getWorld().getName());
         storageManager.getFile().set("Homes." + home + ".X", player.getLocation().getBlockX());
@@ -48,7 +47,7 @@ public class Yaml implements DatabaseManager {
         storageManager.getFile().set("Homes." + home + ".Yaw", player.getLocation().getYaw());
         storageManager.saveFile();
 
-        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Created").replace("%home_name%", home));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Home-Created").replace("%home_name%", home));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Create-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
@@ -56,13 +55,12 @@ public class Yaml implements DatabaseManager {
     @Override
     public void deleteHome(Player player, String home) {
 
-
         StorageManager storageManager = new StorageManager(player.getUniqueId(), plugin);
 
         storageManager.getFile().set("Homes." + home, null);
         storageManager.getFile().set(home, null);
         storageManager.saveFile();
-        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Deleted").replace("%home_name%", home));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Home-Deleted").replace("%home_name%", home));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
@@ -70,13 +68,12 @@ public class Yaml implements DatabaseManager {
     @Override
     public void deleteHomeByAdmin(OfflinePlayer offlinePlayer, CommandSender sender, String home) {
 
-
         StorageManager storageManager = new StorageManager(offlinePlayer.getUniqueId(), plugin);
 
         storageManager.getFile().set("Homes." + home, null);
         storageManager.getFile().set(home, null);
         storageManager.saveFile();
-        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Admin-Delete").replace("%home_name%", home).replace("%target%", offlinePlayer.getName()));
+        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Homes-Admin-Delete").replace("%home_name%", home).replace("%target%", offlinePlayer.getName()));
         plugin.pluginUtils.sendSound(((Player) sender), ((Player) sender).getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
@@ -94,13 +91,12 @@ public class Yaml implements DatabaseManager {
             storageManager.getFile().set(home, null);
             storageManager.saveFile();
         }
-        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Deleted"));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Homes-Deleted"));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 
     @Override
     public void deleteAllByAdmin(OfflinePlayer offlinePlayer, CommandSender sender) {
-
 
         StorageManager storageManager = new StorageManager(offlinePlayer.getUniqueId(), plugin);
         ConfigurationSection section = storageManager.getFile().getConfigurationSection("Homes");
@@ -112,13 +108,12 @@ public class Yaml implements DatabaseManager {
             storageManager.getFile().set(home, null);
             storageManager.saveFile();
         }
-        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Admin-Delete").replace("%target%", offlinePlayer.getName()));
+        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Homes-Admin-Delete").replace("%target%", offlinePlayer.getName()));
         plugin.pluginUtils.sendSound(((Player) sender), ((Player) sender).getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 
     @Override
     public void goHome(Player player, String home) {
-
 
         if (plugin.getConfig().getBoolean("World-System.Enabled") && plugin.getConfig().getBoolean("World-System.Per-World-Home")) {
 
@@ -127,7 +122,7 @@ public class Yaml implements DatabaseManager {
             World playerHome = player.getWorld();
 
             if (playerHome != worldHome) {
-                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Not-Same-World").replace("%home_name%", home));
+                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Not-Same-World").replace("%home_name%", home));
                 return;
             }
         }
@@ -135,8 +130,8 @@ public class Yaml implements DatabaseManager {
         Location homeLocation = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
         homeLocation.add(0.5D, 0.0D, 0.5D);
         int time = plugin.getConfig().getInt("Teleport-Delay.Time");
-        TeleportTask teleportTask = new TeleportTask(plugin, time, player, homeLocation, home);
-        teleportTask.runTask();
+        PlayerTeleport playerTeleport = new PlayerTeleport(plugin, time, player, homeLocation, home);
+        playerTeleport.runTask();
 
     }
 
@@ -155,17 +150,16 @@ public class Yaml implements DatabaseManager {
         List<String> getHomes = (this.getHomes(player));
 
         for (String homeList : getHomes)
-            player.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getMessage("Homes-Format").replace("%home_name%", homeList)));
+            player.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getLang().getString("Homes-Format").replace("%home_name%", homeList)));
 
     }
 
     @Override
     public void listHomesByAdmin(OfflinePlayer offlinePlayer, CommandSender sender) {
 
-        List<String> getHomes = (this.getHomes(offlinePlayer));
-
-        for (String homeList : getHomes)
-            sender.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getMessage("Manage.Homes-Format").replace("%home_name%", homeList)));
+        for (String homeList : getHomes(offlinePlayer))
+            sender.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getLang().getString("Manage.Homes-Format")
+                    .replace("%home_name%", homeList)));
     }
 
     @Override

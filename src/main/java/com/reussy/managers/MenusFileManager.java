@@ -34,7 +34,7 @@ public class MenusFileManager {
 
         overviewGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "overview.yml");
         overviewYAML = YamlConfiguration.loadConfiguration(overviewGUI);
-        if (overviewGUI == null)
+        if (!overviewGUI.exists())
             reloadOverview();
         return overviewYAML;
     }
@@ -66,7 +66,7 @@ public class MenusFileManager {
 
         portalGUI = new File(plugin.getDataFolder() + File.separator + "menus" + File.separator + "portal.yml");
         portalYAML = YamlConfiguration.loadConfiguration(portalGUI);
-        if (portalGUI == null)
+        if (!portalGUI.exists())
             reloadPortal();
         return portalYAML;
     }
@@ -85,10 +85,5 @@ public class MenusFileManager {
             e.printStackTrace();
         }
 
-    }
-
-    public String getString(String string, FileConfiguration fileConfiguration) {
-
-        return plugin.pluginUtils.setHexColor(fileConfiguration.getString(string));
     }
 }

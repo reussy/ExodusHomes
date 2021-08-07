@@ -2,7 +2,7 @@ package com.reussy.databases.mysql;
 
 import com.reussy.ExodusHomes;
 import com.reussy.databases.DatabaseManager;
-import com.reussy.utils.TeleportTask;
+import com.reussy.utils.PlayerTeleport;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -33,7 +33,7 @@ public class MySQL implements DatabaseManager {
         float yaw = player.getLocation().getYaw();
 
         plugin.mySQLQuery.createHomes(player.getUniqueId(), player, world, home, x, y, z, pitch, yaw);
-        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Created").replace("%home_name%", home));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Home-Created").replace("%home_name%", home));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Create-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 
@@ -41,7 +41,7 @@ public class MySQL implements DatabaseManager {
     public void deleteHome(Player player, String home) {
 
         plugin.mySQLQuery.deleteHomes(player.getUniqueId(), home);
-        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Deleted").replace("%home_name%", home));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Home-Deleted").replace("%home_name%", home));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
@@ -50,7 +50,7 @@ public class MySQL implements DatabaseManager {
     public void deleteHomeByAdmin(OfflinePlayer player, CommandSender sender, String home) {
 
         plugin.mySQLQuery.deleteHomes(player.getUniqueId(), home);
-        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Home-Admin-Deleted").replace("%home_name%", home)
+        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Home-Admin-Deleted").replace("%home_name%", home)
                 .replace("%target%", player.getName()));
         plugin.pluginUtils.sendSound(((Player) sender), ((Player) sender).getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
@@ -60,7 +60,7 @@ public class MySQL implements DatabaseManager {
     public void deleteAll(Player player) {
 
         plugin.mySQLQuery.deleteAll(player.getUniqueId());
-        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Homes-Deleted"));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Homes-Deleted"));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 
@@ -68,7 +68,7 @@ public class MySQL implements DatabaseManager {
     public void deleteAllByAdmin(OfflinePlayer offlinePlayer, CommandSender sender) {
 
         plugin.mySQLQuery.deleteAll(offlinePlayer.getUniqueId());
-        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Admin-Deleted").replace("%target%", offlinePlayer.getName()));
+        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Homes-Admin-Deleted").replace("%target%", offlinePlayer.getName()));
         plugin.pluginUtils.sendSound(((Player) sender), ((Player) sender).getLocation(), plugin.getConfig().getString("Sounds.Delete-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
 
     }
@@ -84,7 +84,7 @@ public class MySQL implements DatabaseManager {
 
             if (playerHome != worldHome) {
 
-                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Not-Same-World").replace("%home_name%", home));
+                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Not-Same-World").replace("%home_name%", home));
                 return;
             }
         }
@@ -92,8 +92,8 @@ public class MySQL implements DatabaseManager {
         Location homeLocation = new Location(Bukkit.getWorld(this.getWorld(player, home)), this.getX(player, home), this.getY(player, home), this.getZ(player, home), this.getYaw(player, home), this.getPitch(player, home));
         homeLocation.add(0.5D, 0.0D, 0.5D);
         int time = plugin.getConfig().getInt("Teleport-Delay.Time");
-        TeleportTask teleportTask = new TeleportTask(plugin, time, player, homeLocation, home);
-        teleportTask.runTask();
+        PlayerTeleport playerTeleport = new PlayerTeleport(plugin, time, player, homeLocation, home);
+        playerTeleport.runTask();
 
     }
 
@@ -103,7 +103,7 @@ public class MySQL implements DatabaseManager {
         Location Home = new Location(Bukkit.getWorld(this.getWorld(offlinePlayer, home)), this.getX(offlinePlayer, home), this.getY(offlinePlayer, home), this.getZ(offlinePlayer, home), this.getYaw(offlinePlayer, home), this.getPitch(offlinePlayer, home));
         Home.add(0.5D, 0.0D, 0.5D);
         ((Player) sender).teleport(Home);
-        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Home-Teleport")
+        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Home-Teleport")
                 .replace("%home_name%", home)
                 .replace("%target%", offlinePlayer.getName()));
     }
@@ -112,7 +112,7 @@ public class MySQL implements DatabaseManager {
     public void listHomes(Player player) {
 
         for (String homeList : this.getHomes(player)) {
-            player.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getMessage("Homes-Format").replace("%home_name%", homeList)));
+            player.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getLang().getString("Homes-Format").replace("%home_name%", homeList)));
         }
     }
 
@@ -122,7 +122,7 @@ public class MySQL implements DatabaseManager {
         List<String> getHomes = (plugin.mySQLQuery.getHomes(offlinePlayer));
 
         for (String homeList : getHomes) {
-            sender.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getMessage("Manage.Homes-Format").replace("%home_name%", homeList)));
+            sender.sendMessage(plugin.pluginUtils.setHexColor(plugin.fileManager.getLang().getString("Manage.Homes-Format").replace("%home_name%", homeList)));
 
         }
     }
@@ -131,7 +131,7 @@ public class MySQL implements DatabaseManager {
     public void setNewName(Player player, String home, String name) {
 
         plugin.mySQLQuery.setNewName(player.getUniqueId(), home, name);
-        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
+        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Home-Renamed").replace("%old_name%", home).replace("%new_name%", name));
         plugin.pluginUtils.sendSound(player, player.getLocation(), plugin.getConfig().getString("Sounds.Renamed-Home"), plugin.getConfig().getInt("Sounds.Volume"), plugin.getConfig().getInt("Sounds.Pitch"));
     }
 

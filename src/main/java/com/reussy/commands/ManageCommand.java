@@ -35,14 +35,14 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
         EssentialsStorageManager essentialsStorageManager = new EssentialsStorageManager(plugin);
         if (!(sender instanceof Player)) {
 
-            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("No-Console"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("No-Console"));
 
             return false;
         }
 
         if (plugin.getConfig().getBoolean("Permissions-System") && !sender.hasPermission("homes.command.manage")) {
 
-            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Insufficient-Permission"));
+            plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Insufficient-Permission"));
 
             return false;
         }
@@ -59,14 +59,14 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
             if (args.length == 1 && !args[0].equalsIgnoreCase("help") && !args[0].equalsIgnoreCase("importall")) {
 
-                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Few-Arguments").replace("%cmd%", "ehm"));
 
                 return false;
             }
 
             if (args.length == 2 && args[0].equalsIgnoreCase("go") || args.length == 2 && args[0].equalsIgnoreCase("delete")) {
 
-                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Few-Arguments").replace("%cmd%", "ehm"));
+                plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Few-Arguments").replace("%cmd%", "ehm"));
 
                 return false;
             }
@@ -111,7 +111,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                     if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Homes-Empty").replace("%target%", args[1]));
 
                         return false;
                     }
@@ -130,7 +130,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                     if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
+                        plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Manage.Homes-Empty").replace("%target%", args[1]));
 
                         return false;
                     }
@@ -157,7 +157,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                     if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Empty")
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Homes-Empty")
                                 .replace("%target%", args[1]));
 
                         return false;
@@ -183,7 +183,7 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
 
                     if (!plugin.databaseManager.hasHome(plugin.databaseManager.getOfflinePlayer(args[1], sender))) {
 
-                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getMessage("Manage.Homes-Empty").replace("%target%", args[1]));
+                        plugin.pluginUtils.sendMessageWithPrefix(sender, plugin.fileManager.getLang().getString("Manage.Homes-Empty").replace("%target%", args[1]));
 
                         return false;
                     }

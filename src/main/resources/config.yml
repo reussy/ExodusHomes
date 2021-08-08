@@ -71,6 +71,20 @@ World-System:
     - 'home create'
     - 'homes create' #If you have another initial command that calls the "home" command you can add it here!
 
+#Use sounds that are in the
+#version of your server!
+#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+Sounds:
+  Volume: 2
+  Pitch: 1.5
+  Create-Home: ENTITY_PLAYER_LEVELUP
+  Renamed-Home: BLOCK_ANVIL_HIT
+  Delete-Home: ENTITY_VILLAGER_YES
+  Teleport-Home: ENTITY_ENDERMAN_TELEPORT
+  Waiting-Teleport: UI_BUTTON_CLICK
+  Open-GUI: BLOCK_CHEST_OPEN
+  Not-Enough-Money: ENTITY_VILLAGER_NO
+
 #Economy system will take the money from each action below
 #Set to -1 to make it free
 Economy-System:
@@ -91,25 +105,3 @@ Blacklist-Names:
 #Set 0 for disable
 Teleport-Delay:
   Time: 5
-
-#Feature for fill inventory
-#with items
-#Set false for disable!
-Background:
-  Enable: true
-  Icon: BLACK_STAINED_GLASS_PANE
-  Name: ''
-
-#Use sounds that are in the
-#version of your server!
-#https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
-Sounds:
-  Volume: 2
-  Pitch: 1.5
-  Create-Home: ENTITY_PLAYER_LEVELUP
-  Renamed-Home: BLOCK_ANVIL_HIT
-  Delete-Home: ENTITY_VILLAGER_YES
-  Teleport-Home: ENTITY_ENDERMAN_TELEPORT
-  Waiting-Teleport: UI_BUTTON_CLICK
-  Open-GUI: BLOCK_CHEST_OPEN
-  Not-Enough-Money: ENTITY_VILLAGER_NO

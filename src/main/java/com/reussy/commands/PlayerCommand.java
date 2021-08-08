@@ -108,7 +108,7 @@ public class PlayerCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
-                if (!plugin.pluginUtils.getPerm(player)) {
+                if (!plugin.pluginUtils.getPermission(player)) {
                     plugin.pluginUtils.sendMessageWithPrefix(player, plugin.fileManager.getLang().getString("Limit-Reached"));
                     return false;
                 }

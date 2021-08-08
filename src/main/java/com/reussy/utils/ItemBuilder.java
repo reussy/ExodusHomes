@@ -97,19 +97,4 @@ public class ItemBuilder {
             e.printStackTrace();
         }
     }
-
-    public void setBackground(Player player, Inventory gui, int minSlot, int maxSlot) {
-
-        if (plugin.getConfig().getBoolean("Background.Enable")) {
-
-            ItemStack itemFill = this.createItem(player, false, XMaterial.valueOf(plugin.getConfig().getString("Background.Icon")), 1
-                    , plugin.pluginUtils.setHexColor(plugin.getConfig().getString("Background.Name")), null, null);
-
-            if (plugin.getConfig().getBoolean("Background.Enable")) while (minSlot < maxSlot) {
-
-                gui.setItem(minSlot, itemFill);
-                minSlot++;
-            }
-        }
-    }
 }

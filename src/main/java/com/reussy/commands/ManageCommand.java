@@ -222,7 +222,10 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
                     plugin.manageCommands.add("deleteall");
 
                     return plugin.manageCommands;
-                } else if (args.length == 2) {
+                } else if (!args[0].equalsIgnoreCase("help")
+                        && !args[0].equalsIgnoreCase("importall")
+                        && !args[0].equalsIgnoreCase("deleteall")
+                        && args.length == 2) {
 
                     List<String> playerNames = new ArrayList<>();
 
@@ -241,7 +244,10 @@ public class ManageCommand implements CommandExecutor, TabCompleter {
                     }
                     return playerNames;
 
-                } else if (args.length == 3) {
+                } else if (!args[0].equalsIgnoreCase("help")
+                        && !args[0].equalsIgnoreCase("importall")
+                        && !args[0].equalsIgnoreCase("deleteall")
+                        && args.length == 3) {
 
                     try {
 

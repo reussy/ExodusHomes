@@ -33,26 +33,6 @@ Static-Contents:
       - ''
       - '&a&oLeft click to teleport!'
       - '&c&oRight click to delete!'
-  Next-Page:
-    Material: PLAYER_HEAD
-    Value: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmEzYjhmNjgxZGFhZDhiZjQzNmNhZThkYTNmZTgxMzFmNjJhMTYyYWI4MWFmNjM5YzNlMDY0NGFhNmFiYWMyZiJ9fX0='
-    Slot: 50
-    Name: '&aNext Page'
-    Lore:
-      - ''
-      - '&7Next Page: %next_page%'
-      - ''
-      - '&a&oLeft click'
-  Previous-Page:
-    Material: PLAYER_HEAD
-    Value: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY1MmUyYjkzNmNhODAyNmJkMjg2NTFkN2M5ZjI4MTlkMmU5MjM2OTc3MzRkMThkZmRiMTM1NTBmOGZkYWQ1ZiJ9fX0='
-    Slot: 48
-    Name: '&aPrevious Page'
-    Lore:
-      - ''
-      - '&7Previous Page: %previous_page%'
-      - ''
-      - '&a&oLeft click'
   Empty-Homes:
     Material: PLAYER_HEAD
     Value: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19'
@@ -73,8 +53,9 @@ Contents:
     Slot: 49
     Name: '&a%player_name%'
     Lore:
-      - '&7Rank: &e%vault_rank%'
+      - ''
       - '&7Homes: &e%exodushomes_player_homes%'
+      #- '&7Rank: &e%vault_rank%'
   1:
     Material: GRAY_STAINED_GLASS_PANE
     Amount: 1

@@ -65,7 +65,7 @@ public class PluginUtils {
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', text);
     }
 
-    public boolean getPerm(Player player) {
+    public boolean getPermission(Player player) {
 
         for (PermissionAttachmentInfo permissionAttachmentInfo : player.getEffectivePermissions()) {
 
